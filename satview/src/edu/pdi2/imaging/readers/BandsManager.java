@@ -76,6 +76,9 @@ public class BandsManager {
 	/** La lista con las direcciones de <b>todas</b> las bandas */
 	private List<String> allBands;
 
+	/** Las bandas actuales de la imagen. Sirven para generar la imagen con una determinada firma*/
+	private List<String> currentBands;
+
 	//TODO
 	private static int l7cantBands;
 
@@ -151,6 +154,7 @@ public class BandsManager {
 	public byte[] getRawData(List<String> bands, int fromX, int toX, int fromY,
 			int toY) {
 
+		
 		int numBands = bands.size();
 
 		byte[] data = new byte[numBands * (toY - fromY) * (toX - fromX)];
@@ -234,6 +238,7 @@ public class BandsManager {
 	 */
 	public SatelliteImage getImage(List<String> bands, int fromX, int toX,
 			int fromY, int toY) {
+		
 		return getRawImage(bands, fromX, toX, fromY, toY);
 	}
 
@@ -257,13 +262,15 @@ public class BandsManager {
 		 * int toY = height; int fromY = 0; int stepY = 1; int toX = width; int
 		 * fromX = 0; int stepX = 1;
 		 */
+		currentBands = bandPaths;
+		
 		int numBands = bandPaths.size();
 
 		byte[] data = getRawData(bandPaths, fromX, toX, fromY, toY);
 		// ahora tengo toda la data necesaria para hacer la imagen, pero primero
 		// hay q corregirla
 
-		satImage = makeImage(data, fromX, toX, fromY, toY, numBands);
+		satImage = makeImage(data, fromX, toX, fromY, toY, currentBands);
 
 		return satImage;
 	}
@@ -305,7 +312,8 @@ public class BandsManager {
 	}
 
 	private SatelliteImage makeImage(byte[] data, int fromX, int toX, int fromY,
-			int toY, int numBands) {
+			int toY, List<String> bands) {
+		int numBands = bands.size();
 		// Create a Data Buffer from the values on the single image array.
 		DataBufferByte dbuffer = new DataBufferByte(data, data.length);
 		// Create an pixel interleaved data sample model.
@@ -319,7 +327,7 @@ public class BandsManager {
 				dbuffer, new java.awt.Point(0, 0));
 		// Create a TiledImage using the SampleModel.
 		SatelliteImage satImage = new SatelliteImage(0, 0, toX - fromX, toY - fromY,
-				0, 0, sampleModel, colorModel,allBands);
+				0, 0, sampleModel, colorModel,bands);
 		// Set the data of the tiled image to be the raster.
 		satImage.setData(raster);
 		return satImage;
@@ -416,8 +424,81 @@ public class BandsManager {
 			}
 			
 		}
-		SatelliteImage ret = makeImage(newData, fromX, toX, fromY, toY, signSize);
-		JAI.create("filestore", ret,"signature.jpg","JPEG");
+		int numBands = signSize;
+		if (numBands > 3)
+			numBands = 3;
+		byte[] flatData = flatImage(newData, fromX, toX, fromY, toY, numBands);
+		SatelliteImage ret = makeImage(flatData, fromX, toX, fromY, toY, currentBands);
+//		JAI.create("filestore", ret,"signature.jpg","JPEG");
+		return ret;
+	}
+
+	/**
+	 * Crea una imagen con una cantidad de bandas distinta de la imagen original. Sirve para generar imagenes de 3 bandas a
+	 * partir de una de 7 bandas.
+	 * @param sourceData El contenido original de la imagen, con una cantidad de bandas posiblemente grande (por ejemplo: 7 bandas)
+	 * @param numBands Cantidad de bandas de la imagen a generar.
+	 */
+	private byte[] flatImage(byte[] sourceData, int fromX, int toX, int fromY, int toY, int numBands) {
+		// TODO Auto-generated method stub
+		SignatureComparator sc = getSignatureComparator();
+		int[] jumps = getJumpsVector(currentBands);
+		int bandIndex = 0;
+		
+		String nextBand = currentBands.get(0);
+		int currBand = Integer.valueOf(nextBand.substring(nextBand.lastIndexOf(".") - 1, nextBand.lastIndexOf("."))) -1;
+		
+		int retIndex = 0;
+		
+		
+		byte[] ret = new byte[(toX - fromX) * (toY - fromY) * numBands];
+		for (int y=fromY; y < toY; ++y){
+			for (int x=fromX; x < toX; ++x){
+				for (int b=0; b<jumps.length; ++b){
+					ret[retIndex] = sourceData[currBand];
+					++retIndex;
+					currBand += jumps[bandIndex];
+					bandIndex = (bandIndex + 1) % currentBands.size();
+				}
+			}
+		}
+		
+		return ret;
+	}
+
+	/**
+	 * Crea un vector que almacena en cada posición un número, ese número es la cantidad de bandas que hay
+	 * entre la banda <i>i</i> y la <i>i + 1</i>. Por ejemplo, si hay 7 bandas en la imagen y las bandas actuales
+	 * son:<br>
+	 * <b>[1, 3, 6]</b><br>
+	 * Entonces el vector resultante será:<br>
+	 * <b>[2,3,2]</b> <i>(El último 2 es porque, al haber 7 bandas, hay que moverse 1 lugar para llegar de la banda
+	 * 6 a la 7 y 1 lugar más para llegar de la 7 a la 1)</i><br>
+	 * <br>
+	 * Los contenidos del vector también pueden ser negativos. Por ejemplo, si las bandas de la imagen son:<br>
+	 * <b>[4, 2, 6]</b><br>
+	 * Entonces el vector resultante será:<br>
+	 * <b>[-2, 4, 5]</b>
+	 * 
+	 * @param currentBands La lista de bandas actuales de la imagen. Debe mantenerse actualizada en todo momento.
+	 * @return Un vector con índices de desplazamiento para leer la matriz con <b>todos</b> los datos (salteando
+	 * aquellos que pertenezcan a bandas que no interesan en la imagen actual).
+	 */
+	private int[] getJumpsVector(List<String> currentBands) {
+		int []ret = new int[currentBands.size()];
+		int []ints = new int[currentBands.size()];
+		int i = 0;
+//		primero paso las bandas a un arreglo de enteros
+		for (i=0; i < currentBands.size(); ++i){
+			String currBand = currentBands.get(i);
+			int currIndex = Integer.valueOf(currBand.substring(currBand.lastIndexOf(".") - 1, currBand.lastIndexOf(".")));
+			ints[i] = currIndex;
+		}
+		
+		for (i=0; i<ret.length - 1; ++i){
+			ret[i] = ints[i + 1] - ints[i];
+		}
+		ret [i] = getMaxBands() - ints[i] + ints[0];
 		return ret;
 	}
 

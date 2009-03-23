@@ -174,12 +174,12 @@ public class DisplayThumbnail extends DisplayJAI implements
 		scaledViewport = new Rectangle2D.Float(10, 20, width * scale, height
 				* scale);
 		
-		minValidX = 0;
-	    minValidY = 0;
+		minValidX = (int) scaledViewport.getWidth()/2;//0;
+	    minValidY = (int) scaledViewport.getHeight()/2; //0;
 		/*maxValidX = originalImage.getWidth() - ((int) scaledViewport.getWidth()+border);
 		maxValidY = originalImage.getHeight() - ((int) scaledViewport.getHeight()+ border);*/
-	    maxValidX = thumbnail.getWidth() - ((int) scaledViewport.getWidth()+border);
-		maxValidY = thumbnail.getHeight() - ((int) scaledViewport.getHeight()+ border);
+	    maxValidX = thumbnail.getWidth() - ((int) scaledViewport.getWidth()/2+border);
+		maxValidY = thumbnail.getHeight() - ((int) scaledViewport.getHeight()/2+ border);
 
 		// We assume that the mouse is off the viewport.
 	}
@@ -322,8 +322,14 @@ public class DisplayThumbnail extends DisplayJAI implements
 						.getWidth() + 10, (int) scaledViewport.getHeight() + 10);
 		// Recalculate the new position for the viewport, based on mouse
 		// coordinates.
-		double origX = x ;  // scaledViewport.getX() + x - lastX;
-		double origY = y ;   //scaledViewport.getY() + y - lastY;
+		double origX = x - scaledViewport.getWidth()/2;
+		if (origX < 0)
+			origX = 0;
+		
+		double origY = y - scaledViewport.getHeight()/2;
+		if (origY < 0)
+			origY = 0;
+		
 		debug("minX=" + minValidX + " minY =" + minValidY + " maxX="
 				+ maxValidX + " maxY=" + maxValidY + " getX()=" + scaledViewport.getX() +" getY() =" + scaledViewport.getY());
 
