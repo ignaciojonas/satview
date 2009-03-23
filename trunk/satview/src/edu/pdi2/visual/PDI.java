@@ -45,6 +45,7 @@ import edu.pdi2.forms.Polygon;
 import edu.pdi2.imaging.readers.BandsManager;
 import edu.pdi2.math.indexes.satellite.SatelliteImage;
 import edu.pdi2.math.signatures.comparators.EqualSignature;
+import edu.pdi2.math.signatures.comparators.SimilarSignatures;
 import edu.pdi2.math.transforms.ElasticTransform;
 import edu.pdi2.math.transforms.RectangleTransform;
 
@@ -701,7 +702,19 @@ public class PDI extends javax.swing.JFrame {
 		
 		if (signature != null) {
 			//FIXME hacer que esto se haga por IGUALDAD o por SIMILITUD de firmas
-			bandsManager.setSignatureComparator(new EqualSignature(signature));
+			byte[] bottom = new byte[signature.length];
+			byte[] top = new byte[signature.length];
+			
+			for (int i=0; i<signature.length; ++i){
+				bottom [i] = (byte) (signature[i] - 30);
+				
+					
+				top[i] = (byte) (signature[i] + 30);
+				if (top[i] < 0)
+					top[i] = 127;
+				
+			}
+			bandsManager.setSignatureComparator(new SimilarSignatures(top, bottom));
 			signature_image = bandsManager.getImageWithThisSignature(x0, x1 + x0, y0, y1 + y0);
 			this.setSi(signature_image);
 

@@ -29,7 +29,7 @@ public class SimilarSignatures implements SignatureComparator {
 			if (b<bottom[i] || b>top[i])
 				return false;
 		}
-			return true;
+		return true;
 	}
 
 	public void setTop(byte[] top) {
