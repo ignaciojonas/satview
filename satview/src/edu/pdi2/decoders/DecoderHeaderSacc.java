@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import edu.pdi2.math.transforms.ElasticTransform;
+import edu.pdi2.constants.SatelliteNamingUtils;
 
 
 public class DecoderHeaderSacc extends Decoder {
@@ -12,7 +12,7 @@ public class DecoderHeaderSacc extends Decoder {
 
 	public DecoderHeaderSacc(String path) {
 		super(path);
-		// TODO Auto-generated constructor stub
+		SatelliteId = SatelliteNamingUtils.SACC_ID;
 	}
 
 	@Override
@@ -43,10 +43,8 @@ public class DecoderHeaderSacc extends Decoder {
 			System.out.println("Decode "+path+" of SACC");
 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

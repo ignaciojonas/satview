@@ -1,14 +1,13 @@
 package edu.pdi2.decoders;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 
 
 public abstract class Decoder {
 protected double UL_lon,UL_lat,UL_1,UL_2,UR_lon,UR_lat,UR_1,UR_2,LL_lon,LL_lat,LL_1,LL_2,LR_lon,LR_lat,LR_1,LR_2;
 protected int PPL,LPI;
 protected String gains_biases;
+
+/** El identificador del satelite*/
+protected String SatelliteId;
 
 protected String path;
 
@@ -65,9 +64,11 @@ public double getLR_1() {
 public double getLR_2() {
 	return LR_2;
 }
+/** Puntos por linea*/
 public int getPPL() {
 	return PPL;
 }
+/** Lineas por imagen*/
 public int getLPI() {
 	return LPI;
 }

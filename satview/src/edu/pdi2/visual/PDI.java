@@ -1,8 +1,6 @@
 package edu.pdi2.visual;
 
-import java.awt.AWTEvent;
 import java.awt.Dimension;
-
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,13 +36,16 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import com.l2fprod.common.swing.JDirectoryChooser;
+
+import edu.pdi2.constants.AppConstants;
+import edu.pdi2.constants.SatelliteNamingUtils;
 import edu.pdi2.decoders.Decoder;
 import edu.pdi2.decoders.DecoderFactory;
 import edu.pdi2.forms.Point;
 import edu.pdi2.forms.Polygon;
 import edu.pdi2.imaging.readers.BandsManager;
 import edu.pdi2.math.indexes.satellite.SatelliteImage;
-import edu.pdi2.math.signatures.comparators.EqualSignature;
 import edu.pdi2.math.signatures.comparators.SimilarSignatures;
 import edu.pdi2.math.transforms.ElasticTransform;
 import edu.pdi2.math.transforms.RectangleTransform;
@@ -61,6 +62,11 @@ import edu.pdi2.math.transforms.RectangleTransform;
  */
 public class PDI extends javax.swing.JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4943563588556465116L;
+
 	{
 		// Set Look & Feel
 		try {
@@ -72,14 +78,18 @@ public class PDI extends javax.swing.JFrame {
 	}
 
 	private DisplayThumbnail dt;
+	private JMenuItem jMenuItemOpenL5;
+	private JMenu jMenuOpenImage;
 	private JMenuItem jMenuItem2;
 	private JLabel jLabel1;
-	private JPanel jPanel1;
+//	private JPanel jPanel1;
 
 	private JPanel latLon;
 	private JButton jButton1;
 	private ChartPanel chartpanel;
 	private JLabel jLong;
+	private JMenuItem jMenuItemSacc;
+	private JMenuItem jMenuItemLandsat7;
 	private JLabel jLat;
 	private JCheckBoxMenuItem jCheckBoxMenuItem3;
 	private JCheckBoxMenuItem jCheckBoxMenuItem2;
@@ -244,7 +254,8 @@ public class PDI extends javax.swing.JFrame {
 					jMenu1.setText("File"); //$NON-NLS-1$
 					{
 						jMenuItem1 = new JMenuItem();
-						jMenu1.add(jMenuItem1);
+//						jMenu1.add(jMenuItem1);
+						jMenu1.add(getJMenuOpenImage());
 						jMenuItem1.setText("Open Image"); //$NON-NLS-1$
 						jMenuItem1.addMouseListener(new MouseAdapter() {
 							public void mouseReleased(MouseEvent evt) {
@@ -266,7 +277,7 @@ public class PDI extends javax.swing.JFrame {
 						jMenuItem3.setText("False Color Image"); //$NON-NLS-1$
 						jMenuItem3.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent evt) {
-								jMenuItem3ActionPerformed(evt);
+								menuFalseColorActionPerformed(evt);
 							}
 						});
 					}
@@ -441,10 +452,16 @@ public class PDI extends javax.swing.JFrame {
 	}
 
 	private void jMenuItem1MouseReleased(MouseEvent evt) {
-		new OpenBands(this);
-		jCheckBoxMenuItem1.setSelected(false);
-		jCheckBoxMenuItem2.setSelected(false);
-		jCheckBoxMenuItem3.setSelected(false);
+//		JDirectoryChooser dc = new JDirectoryChooser();
+//		int choice = dc.showOpenDialog(this);
+//		if (choice != JDirectoryChooser.CANCEL_OPTION){
+//			File sel = dc.getSelectedFile();
+//			//		new OpenBands(this);
+//			new CropImage(this,sel.getAbsolutePath());
+//			jCheckBoxMenuItem1.setSelected(false);
+//			jCheckBoxMenuItem2.setSelected(false);
+//			jCheckBoxMenuItem3.setSelected(false);
+//		}
 
 	}
 
@@ -513,7 +530,7 @@ public class PDI extends javax.swing.JFrame {
 		cm = null;
 	}
 
-	private void jMenuItem3ActionPerformed(ActionEvent evt) {
+	private void menuFalseColorActionPerformed(ActionEvent evt) {
 		int[] bands = new int[bandsManager.getMaxBands()];
 		for (int i = 1; i < bandsManager.getMaxBands() + 1; i++) {
 			bands[i - 1] = i;
@@ -596,7 +613,16 @@ public class PDI extends javax.swing.JFrame {
 		 */
 		return filesList;
 	}
-
+	public void setDirectory(String dirPath, String satelliteId){
+		File[] theFiles = new File[3];
+		//obtengo los 3 archivos de las bandas de la imagen y los paso a setFiles
+		for (int i=1; i<=3; ++i){
+			theFiles[i-1] = new File(dirPath+SatelliteNamingUtils.getBandFilename(i, satelliteId));
+		}
+		
+		setFiles(theFiles);
+	}
+	//TODO esto no tiene que estar hardcodeado.
 	public void setFiles(File[] f) {
 		files = f;
 		// decodifico el header
@@ -819,6 +845,91 @@ public class PDI extends javax.swing.JFrame {
 	
 	private void jMenuItem2ActionPerformed(ActionEvent evt) {
 		new RayleighData(this,si.getRayleigh());
+	}
+	
+	private JMenu getJMenuOpenImage() {
+		if(jMenuOpenImage == null) {
+			jMenuOpenImage = new JMenu();
+			jMenuOpenImage.setText("Open Satellite Image");
+			jMenuOpenImage.add(getJMenuItemOpenL5());
+			jMenuOpenImage.add(getJMenuItemLandsat7());
+			jMenuOpenImage.add(getJMenuItemSacc());
+		}
+		return jMenuOpenImage;
+	}
+	
+	private JMenuItem getJMenuItemOpenL5() {
+		if(jMenuItemOpenL5 == null) {
+			jMenuItemOpenL5 = new JMenuItem();
+			jMenuItemOpenL5.setText("Landsat 5");
+			jMenuItemOpenL5.addMouseListener(new MouseAdapter() {
+				public void mouseReleased(MouseEvent evt) {
+					jMenuItemOpenL5MouseReleased(evt);
+				}
+			});
+		}
+		return jMenuItemOpenL5;
+	}
+	
+	private JMenuItem getJMenuItemLandsat7() {
+		if(jMenuItemLandsat7 == null) {
+			jMenuItemLandsat7 = new JMenuItem();
+			jMenuItemLandsat7.setText("Landsat 7");
+			jMenuItemLandsat7.addMouseListener(new MouseAdapter() {
+				public void mouseReleased(MouseEvent evt) {
+					jMenuItemLandsat7MouseReleased(evt);
+				}
+			});
+		}
+		return jMenuItemLandsat7;
+	}
+	
+	private String getSelectedDirectory() {
+		JDirectoryChooser dc = new JDirectoryChooser();
+		int choice = dc.showOpenDialog(this);
+		if (choice != JDirectoryChooser.CANCEL_OPTION){
+			return dc.getSelectedFile().getAbsolutePath()+"/";
+		}
+		return null;
+	}
+	
+	private JMenuItem getJMenuItemSacc() {
+		if(jMenuItemSacc == null) {
+			jMenuItemSacc = new JMenuItem();
+			jMenuItemSacc.setText("SACC");
+			jMenuItemSacc.addMouseListener(new MouseAdapter() {
+				public void mouseReleased(MouseEvent evt) {
+					jMenuItemSaccMouseReleased(evt);
+				}
+			});
+		}
+		return jMenuItemSacc;
+	}
+	
+	private void jMenuItemOpenL5MouseReleased(MouseEvent evt) {
+		String path = getSelectedDirectory();
+		if (path != null){
+			setDirectory(path, SatelliteNamingUtils.LANDSAT5_ID);
+			new CropImage(this,path,SatelliteNamingUtils.LANDSAT5_ID);
+		}
+	}
+	
+	private void jMenuItemLandsat7MouseReleased(MouseEvent evt) {
+		String path = getSelectedDirectory();
+		if (path != null){
+			setDirectory(path, SatelliteNamingUtils.LANDSAT7_ID);
+			new CropImage(this,path,SatelliteNamingUtils.LANDSAT7_ID);
+		}
+	}
+	
+	
+
+	private void jMenuItemSaccMouseReleased(MouseEvent evt) {
+		String path = getSelectedDirectory();
+		if (path != null){
+			setDirectory(path, SatelliteNamingUtils.SACC_ID);
+			new CropImage(this,path,SatelliteNamingUtils.SACC_ID);
+		}
 	}
 
 }
