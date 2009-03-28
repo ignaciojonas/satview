@@ -4,14 +4,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import edu.pdi2.math.transforms.ElasticTransform;
+import edu.pdi2.constants.SatelliteNamingUtils;
 
 
 public class DecoderHeaderL7 extends Decoder {
 	
 	public DecoderHeaderL7(String path) {
 		super(path);
-		// TODO Auto-generated constructor stub
+		SatelliteId = SatelliteNamingUtils.LANDSAT7_ID;
 	}
 
 	public void decode() {
@@ -66,10 +66,8 @@ public class DecoderHeaderL7 extends Decoder {
 	
 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

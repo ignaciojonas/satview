@@ -29,12 +29,12 @@ import javax.swing.SwingUtilities;
 
 import com.sun.media.jai.widget.DisplayJAI;
 
+import edu.pdi2.constants.AppConstants;
 import edu.pdi2.imaging.readers.BandsManager;
 import edu.pdi2.imaging.readers.FileChopReader;
 import edu.pdi2.math.indexes.Rayleigh.L7Rayleigh;
 import edu.pdi2.math.indexes.Rayleigh.Rayleigh;
 import edu.pdi2.math.indexes.satellite.SatelliteImage;
-import edu.pdi2.visual.AppConstants;
 import edu.pdi2.visual.DisplayThumbnail;
 import edu.pdi2.visual.JAIImageReader;
 

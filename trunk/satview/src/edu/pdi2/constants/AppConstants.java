@@ -1,10 +1,10 @@
-package edu.pdi2.visual;
+package edu.pdi2.constants;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class AppConstants {
-	private static final String BUNDLE_NAME = "edu.pdi2.visual.constants"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "edu.pdi2.constants.constants"; //$NON-NLS-1$
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
 			.getBundle(BUNDLE_NAME);

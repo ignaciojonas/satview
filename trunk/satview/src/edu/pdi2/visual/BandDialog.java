@@ -109,7 +109,7 @@ public class BandDialog extends javax.swing.JDialog {
 					jButton3.setBorder(BorderFactory.createTitledBorder(""));
 					jButton3.addMouseListener(new MouseAdapter() {
 						public void mouseClicked(MouseEvent evt) {
-							jButton3MouseClicked(evt);
+							btGenerateMouseClicked(evt);
 						}
 					});
 				}
@@ -164,7 +164,7 @@ public class BandDialog extends javax.swing.JDialog {
 		
 	}
 	
-	private void jButton3MouseClicked(MouseEvent evt) {
+	private void btGenerateMouseClicked(MouseEvent evt) {
 		List<String> filesList=pdi.getListFiles();
 		List<String> selectedBands=new ArrayList<String>();
 		selectedBands.add(filesList.get(Integer.parseInt(bands[0].substring(5))-1));

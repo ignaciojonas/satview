@@ -1,32 +1,24 @@
 package edu.pdi2.imaging.readers;
 
-import edu.pdi2.forms.Point;
 import java.awt.Rectangle;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
-import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.RasterFactory;
-import javax.media.jai.TiledImage;
 
 import com.sun.media.jai.codec.FileSeekableStream;
 
-import edu.pdi2.imaging.corrections.ImageCorrector;
-import edu.pdi2.imaging.corrections.RayleighCorrector;
-import edu.pdi2.imaging.readers.FileChopReader;
+import edu.pdi2.constants.SatelliteNamingUtils;
+import edu.pdi2.forms.Point;
 import edu.pdi2.math.indexes.satellite.SatelliteImage;
 import edu.pdi2.math.signatures.comparators.SignatureComparator;
-import edu.pdi2.math.signatures.comparators.SimilarSignatures;
-import edu.pdi2.math.signatures.creators.AverageSignature;
 import edu.pdi2.math.signatures.creators.SignatureCreator;
 
 /**
@@ -38,16 +30,11 @@ import edu.pdi2.math.signatures.creators.SignatureCreator;
  */
 public class BandsManager {
 
-	private String directoryPath;
+//	private String directoryPath;
 
-	private static String l5bandPrefix = "BAND";
-
-	//TODO hacer esto flexible
 	private SignatureComparator signatureComparator;// = new SimilarSignatures();
 
 
-	private static String L5bandExtension = ".dat";
-	
 	/**
 	 * Ancho de la imagen satelital <b>original</b>, no
 	 * la de la porción con la que se trabaje por defecto.
@@ -78,17 +65,6 @@ public class BandsManager {
 
 	/** Las bandas actuales de la imagen. Sirven para generar la imagen con una determinada firma*/
 	private List<String> currentBands;
-
-	//TODO
-	private static int l7cantBands;
-
-	//TODO
-	private static String l7bandPrefix;
-
-	//TODO
-	private static String L7bandExtension;
-
-	private static int l5cantBands = 7;
 
 	/**
 	 * El constructor de la clase. Recibe un directorio en el cual se encuentran
@@ -128,8 +104,8 @@ public class BandsManager {
 	 * imagen satelital.
 	 */
 	public void openLandsat5(String directoryPath){
-		for (int i=1;i<=l5cantBands; ++i){
-			this.allBands.add(directoryPath+"/"+l5bandPrefix+i+L5bandExtension);
+		for (int i=1;i<=SatelliteNamingUtils.L5_CANT_BANDS; ++i){
+			this.allBands.add(directoryPath+"/"+SatelliteNamingUtils.getL5BandFilename(i));
 		}
 	}
 	
@@ -139,10 +115,9 @@ public class BandsManager {
 	 * @param directoryPath El directorio en el cual se encuentran los archivos de las bandas y el header de la
 	 * imagen satelital.
 	 */
-//	TODO
 	public void openLandsat7(String directoryPath){
-		for (int i=1;i<=l7cantBands; ++i){
-			this.allBands.add(directoryPath+"/"+l7bandPrefix+i+L7bandExtension);
+		for (int i=1;i<=SatelliteNamingUtils.L7_CANT_BANDS; ++i){
+			this.allBands.add(directoryPath+"/"+SatelliteNamingUtils.getL7BandFilename(i));
 		}
 	}
 	
@@ -264,8 +239,6 @@ public class BandsManager {
 		 */
 		currentBands = bandPaths;
 		
-		int numBands = bandPaths.size();
-
 		byte[] data = getRawData(bandPaths, fromX, toX, fromY, toY);
 		// ahora tengo toda la data necesaria para hacer la imagen, pero primero
 		// hay q corregirla
@@ -288,12 +261,6 @@ public class BandsManager {
 	private byte[] getSignature(List<String> bands, Point p) {
 		
 		return getRawData(bands, p.getX(), p.getX()+1, p.getY(), p.getY()+1);
-	}
-
-	@Deprecated
-	private byte[] getSignature(List<String> bands) {
-		return getRawData(bands, portion.x, portion.x + portion.width,
-				portion.y, portion.y + portion.height);
 	}
 
 	/**
@@ -345,19 +312,19 @@ public class BandsManager {
 	// return directoryPath;
 	// }
 	public String getBandPrefix() {
-		return l5bandPrefix;
+		return SatelliteNamingUtils.L5_BAND_PREFIX;
 	}
 
 	public void setBandPrefix(String bandPrefix) {
-		this.l5bandPrefix = bandPrefix;
+		SatelliteNamingUtils.L5_BAND_PREFIX = bandPrefix;
 	}
 
 	public String getBandExtension() {
-		return L5bandExtension;
+		return SatelliteNamingUtils.L5_BAND_EXTENSION;
 	}
 
 	public void setBandExtension(String bandExtension) {
-		this.L5bandExtension = bandExtension;
+		SatelliteNamingUtils.L5_BAND_EXTENSION = bandExtension;
 	}
 
 	/**
@@ -440,8 +407,7 @@ public class BandsManager {
 	 * @param numBands Cantidad de bandas de la imagen a generar.
 	 */
 	private byte[] flatImage(byte[] sourceData, int fromX, int toX, int fromY, int toY, int numBands) {
-		// TODO Auto-generated method stub
-		SignatureComparator sc = getSignatureComparator();
+		
 		int[] jumps = getJumpsVector(currentBands);
 		int bandIndex = 0;
 		

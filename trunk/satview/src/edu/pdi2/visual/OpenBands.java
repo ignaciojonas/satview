@@ -14,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import edu.pdi2.constants.AppConstants;
+
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo

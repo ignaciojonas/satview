@@ -3,9 +3,9 @@ import java.util.List;
 
 import javax.media.jai.JAI;
 
+import edu.pdi2.constants.AppConstants;
 import edu.pdi2.imaging.readers.FileChopReader;
 import edu.pdi2.math.indexes.satellite.SatelliteImage;
-import edu.pdi2.visual.AppConstants;
 
 
 public class FileChopTest {

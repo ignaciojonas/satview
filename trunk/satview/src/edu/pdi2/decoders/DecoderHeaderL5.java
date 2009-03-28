@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import edu.pdi2.math.transforms.ElasticTransform;
+import edu.pdi2.constants.SatelliteNamingUtils;
 
 
 public class DecoderHeaderL5 extends Decoder {
@@ -12,7 +12,7 @@ public class DecoderHeaderL5 extends Decoder {
 
 	public DecoderHeaderL5(String path) {
 		super(path);
-		// TODO Auto-generated constructor stub
+		SatelliteId = SatelliteNamingUtils.LANDSAT5_ID;
 	}
 
 	@Override
@@ -44,10 +44,8 @@ public class DecoderHeaderL5 extends Decoder {
 			System.out.println("Decode "+path+" of LANDSAT 5");
 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
