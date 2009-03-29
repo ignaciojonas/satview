@@ -11,7 +11,7 @@ public class DecoderHeaderL7 extends Decoder {
 	
 	public DecoderHeaderL7(String path) {
 		super(path);
-		SatelliteId = SatelliteNamingUtils.LANDSAT7_ID;
+		satelliteId = SatelliteNamingUtils.LANDSAT7_ID;
 	}
 
 	public void decode() {

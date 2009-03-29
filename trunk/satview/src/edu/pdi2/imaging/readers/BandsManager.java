@@ -1,22 +1,17 @@
 package edu.pdi2.imaging.readers;
 
 import java.awt.Rectangle;
-import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.SampleModel;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.jai.PlanarImage;
-import javax.media.jai.RasterFactory;
-
 import com.sun.media.jai.codec.FileSeekableStream;
 
 import edu.pdi2.constants.SatelliteNamingUtils;
+import edu.pdi2.decoders.Decoder;
 import edu.pdi2.forms.Point;
+import edu.pdi2.imaging.ImageFactory;
+import edu.pdi2.imaging.RawDataUtils;
 import edu.pdi2.math.indexes.satellite.SatelliteImage;
 import edu.pdi2.math.signatures.comparators.SignatureComparator;
 import edu.pdi2.math.signatures.creators.SignatureCreator;
@@ -66,6 +61,9 @@ public class BandsManager {
 	/** Las bandas actuales de la imagen. Sirven para generar la imagen con una determinada firma*/
 	private List<String> currentBands;
 
+
+	private Decoder decoder;
+
 	/**
 	 * El constructor de la clase. Recibe un directorio en el cual se encuentran
 	 * todos los archivos de las bandas y el header.
@@ -73,15 +71,11 @@ public class BandsManager {
 	 * una cantidad de bandas distinta para pedir im√°genes, pero el BandsManager necesita
 	 * saber de la existencia de todas las bandas
 	 */
-	public BandsManager(List<String> allBands, Rectangle portion,int width, int height) {
+	public BandsManager(Decoder decoder, List<String> allBands, Rectangle portion,int width, int height) {
 		super();
 		// this.directoryPath = directoryPath;
 		this.allBands = allBands;
-		this.portion = portion;
-		
-		this.width = width;
-		this.height = height;
-		
+		init(decoder, portion, width, height);		
 	}
 
 	/**
@@ -91,12 +85,16 @@ public class BandsManager {
 	 * @param width ancho de la imagen satelital
 	 * @param height alto de la imagen satelital
 	 */
-	public BandsManager(Rectangle portion,int width, int height) {
-		this.portion = portion;
-		this.width = width;
-		this.height = height;
+	public BandsManager(Decoder decoder, Rectangle portion,int width, int height) {
+		init(decoder, portion, width, height);		
 	}
 	
+	private void init(Decoder decoder, Rectangle portion, int width, int height) {
+		this.decoder = decoder;
+		this.width = width;
+		this.height = height;
+		this.portion = portion;
+	}
 	/**
 	 * Setea los datos internos de este {@code BandsManager} para que lea archivos pertenecientes a imagenes
 	 * del <b>Landsat 5</b>.
@@ -122,7 +120,7 @@ public class BandsManager {
 	}
 	
 	/**
-	 * Obtiene la data para la imagen en forma de un vector apalnado. Tiene la
+	 * Obtiene la data para la imagen en forma de un vector aplanado. Tiene la
 	 * informaci√≥n de una cantidad de bandas dependiente de la cantidad de
 	 * {@codeString}s que tenga el par√°metro <b>bands</b>.
 	 */
@@ -243,7 +241,7 @@ public class BandsManager {
 		// ahora tengo toda la data necesaria para hacer la imagen, pero primero
 		// hay q corregirla
 
-		satImage = makeImage(data, fromX, toX, fromY, toY, currentBands);
+		satImage = ImageFactory.makeSatelliteImage(decoder, data, fromX, toX, fromY, toY, currentBands);
 
 		return satImage;
 	}
@@ -254,11 +252,11 @@ public class BandsManager {
 	}
 	
 	/**
-	 * Obtiene una firma digital que s√≥lo involucra a las bandas especificadas
-	 * por par√°metro. La firma va a ser m√°s corta que una firma con todas las
+	 * Obtiene una firma digital que sÛlo involucra a las bandas especificadas
+	 * por par·metro. La firma va a ser m·s corta que una firma con todas las
 	 * bandas, pero puede servir en determinados casos... queda por ver.
 	 */
-	private byte[] getSignature(List<String> bands, Point p) {
+	public byte[] getSignature(List<String> bands, Point p) {
 		
 		return getRawData(bands, p.getX(), p.getX()+1, p.getY(), p.getY()+1);
 	}
@@ -278,32 +276,27 @@ public class BandsManager {
 		return getRawData(bands, fromX, toX, fromY, toY);
 	}
 
-	private SatelliteImage makeImage(byte[] data, int fromX, int toX, int fromY,
-			int toY, List<String> bands) {
-		int numBands = bands.size();
-		// Create a Data Buffer from the values on the single image array.
-		DataBufferByte dbuffer = new DataBufferByte(data, data.length);
-		// Create an pixel interleaved data sample model.
-		SampleModel sampleModel = RasterFactory
-				.createPixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, toX
-						- fromX, toY - fromY, numBands);
-		// Create a compatible ColorModel.
-		ColorModel colorModel = PlanarImage.createColorModel(sampleModel);
-		// Create a WritableRaster.
-		Raster raster = RasterFactory.createWritableRaster(sampleModel,
-				dbuffer, new java.awt.Point(0, 0));
-		// Create a TiledImage using the SampleModel.
-		SatelliteImage satImage = new SatelliteImage(0, 0, toX - fromX, toY - fromY,
-				0, 0, sampleModel, colorModel,bands);
-		// Set the data of the tiled image to be the raster.
-		satImage.setData(raster);
-		return satImage;
-	}
+	
 
 	public int getMaxBands() {
 		return getAllBands().size();
 	}
 
+	private int[] getBandsArray(){
+		int[] bands = new int[allBands.size()];
+		
+		for (int i=0; i<allBands.size(); ++i){
+			
+			String bandFileName = allBands.get(i).substring(allBands.get(i).lastIndexOf("/")+1);
+			try {
+				bands[i] = SatelliteNamingUtils.getBandNumber(decoder.getSatelliteId(), bandFileName);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return bands;
+	}
+	
 	public List<String> getAllBands() {
 		return allBands;
 	}
@@ -381,11 +374,11 @@ public class BandsManager {
 			} else {
 				if (getSignatureComparator().areEquivalent(currentSign)) {
 					// las firmas son parecidas, se agrega el pixel.
-					copyData(currentSign, newData, i - posInterna);
+					RawDataUtils.copyPixel(currentSign, newData, i - posInterna);
 				} else {
 					// las firmas son distintas. Se llena el pixel con un color
 					// por defecto
-					erasePixel(newData, i - posInterna + 1, posInterna - 1);
+					RawDataUtils.erasePixel(newData, i - posInterna + 1, posInterna - 1);
 				}
 				posInterna = 0;
 			}
@@ -394,79 +387,17 @@ public class BandsManager {
 		int numBands = signSize;
 		if (numBands > 3)
 			numBands = 3;
-		byte[] flatData = flatImage(newData, fromX, toX, fromY, toY, numBands);
-		SatelliteImage ret = makeImage(flatData, fromX, toX, fromY, toY, currentBands);
+		byte[] flatData = RawDataUtils.flatImage(newData, fromX, toX, fromY, toY, numBands, currentBands, getMaxBands());
+		int[] bandsArray = getBandsArray();
+		//		SatelliteImage ret = makeImage(flatData, fromX, toX, fromY, toY, currentBands);
+		SatelliteImage ret = ImageFactory.makeSatelliteImage(decoder, flatData, fromX, toX, fromY, toY, currentBands);
 //		JAI.create("filestore", ret,"signature.jpg","JPEG");
 		return ret;
 	}
 
-	/**
-	 * Crea una imagen con una cantidad de bandas distinta de la imagen original. Sirve para generar imagenes de 3 bandas a
-	 * partir de una de 7 bandas.
-	 * @param sourceData El contenido original de la imagen, con una cantidad de bandas posiblemente grande (por ejemplo: 7 bandas)
-	 * @param numBands Cantidad de bandas de la imagen a generar.
-	 */
-	private byte[] flatImage(byte[] sourceData, int fromX, int toX, int fromY, int toY, int numBands) {
-		
-		int[] jumps = getJumpsVector(currentBands);
-		int bandIndex = 0;
-		
-		String nextBand = currentBands.get(0);
-		int currBand = Integer.valueOf(nextBand.substring(nextBand.lastIndexOf(".") - 1, nextBand.lastIndexOf("."))) -1;
-		
-		int retIndex = 0;
-		
-		
-		byte[] ret = new byte[(toX - fromX) * (toY - fromY) * numBands];
-		for (int y=fromY; y < toY; ++y){
-			for (int x=fromX; x < toX; ++x){
-				for (int b=0; b<jumps.length; ++b){
-					ret[retIndex] = sourceData[currBand];
-					++retIndex;
-					currBand += jumps[bandIndex];
-					bandIndex = (bandIndex + 1) % currentBands.size();
-				}
-			}
-		}
-		
-		return ret;
-	}
+	
 
-	/**
-	 * Crea un vector que almacena en cada posiciÛn un n˙mero, ese n˙mero es la cantidad de bandas que hay
-	 * entre la banda <i>i</i> y la <i>i + 1</i>. Por ejemplo, si hay 7 bandas en la imagen y las bandas actuales
-	 * son:<br>
-	 * <b>[1, 3, 6]</b><br>
-	 * Entonces el vector resultante ser·:<br>
-	 * <b>[2,3,2]</b> <i>(El ˙ltimo 2 es porque, al haber 7 bandas, hay que moverse 1 lugar para llegar de la banda
-	 * 6 a la 7 y 1 lugar m·s para llegar de la 7 a la 1)</i><br>
-	 * <br>
-	 * Los contenidos del vector tambiÈn pueden ser negativos. Por ejemplo, si las bandas de la imagen son:<br>
-	 * <b>[4, 2, 6]</b><br>
-	 * Entonces el vector resultante ser·:<br>
-	 * <b>[-2, 4, 5]</b>
-	 * 
-	 * @param currentBands La lista de bandas actuales de la imagen. Debe mantenerse actualizada en todo momento.
-	 * @return Un vector con Ìndices de desplazamiento para leer la matriz con <b>todos</b> los datos (salteando
-	 * aquellos que pertenezcan a bandas que no interesan en la imagen actual).
-	 */
-	private int[] getJumpsVector(List<String> currentBands) {
-		int []ret = new int[currentBands.size()];
-		int []ints = new int[currentBands.size()];
-		int i = 0;
-//		primero paso las bandas a un arreglo de enteros
-		for (i=0; i < currentBands.size(); ++i){
-			String currBand = currentBands.get(i);
-			int currIndex = Integer.valueOf(currBand.substring(currBand.lastIndexOf(".") - 1, currBand.lastIndexOf(".")));
-			ints[i] = currIndex;
-		}
-		
-		for (i=0; i<ret.length - 1; ++i){
-			ret[i] = ints[i + 1] - ints[i];
-		}
-		ret [i] = getMaxBands() - ints[i] + ints[0];
-		return ret;
-	}
+	
 
 	/**
 	 * Forma una cuadrÌcula de 3x3 con centro en el pixel especificado y devuelve la firma promedio para
@@ -528,42 +459,8 @@ public class BandsManager {
 	}
 
 
-	/**
-	 * Pinta un pixel (todas sus bandas) con un color por defecto para indicar
-	 * que el pixel no fue seleccionado y que no cumple con la condici√≥n de
-	 * similitud con una <i>firma digital</i>.
-	 * 
-	 * @param newImage
-	 *            El arreglo de bytes que representa a la imagen que se est√°
-	 *            armando. En √©l se va a poner el pixel con el color por
-	 *            defecto.
-	 * @param beginningPos
-	 *            beginningPos Posici√≥n a partir de la cual se van a empezar a
-	 *            guardar los pixeles en la {@code newImage}.
-	 * @param cantBands
-	 *            La cantidad de bandas que tiene la imagen satelital.
-	 */
-	private void erasePixel(byte[] newImage, int beginningPos, int cantBands) {
-		for (int j = 0; j < cantBands; ++j)
-			newImage[beginningPos + j] = 0;
-	}
+	
 
-	/**
-	 * Copia los datos de todas las bandas para un pixel.
-	 * 
-	 * @param pixel
-	 *            El pixel en forma de {@code byte[]}, tiene los valores para
-	 *            todas las bandas en √©l.
-	 * @param newImage
-	 *            El arreglo de bytes que representa a la imagen que se est√°
-	 *            armando. En √©l se van a copiar los datos del {@code pixel}.
-	 * @param beginningPos
-	 *            Posici√≥n a partir de la cual se van a empezar a guardar los
-	 *            pixeles en la {@code newImage}.
-	 */
-	private void copyData(byte[] pixel, byte[] newImage, int beginningPos) {
-		for (int j = 0; j < pixel.length; ++j)
-			newImage[beginningPos + j] = pixel[j];
-	}
+	
 	
 }

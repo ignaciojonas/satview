@@ -3,6 +3,7 @@ package edu.pdi2.visual;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,9 @@ public class CropImage extends javax.swing.JDialog {
 	 * 
 	 * @param filesList
 	 *            Lista con las direcciones de los archivos de banda
+	 * 
+	 * @deprecated Es necesario pasar el identificador de satélite para brindar
+	 *             más flexibilidad al programa. Usar el otro constructor.
 	 */
 	public CropImage(JFrame frame, List<String> filesList) {
 		super(frame);
@@ -67,14 +71,13 @@ public class CropImage extends javax.swing.JDialog {
 	 */
 	public CropImage(PDI frame, String absolutePath, String satelliteId) {
 		super(frame);
-		List<String> filesList = new ArrayList<String>(3);
-		// TODO por ahora hace para LANDSAT 5, pero despues hay que hacer lo
-		// mismo con landsat 7
+		List<String> bandsFiles = new ArrayList<String>(3);
+
 		for (int i = 1; i <= 3; ++i) {
-			filesList.add(absolutePath
+			bandsFiles.add(absolutePath
 					+ SatelliteNamingUtils.getBandFilename(i, satelliteId));
 		}
-		init(frame, filesList);
+		init(frame, bandsFiles);
 	}
 
 	private void init(JFrame frame, List<String> filesList) {
@@ -84,8 +87,9 @@ public class CropImage extends javax.swing.JDialog {
 
 		this.decoder = pdi.getDecoder();
 
-		image = fcr.read(filesList, decoder.getPPL(), decoder.getLPI(), 8,
-				decoder.getPPL() - 8, 8, decoder.getLPI() - 8, 25, 25);
+		image = fcr.read(decoder, filesList, decoder.getPPL(),
+				decoder.getLPI(), 8, decoder.getPPL() - 8, 8,
+				decoder.getLPI() - 8, 25, 25);
 		initGUI();
 		this.setSize(429, 434);
 		this.setVisible(true);
@@ -149,8 +153,10 @@ public class CropImage extends javax.swing.JDialog {
 		if (h < 0)
 			h = 0;
 		BandsManager bandsManager = pdi.getBandsManager();
-		SatelliteImage si=bandsManager.getRawImage(filesList, x, x+w, y, y + h);
-//		SatelliteImage si = fcr.read(filesList, 9516, 8616, x, x + w, y, y + h);
+		SatelliteImage si = bandsManager.getRawImage(filesList, x, x + w, y, y
+				+ h);
+		// SatelliteImage si = fcr.read(filesList, 9516, 8616, x, x + w, y, y +
+		// h);
 		pdi.setX0(x);
 		pdi.setX1(w);
 		pdi.setY0(y);

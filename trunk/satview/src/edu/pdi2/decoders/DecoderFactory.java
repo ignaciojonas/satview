@@ -39,4 +39,9 @@ public class DecoderFactory {
 		}
 		return null;
 	}
+
+	public static Decoder getDecoderById(String satelliteId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

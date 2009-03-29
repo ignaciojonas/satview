@@ -593,8 +593,8 @@ public class PDI extends javax.swing.JFrame {
 		filesList.add(AppConstants.getString("band3")); //$NON-NLS-1$
 		filesList.add(AppConstants.getString("band4")); //$NON-NLS-1$
 		filesList.add(AppConstants.getString("band5")); //$NON-NLS-1$
-		filesList.add(AppConstants.getString("band6")); //$NON-NLS-1$
-		filesList.add(AppConstants.getString("band7")); //$NON-NLS-1$
+//		filesList.add(AppConstants.getString("band6")); //$NON-NLS-1$
+//		filesList.add(AppConstants.getString("band7")); //$NON-NLS-1$
 		/*
 		 * filesList.add(files[1].getAbsolutePath());
 		 * System.out.println("filesList.add("+files[1].getAbsolutePath()+");");
@@ -631,7 +631,7 @@ public class PDI extends javax.swing.JFrame {
 //				.getDecoder("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\header.dat");
 				.getDecoder(AppConstants.getString("header")); //$NON-NLS-1$
 		Rectangle r = new Rectangle(0, 0, decoder.getPPL(), decoder.getLPI());
-		bandsManager = new BandsManager(getListFiles(), r, decoder.getPPL(),
+		bandsManager = new BandsManager(decoder, getListFiles(), r, decoder.getPPL(),
 				decoder.getLPI());
 		selectedBands = new ArrayList<String>();
 		// selectedBands.add(files[1].getAbsolutePath());

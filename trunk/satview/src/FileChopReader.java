@@ -15,6 +15,7 @@ import javax.media.jai.RasterFactory;
 
 import com.sun.media.jai.codec.FileSeekableStream;
 
+import edu.pdi2.decoders.Decoder;
 import edu.pdi2.math.indexes.satellite.SatelliteImage;
 
 /**
@@ -42,7 +43,7 @@ public class FileChopReader {
 	 * @param stepY saltear X bites vericalmente (se lee 1 de cada X bytes en las columnas)
 	 * @return una imagen con la información recortada mediante los parámetros anteriores.
 	 */
-	public SatelliteImage read(List<String> sources,int width,int height,int fromX,int toX,int fromY,int toY,int stepX,int stepY){
+	public SatelliteImage read(Decoder decoder, List<String> sources,int width,int height,int fromX,int toX,int fromY,int toY,int stepX,int stepY){
 		SatelliteImage tiledImage = null;
 		try {
 			int numBands = sources.size();
@@ -83,7 +84,7 @@ public class FileChopReader {
 			Raster raster = RasterFactory.createWritableRaster(sampleModel,dbuffer,
 					new Point(0,0));
 			// Create a TiledImage using the SampleModel.
-			tiledImage = new SatelliteImage(0,0,(toX-fromX)/stepX,(toY-fromY)/stepY,0,0,
+			tiledImage = new SatelliteImage(decoder,0,0,(toX-fromX)/stepX,(toY-fromY)/stepY,0,0,
 					sampleModel,colorModel,sources);
 			// Set the data of the tiled image to be the raster.
 			tiledImage.setData(raster);
@@ -96,11 +97,11 @@ public class FileChopReader {
 		return tiledImage;
 	}
 	
-	public SatelliteImage read(List<String> sources,int width,int height,int fromX,int toX,int fromY,int toY){
-		return read(sources,width,height,fromX,toX,fromY,toY,1,1);
+	public SatelliteImage read(Decoder decoder, List<String> sources,int width,int height,int fromX,int toX,int fromY,int toY){
+		return read(decoder, sources,width,height,fromX,toX,fromY,toY,1,1);
 	}
 	
-	public SatelliteImage read(List<String> sources,int width,int height){
-		return read(sources,width,height,0,width,0,height,1,1);
+	public SatelliteImage read(Decoder decoder, List<String> sources,int width,int height){
+		return read(decoder, sources,width,height,0,width,0,height,1,1);
 	}
 }

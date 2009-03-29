@@ -12,7 +12,7 @@ public class DecoderHeaderSacc extends Decoder {
 
 	public DecoderHeaderSacc(String path) {
 		super(path);
-		SatelliteId = SatelliteNamingUtils.SACC_ID;
+		satelliteId = SatelliteNamingUtils.SACC_ID;
 	}
 
 	@Override
