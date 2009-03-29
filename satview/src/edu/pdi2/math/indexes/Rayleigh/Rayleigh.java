@@ -125,10 +125,10 @@ public abstract class Rayleigh {
 	public double getRadiance(int banda) {
 		//int banda = ((Integer)band).intValue()-1;
 		
-		return solct[banda] * 1 / Math.pow(getDistanciaTierraSol(),2) * taur[banda] / 
+		return solct[banda - 1] * 1 / Math.pow(getDistanciaTierraSol(),2) * taur[banda - 1] / 
 				(4 * Math.PI * Math.cos(cenitSen * Math.PI / 180.0)) * 
-				Math.exp(-taug[banda] / Math.cos(cenitSen * Math.PI / 180.0)) *
-				Math.exp(-taug[banda] / Math.cos(cenitSolar * Math.PI / 180.0)) *
+				Math.exp(-taug[banda - 1] / Math.cos(cenitSen * Math.PI / 180.0)) *
+				Math.exp(-taug[banda - 1] / Math.cos(cenitSolar * Math.PI / 180.0)) *
 				(getPhaseNeg() + 0.052 * getPhasePos());
 	}
 	/**Devuelve la reflectividad que tiene una imagen en un punto. Depende tanto de los valores
@@ -160,7 +160,7 @@ public abstract class Rayleigh {
 		double [] ret = new double[lsats.length];
 		for (int i = 0; i < ret.length; i++) {
 			ret[i] = r * r * Math.PI * (lsats[i] - radiances[i%cantBands]) / 
-			(Math.cos(cenitSolar * Math.PI / 180.0) * solct[bands[i%cantBands]]);
+			(Math.cos(cenitSolar * Math.PI / 180.0) * solct[bands[i%cantBands] - 1]);
 		}
 		
 		
@@ -171,7 +171,7 @@ public abstract class Rayleigh {
 		StringBuffer ret = new StringBuffer();
 		
 		ret.append("radiance [");
-		for (int i=0;i<5;++i)
+		for (int i=1;i<=5;++i)
 			ret.append(getRadiance(i)+", ");
 		ret.append("]\n");
 //		ret.append("reflectance [");

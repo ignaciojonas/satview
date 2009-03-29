@@ -12,7 +12,7 @@ public class DecoderHeaderL5 extends Decoder {
 
 	public DecoderHeaderL5(String path) {
 		super(path);
-		SatelliteId = SatelliteNamingUtils.LANDSAT5_ID;
+		satelliteId = SatelliteNamingUtils.LANDSAT5_ID;
 	}
 
 	@Override
