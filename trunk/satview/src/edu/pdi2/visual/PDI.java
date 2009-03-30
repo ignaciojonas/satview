@@ -88,6 +88,7 @@ public class PDI extends javax.swing.JFrame {
 	private JButton jButton1;
 	private ChartPanel chartpanel;
 	private JLabel jLong;
+	private JMenuItem jMenuItem5;
 	private JMenuItem jMenuItemSacc;
 	private JMenuItem jMenuItemLandsat7;
 	private JLabel jLat;
@@ -294,6 +295,7 @@ public class PDI extends javax.swing.JFrame {
 					{
 						jMenu4 = new JMenu();
 						jMenu3.add(jMenu4);
+						jMenu3.add(getJMenuItem5());
 						jMenu4.setText("Image"); //$NON-NLS-1$
 						{
 							jCheckBoxMenuItem1 = new JCheckBoxMenuItem();
@@ -930,6 +932,24 @@ public class PDI extends javax.swing.JFrame {
 			setDirectory(path, SatelliteNamingUtils.SACC_ID);
 			new CropImage(this,path,SatelliteNamingUtils.SACC_ID);
 		}
+	}
+	
+	private JMenuItem getJMenuItem5() {
+		if(jMenuItem5 == null) {
+			jMenuItem5 = new JMenuItem();
+			jMenuItem5.setText("Threshold Signature");
+			jMenuItem5.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					jMenuItem5ActionPerformed(evt);
+				}
+			});
+		}
+		return jMenuItem5;
+	}
+	
+	private void jMenuItem5ActionPerformed(ActionEvent evt) {
+		ThresholdSignature ts=new ThresholdSignature(this);
+		ts.setSignature(signature);
 	}
 
 }
