@@ -1,7 +1,10 @@
 package edu.pdi2.visual;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,10 +85,23 @@ public class CorrectedDialog extends javax.swing.JDialog {
 	private void thumPanelMouseDragged(MouseEvent evt) {
 		dj.set(dt.getImage());
 		dj.setRectangle(dt.getCroppedImageBounds());
+		dt1.updateLocation(dt.getLastX(), dt.getLastY());
+		dj1.set(dt1.getImage());
+		dj1.setRectangle(dt1.getCroppedImageBounds());
+		dt2.updateLocation(dt.getLastX(), dt.getLastY());
+		dj2.set(dt2.getImage());
+		dj2.setRectangle(dt2.getCroppedImageBounds());
+		
 	}
 	private void thumPanelMousePressed(MouseEvent evt) {
 		dj.set(dt.getImage());
 		dj.setRectangle(dt.getCroppedImageBounds());
+		dt1.updateLocation(dt.getLastX(), dt.getLastY());
+		dj1.set(dt1.getImage());
+		dj1.setRectangle(dt1.getCroppedImageBounds());
+		dt2.updateLocation(dt.getLastX(), dt.getLastY());
+		dj2.set(dt2.getImage());
+		dj2.setRectangle(dt2.getCroppedImageBounds());
 	}
 
 	public void setSi(List<SatelliteImage> si) {
@@ -264,18 +280,43 @@ public class CorrectedDialog extends javax.swing.JDialog {
 	private void displayThumbnail1MouseDragged(MouseEvent evt) {
 		dj1.set(dt1.getImage());
 		dj1.setRectangle(dt1.getCroppedImageBounds());
+		dt.updateLocation(dt1.getLastX(), dt1.getLastY());
+		dj.set(dt.getImage());
+		dj.setRectangle(dt.getCroppedImageBounds());
+		dt2.updateLocation(dt1.getLastX(), dt1.getLastY());
+		dj2.set(dt2.getImage());
+		dj2.setRectangle(dt2.getCroppedImageBounds());
 	}
+
 	private void displayThumbnail1MousePressed(MouseEvent evt) {
 		dj1.set(dt.getImage());
 		dj1.setRectangle(dt1.getCroppedImageBounds());
+		dt.updateLocation(dt1.getLastX(), dt1.getLastY());
+		dj.set(dt.getImage());
+		dj.setRectangle(dt.getCroppedImageBounds());
+		dt2.updateLocation(dt1.getLastX(), dt1.getLastY());
+		dj2.set(dt2.getImage());
+		dj2.setRectangle(dt2.getCroppedImageBounds());
 	}
 	private void displayThumbnail2MouseDragged(MouseEvent evt) {
 		dj2.set(dt2.getImage());
 		dj2.setRectangle(dt2.getCroppedImageBounds());
+		dt1.updateLocation(dt2.getLastX(), dt2.getLastY());
+		dj1.set(dt1.getImage());
+		dj1.setRectangle(dt1.getCroppedImageBounds());
+		dt.updateLocation(dt2.getLastX(), dt2.getLastY());
+		dj.set(dt.getImage());
+		dj.setRectangle(dt.getCroppedImageBounds());
 	}
 	private void displayThumbnail2MousePressed(MouseEvent evt) {
 		dj2.set(dt2.getImage());
 		dj2.setRectangle(dt2.getCroppedImageBounds());
+		dt1.updateLocation(dt2.getLastX(), dt2.getLastY());
+		dj1.set(dt1.getImage());
+		dj1.setRectangle(dt1.getCroppedImageBounds());
+		dt.updateLocation(dt2.getLastX(), dt2.getLastY());
+		dj.set(dt.getImage());
+		dj.setRectangle(dt.getCroppedImageBounds());
 	}
 
 }
