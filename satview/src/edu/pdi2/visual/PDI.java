@@ -940,16 +940,29 @@ public class PDI extends javax.swing.JFrame {
 			jMenuItem5.setText("Threshold Signature");
 			jMenuItem5.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
-					jMenuItem5ActionPerformed(evt);
+					menuThresholdActionPerformed(evt);
 				}
 			});
 		}
 		return jMenuItem5;
 	}
 	
-	private void jMenuItem5ActionPerformed(ActionEvent evt) {
-		ThresholdSignature ts=new ThresholdSignature(this);
+	private void menuThresholdActionPerformed(ActionEvent evt) {
+		ThresholdSignature ts=new ThresholdSignature(this, SatelliteNamingUtils.getCantBands(decoder.getSatelliteId()));
+//		ThresholdSignature ts=new ThresholdSignature(this, 7);
 		ts.setSignature(signature);
+	}
+
+	/**
+	 * A este método lo llama el diálogo de generación de imágenes con una determinada firma digital. Le pasa los límites
+	 * de tolerancia para generar aceptar como <i>similar</i> a una firma, así que solamente tiene que llamar a la generación
+	 * de imágen y pasarle los datos.
+	 */
+	public void generateImageByThresholdSignature(byte[] bottom,
+			byte[] top) {
+		bandsManager.setSignatureComparator(new SimilarSignatures(top, bottom));
+		signature_image = bandsManager.getImageWithThisSignature(x0, x1 + x0, y0, y1 + y0);
+		this.setSi(signature_image);
 	}
 
 }
