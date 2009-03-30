@@ -88,6 +88,14 @@ public class DisplayThumbnail extends DisplayJAI implements
 	// viewport without "falling outside" the image boundaries.
 	private int minValidX, minValidY, maxValidX, maxValidY;
 
+	
+	public int getLastX() {
+		return lastX;
+	}
+	public int getLastY() {
+		return lastY;
+	}
+	
 	/**
 	 * The constructor for the class, which creates a thumbnail version of the
 	 * image and sets the user interface.
@@ -311,6 +319,18 @@ public class DisplayThumbnail extends DisplayJAI implements
 	public void updateLocation(int x, int y) {
 		System.out.println("updateLocation(" + x + ", " + y + ")  maxX=" +maxValidX + " maxY=" + maxValidY);
 		debug(" updateLocation(" + x + ", " + y + ")  maxX=" +maxValidX + " maxY=" + maxValidY);
+		if (x < minValidX){
+			x=minValidX+1;
+		}
+		if (y < minValidY){
+			y=minValidY+1;
+		}
+		if (x > maxValidX){
+			x=maxValidX;
+		}
+		if (y > maxValidY){
+			y=maxValidY;
+		}
 		if ((x > minValidX) && (y > minValidY) && 
 				(x <= maxValidX) && (y <= maxValidY)) 
 		{
@@ -443,7 +463,7 @@ public class DisplayThumbnail extends DisplayJAI implements
 	}
 
 	public void debug(String arg) {
-	//	System.out.println(arg);
+		System.out.println(arg);
 
 	}
 
