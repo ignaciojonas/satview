@@ -32,7 +32,7 @@ import edu.pdi2.math.indexes.satellite.SatelliteImage;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class CorrectedDialog extends javax.swing.JDialog {
+public class FourTabsDialog extends javax.swing.JDialog {
 	private JPanel thumPanel;
 	private DisplayJAIWithAnnotations dj2;
 	private JPanel jPanel7;
@@ -51,21 +51,27 @@ public class CorrectedDialog extends javax.swing.JDialog {
 	private JPanel image;
 	private static int dWidth = 590;
 	private static int dHeight = 490;
-	private String title1, title2,title3;
+	private String title1, title2,title3,title4;
 	List<SatelliteImage> si = null;
 	private int x0, y0;
+	private JPanel jPanel8;
+	private JPanel thumPanel1;
+	private DisplayThumbnail dt3;
+	private JPanel image1;
+	private DisplayJAIWithAnnotations dj3;
 	
 	
-	public CorrectedDialog(JFrame frame,int x0, int y0, List<SatelliteImage> si, String title1, String title2, String title3) {
+	public FourTabsDialog(JFrame frame,int x0, int y0, List<SatelliteImage> si, String title1, String title2, String title3,String title4,String titulo_ventana) {
 		super(frame);
 		this.title1=title1;
 		this.title2=title2;
 		this.title3=title3;
+		this.title4=title4;
 		initGUI();
 		this.x0=x0;
 		this.y0=y0;
 		setSi(si);
-		this.setTitle("Corrected Image");
+		this.setTitle(titulo_ventana);
 		this.setVisible(true);
 	}
 	
@@ -91,6 +97,9 @@ public class CorrectedDialog extends javax.swing.JDialog {
 		dt2.updateLocation(dt.getLastX(), dt.getLastY());
 		dj2.set(dt2.getImage());
 		dj2.setRectangle(dt2.getCroppedImageBounds());
+		dt3.updateLocation(dt.getLastX(), dt.getLastY());
+		dj3.set(dt3.getImage());
+		dj3.setRectangle(dt3.getCroppedImageBounds());
 		
 	}
 	private void thumPanelMousePressed(MouseEvent evt) {
@@ -102,6 +111,9 @@ public class CorrectedDialog extends javax.swing.JDialog {
 		dt2.updateLocation(dt.getLastX(), dt.getLastY());
 		dj2.set(dt2.getImage());
 		dj2.setRectangle(dt2.getCroppedImageBounds());
+		dt3.updateLocation(dt.getLastX(), dt.getLastY());
+		dj3.set(dt3.getImage());
+		dj3.setRectangle(dt3.getCroppedImageBounds());
 	}
 
 	public void setSi(List<SatelliteImage> si) {
@@ -115,6 +127,10 @@ public class CorrectedDialog extends javax.swing.JDialog {
 		dt2.set(si.get(2), dWidth, dHeight);
 		dj2.set(dt2.getImage());
 		dj2.setRectangle(getCrop());
+		dt3.set(si.get(3), dWidth, dHeight);
+		dj3.set(dt3.getImage());
+		dj3.setRectangle(getCrop());
+
 		repaint();
 	}
 	public Rectangle getCrop() {
@@ -129,6 +145,7 @@ public class CorrectedDialog extends javax.swing.JDialog {
 			jTabbedPane1.addTab(title1, null, getJPanel1(), null);
 			jTabbedPane1.addTab(title2, null, getJPanel2(), null);
 			jTabbedPane1.addTab(title3, null, getJPanel5(), null);
+			jTabbedPane1.addTab(title4, null, getJPanel8(), null);
 		}
 		return jTabbedPane1;
 	}
@@ -170,7 +187,73 @@ public class CorrectedDialog extends javax.swing.JDialog {
 		}
 		return jPanel1;
 	}
-	
+	private JPanel getJPanel8() {
+		if(jPanel8 == null) {
+			jPanel8 = new JPanel();
+			jPanel8.setLayout(null);
+			{
+				thumPanel1 = new JPanel();
+				jPanel8.add(thumPanel1);
+				thumPanel1.setBounds(599, 4, 166, 123);
+				{
+					dt3 = new DisplayThumbnail(0.1f);
+					thumPanel1.add(dt3);
+					dt3.addMouseMotionListener(new MouseMotionAdapter() {
+						public void mouseDragged(MouseEvent evt) {
+							thumPanel1MouseDragged(evt);
+						}
+					});
+					dt3.addMouseListener(new MouseAdapter() {
+						public void mousePressed(MouseEvent evt) {
+							thumPanel1MousePressed(evt);
+						}
+					});
+				}
+			}
+			{
+				image1 = new JPanel();
+				jPanel8.add(image1);
+				getContentPane().add(getJTabbedPane1());
+				image1.setBorder(BorderFactory.createTitledBorder(""));
+				image1.setBounds(0, 4, 590, 488);
+				{
+					dj3 = new DisplayJAIWithAnnotations();
+					image1.add(dj3);
+				}
+			}
+		}
+		return jPanel8;
+	}
+	protected void thumPanel1MousePressed(MouseEvent evt) {
+		dj3.set(dt3.getImage());
+		dj3.setRectangle(dt3.getCroppedImageBounds());
+		dt.updateLocation(dt3.getLastX(), dt3.getLastY());
+		dj.set(dt.getImage());
+		dj.setRectangle(dt.getCroppedImageBounds());
+		dt1.updateLocation(dt3.getLastX(), dt3.getLastY());
+		dj1.set(dt1.getImage());
+		dj1.setRectangle(dt1.getCroppedImageBounds());
+		dt2.updateLocation(dt3.getLastX(), dt3.getLastY());
+		dj2.set(dt2.getImage());
+		dj2.setRectangle(dt2.getCroppedImageBounds());
+		
+	}
+
+	protected void thumPanel1MouseDragged(MouseEvent evt) {
+		dj3.set(dt3.getImage());
+		dj3.setRectangle(dt3.getCroppedImageBounds());
+		dt.updateLocation(dt3.getLastX(), dt3.getLastY());
+		dj.set(dt.getImage());
+		dj.setRectangle(dt.getCroppedImageBounds());
+		dt1.updateLocation(dt3.getLastX(), dt3.getLastY());
+		dj1.set(dt1.getImage());
+		dj1.setRectangle(dt1.getCroppedImageBounds());
+		dt2.updateLocation(dt3.getLastX(), dt3.getLastY());
+		dj2.set(dt2.getImage());
+		dj2.setRectangle(dt2.getCroppedImageBounds());
+		
+	}
+
 	private JPanel getJPanel2() {
 		if(jPanel2 == null) {
 			jPanel2 = new JPanel();
@@ -286,6 +369,9 @@ public class CorrectedDialog extends javax.swing.JDialog {
 		dt2.updateLocation(dt1.getLastX(), dt1.getLastY());
 		dj2.set(dt2.getImage());
 		dj2.setRectangle(dt2.getCroppedImageBounds());
+		dt3.updateLocation(dt1.getLastX(), dt1.getLastY());
+		dj3.set(dt3.getImage());
+		dj3.setRectangle(dt3.getCroppedImageBounds());
 	}
 
 	private void displayThumbnail1MousePressed(MouseEvent evt) {
@@ -297,6 +383,9 @@ public class CorrectedDialog extends javax.swing.JDialog {
 		dt2.updateLocation(dt1.getLastX(), dt1.getLastY());
 		dj2.set(dt2.getImage());
 		dj2.setRectangle(dt2.getCroppedImageBounds());
+		dt3.updateLocation(dt1.getLastX(), dt1.getLastY());
+		dj3.set(dt3.getImage());
+		dj3.setRectangle(dt3.getCroppedImageBounds());
 	}
 	private void displayThumbnail2MouseDragged(MouseEvent evt) {
 		dj2.set(dt2.getImage());
@@ -307,6 +396,9 @@ public class CorrectedDialog extends javax.swing.JDialog {
 		dt.updateLocation(dt2.getLastX(), dt2.getLastY());
 		dj.set(dt.getImage());
 		dj.setRectangle(dt.getCroppedImageBounds());
+		dt3.updateLocation(dt2.getLastX(), dt2.getLastY());
+		dj3.set(dt3.getImage());
+		dj3.setRectangle(dt3.getCroppedImageBounds());
 	}
 	private void displayThumbnail2MousePressed(MouseEvent evt) {
 		dj2.set(dt2.getImage());
@@ -317,6 +409,9 @@ public class CorrectedDialog extends javax.swing.JDialog {
 		dt.updateLocation(dt2.getLastX(), dt2.getLastY());
 		dj.set(dt.getImage());
 		dj.setRectangle(dt.getCroppedImageBounds());
+		dt3.updateLocation(dt2.getLastX(), dt2.getLastY());
+		dj3.set(dt3.getImage());
+		dj3.setRectangle(dt3.getCroppedImageBounds());
 	}
 
 }
