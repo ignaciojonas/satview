@@ -559,7 +559,8 @@ public class PDI extends javax.swing.JFrame {
 		band2=band2.substring(band2.length()-5, band2.length()-4);
 		String band3=selectedBands.get(2);
 		band3=band3.substring(band3.length()-5, band3.length()-4);
-		new CorrectedDialog(this,x0,y0,corrected_reflectance,"Band "+band1,"Band "+band2,"Band "+band3); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		corrected_reflectance.add(si);
+		new FourTabsDialog(this,x0,y0,corrected_reflectance,"Band "+band1,"Band "+band2,"Band "+band3,"All Bands","Corrected Reflectance"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
 		
 	}
@@ -674,7 +675,8 @@ public class PDI extends javax.swing.JFrame {
 		band2=band2.substring(band2.length()-5, band2.length()-4);
 		String band3=selectedBands.get(2);
 		band3=band3.substring(band3.length()-5, band3.length()-4);
-		new CorrectedDialog(this,x0,y0,corrected_radiance,"Band "+band1,"Band "+band2,"Band "+band3); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		corrected_radiance.add(si);
+		new FourTabsDialog(this,x0,y0,corrected_radiance,"Band "+band1,"Band "+band2,"Band "+band3,"All Bands","Corrected Radiance"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 //		List<SatelliteImage> s= new ArrayList<SatelliteImage>();
 //		s.add(si);
 //		s.add(si);
