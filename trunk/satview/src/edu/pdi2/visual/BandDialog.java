@@ -38,10 +38,10 @@ import edu.pdi2.math.indexes.satellite.SatelliteImage;
 */
 public class BandDialog extends javax.swing.JDialog {
 	private JList jList1;
-	private JButton jButton1;
-	private JButton jButton4;
-	private JButton jButton3;
-	private JButton jButton2;
+	private JButton btUp;
+	private JButton btCancel;
+	private JButton btGenerate;
+	private JButton btDown;
 	private String[] bands;
 	private PDI pdi;
 
@@ -78,61 +78,61 @@ public class BandDialog extends javax.swing.JDialog {
 					jList1.setBorder(BorderFactory.createTitledBorder(""));
 				}
 				{
-					jButton1 = new JButton();
-					getContentPane().add(jButton1);
-					jButton1.setText("Up");
-					jButton1.setBounds(188, 16, 67, 21);
-					jButton1.setBorder(BorderFactory.createTitledBorder(""));
-					jButton1.addMouseListener(new MouseAdapter() {
+					btUp = new JButton();
+					getContentPane().add(btUp);
+					btUp.setText("Up");
+					btUp.setBounds(188, 16, 67, 21);
+					btUp.setBorder(BorderFactory.createTitledBorder(""));
+					btUp.addMouseListener(new MouseAdapter() {
 						public void mouseClicked(MouseEvent evt) {
-							jButton1MouseClicked(evt);
+							btUpMouseClicked(evt);
 						}
 					});
 				}
 				{
-					jButton2 = new JButton();
-					getContentPane().add(jButton2);
-					jButton2.setText("Down");
-					jButton2.setBounds(188, 48, 67, 21);
-					jButton2.setBorder(BorderFactory.createTitledBorder(""));
-					jButton2.addMouseListener(new MouseAdapter() {
+					btDown = new JButton();
+					getContentPane().add(btDown);
+					btDown.setText("Down");
+					btDown.setBounds(188, 48, 67, 21);
+					btDown.setBorder(BorderFactory.createTitledBorder(""));
+					btDown.addMouseListener(new MouseAdapter() {
 						public void mouseClicked(MouseEvent evt) {
-							jButton2MouseClicked(evt);
+							btDownMouseClicked(evt);
 						}
 					});
 				}
 				{
-					jButton3 = new JButton();
-					getContentPane().add(jButton3);
-					jButton3.setText("Generate");
-					jButton3.setBounds(52, 237, 85, 21);
-					jButton3.setBorder(BorderFactory.createTitledBorder(""));
-					jButton3.addMouseListener(new MouseAdapter() {
+					btGenerate = new JButton();
+					getContentPane().add(btGenerate);
+					btGenerate.setText("Generate");
+					btGenerate.setBounds(52, 237, 85, 21);
+					btGenerate.setBorder(BorderFactory.createTitledBorder(""));
+					btGenerate.addMouseListener(new MouseAdapter() {
 						public void mouseClicked(MouseEvent evt) {
 							btGenerateMouseClicked(evt);
 						}
 					});
 				}
 				{
-					jButton4 = new JButton();
-					getContentPane().add(jButton4);
-					jButton4.setText("Cancel");
-					jButton4.setBounds(142, 237, 80, 21);
-					jButton4.setBorder(BorderFactory.createTitledBorder(""));
-					jButton4.addActionListener(new ActionListener() {
+					btCancel = new JButton();
+					getContentPane().add(btCancel);
+					btCancel.setText("Cancel");
+					btCancel.setBounds(142, 237, 80, 21);
+					btCancel.setBorder(BorderFactory.createTitledBorder(""));
+					btCancel.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
-							jButton4ActionPerformed(evt);
+							btCancelActionPerformed(evt);
 						}
 					});
 				}
 			}
-			this.setSize(296, 300);
+			this.setSize(275, 314);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void jButton1MouseClicked(MouseEvent evt) {
+	private void btUpMouseClicked(MouseEvent evt) {
 		int selected=jList1.getSelectedIndex();
 		if(selected>0){
 			String a=bands[selected];
@@ -148,7 +148,7 @@ public class BandDialog extends javax.swing.JDialog {
 		
 	}
 	
-	private void jButton2MouseClicked(MouseEvent evt) {
+	private void btDownMouseClicked(MouseEvent evt) {
 		int selected=jList1.getSelectedIndex();
 		if(selected<bands.length-1){
 			String a=bands[selected];
@@ -167,21 +167,31 @@ public class BandDialog extends javax.swing.JDialog {
 	private void btGenerateMouseClicked(MouseEvent evt) {
 		List<String> filesList=pdi.getListFiles();
 		List<String> selectedBands=new ArrayList<String>();
-		selectedBands.add(filesList.get(Integer.parseInt(bands[0].substring(5))-1));
-		System.out.println("Banda "+Integer.parseInt(bands[0].substring(5))+"File :"+filesList.get(Integer.parseInt(bands[0].substring(5))-1));
-		selectedBands.add(filesList.get(Integer.parseInt(bands[1].substring(5))-1));
-		System.out.println("Banda "+Integer.parseInt(bands[1].substring(5))+"File :"+filesList.get(Integer.parseInt(bands[1].substring(5))-1));
-		selectedBands.add(filesList.get(Integer.parseInt(bands[2].substring(5))-1));
-		System.out.println("Banda "+Integer.parseInt(bands[2].substring(5))+"File :"+filesList.get(Integer.parseInt(bands[2].substring(5))-1));
-		pdi.setSelectedBands(selectedBands);
-		/* GENERAR LA IMAGEN A FALSO COLOR */
-		BandsManager bandsManager = pdi.getBandsManager();
-		SatelliteImage si=bandsManager.getRawImage(selectedBands, pdi.getX0(), pdi.getX1()+ pdi.getX0(), pdi.getY0(), pdi.getY1()+ pdi.getY0());
-		pdi.setSi(si);
+		
+//		FIXME esto no se hace así, acá no hay suficiente información para
+//		hacer el cambio de bandas.
+//		selectedBands.add(filesList.get(Integer.parseInt(bands[0].substring(5))-1));
+//		System.out.println("Banda "+Integer.parseInt(bands[0].substring(5))+"File :"+filesList.get(Integer.parseInt(bands[0].substring(5))-1));
+//		selectedBands.add(filesList.get(Integer.parseInt(bands[1].substring(5))-1));
+//		System.out.println("Banda "+Integer.parseInt(bands[1].substring(5))+"File :"+filesList.get(Integer.parseInt(bands[1].substring(5))-1));
+//		selectedBands.add(filesList.get(Integer.parseInt(bands[2].substring(5))-1));
+//		System.out.println("Banda "+Integer.parseInt(bands[2].substring(5))+"File :"+filesList.get(Integer.parseInt(bands[2].substring(5))-1));
+//		pdi.setSelectedBands(selectedBands);
+//		/* GENERAR LA IMAGEN A FALSO COLOR */
+//		BandsManager bandsManager = pdi.getBandsManager();
+//		SatelliteImage si=bandsManager.getRawImage(selectedBands, pdi.getX0(), pdi.getX1()+ pdi.getX0(), pdi.getY0(), pdi.getY1()+ pdi.getY0());
+//		pdi.setSi(si);
+		
+//		se hace así
+		int[] bandsNumbers = new int[bands.length];
+		for (int i=0; i<bands.length; ++i){
+			bandsNumbers[i] = Integer.valueOf(bands[i].substring(bands[i].length() - 1));
+		}
+		pdi.changeBands(bandsNumbers);
 		this.dispose();
 	}
 	
-	private void jButton4ActionPerformed(ActionEvent evt) {
+	private void btCancelActionPerformed(ActionEvent evt) {
 		this.dispose();
 	}
 
