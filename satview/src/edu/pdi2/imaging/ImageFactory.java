@@ -96,7 +96,7 @@ public class ImageFactory {
 
 		// Create a TiledImage using the SampleModel.
 		SatelliteImage ret = new SatelliteImage(decoder, 0, 0, width, height,
-				0, 0, sampleModel, colorModel, new ArrayList<String>());
+				0, 0, sampleModel, colorModel, bands);
 		// Set the data of the tiled image to be the raster.
 		ret.setData(raster);
 		return ret;
@@ -125,5 +125,14 @@ public class ImageFactory {
 		// Set the data of the tiled image to be the raster.
 		satImage.setData(raster);
 		return satImage;
+	}
+
+	public static SatelliteImage makeOneBandSatelliteImage(Decoder decoder,
+			byte[] bs, int fromX, int toX, int fromY, int toY, int band) {
+		int cantBands = bs.length / (toX - fromX) / (toY - fromY);//esto tiene que dar 1
+		int size = (toX - fromX) * (toY - fromY) * cantBands;
+
+		return makeOneBandSatelliteImage(decoder, new DataBufferByte(bs, size), fromX,
+				toX, fromY, toY, band);
 	}
 }

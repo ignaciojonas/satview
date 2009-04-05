@@ -1,7 +1,5 @@
 package edu.pdi2.math.indexes.Rayleigh;
 
-import edu.pdi2.math.indexes.RadianceIndex;
-import edu.pdi2.math.indexes.ReflectanceIndex;
 
 /**
  * Encapsula el ćalculo de todos los índices que se pueden extraer del efecto Rayleigh

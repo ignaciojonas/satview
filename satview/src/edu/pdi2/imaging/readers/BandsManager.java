@@ -282,20 +282,20 @@ public class BandsManager {
 		return getAllBands().size();
 	}
 
-	private int[] getBandsArray(){
-		int[] bands = new int[allBands.size()];
-		
-		for (int i=0; i<allBands.size(); ++i){
-			
-			String bandFileName = allBands.get(i).substring(allBands.get(i).lastIndexOf("/")+1);
-			try {
-				bands[i] = SatelliteNamingUtils.getBandNumber(decoder.getSatelliteId(), bandFileName);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return bands;
-	}
+//	private int[] getBandsArray(){
+//		int[] bands = new int[allBands.size()];
+//		
+//		for (int i=0; i<allBands.size(); ++i){
+//			
+//			String bandFileName = allBands.get(i).substring(allBands.get(i).lastIndexOf("/")+1);
+//			try {
+//				bands[i] = SatelliteNamingUtils.getBandNumber(decoder.getSatelliteId(), bandFileName);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return bands;
+//	}
 	
 	public List<String> getAllBands() {
 		return allBands;
@@ -388,10 +388,9 @@ public class BandsManager {
 		if (numBands > 3)
 			numBands = 3;
 		byte[] flatData = RawDataUtils.flatImage(newData, fromX, toX, fromY, toY, numBands, currentBands, getMaxBands());
-		int[] bandsArray = getBandsArray();
-		//		SatelliteImage ret = makeImage(flatData, fromX, toX, fromY, toY, currentBands);
+		
 		SatelliteImage ret = ImageFactory.makeSatelliteImage(decoder, flatData, fromX, toX, fromY, toY, currentBands);
-//		JAI.create("filestore", ret,"signature.jpg","JPEG");
+
 		return ret;
 	}
 

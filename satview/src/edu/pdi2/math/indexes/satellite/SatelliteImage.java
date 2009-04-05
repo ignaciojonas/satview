@@ -1,22 +1,15 @@
 package edu.pdi2.math.indexes.satellite;
 
-import java.awt.Point;
 import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
-import javax.media.jai.PlanarImage;
-import javax.media.jai.RasterFactory;
 import javax.media.jai.TiledImage;
 
 import edu.pdi2.constants.SatelliteNamingUtils;
 import edu.pdi2.decoders.Decoder;
-import edu.pdi2.decoders.DecoderFactory;
 import edu.pdi2.imaging.ImageFactory;
 import edu.pdi2.math.indexes.Rayleigh.L5Rayleigh;
 import edu.pdi2.math.indexes.Rayleigh.Rayleigh;
@@ -68,7 +61,30 @@ public class SatelliteImage extends TiledImage {
 			con++;
 		}
 
-		rayleigh = new L5Rayleigh();
+//		rayleigh = new L5Rayleigh();
+	}
+	
+	public SatelliteImage(Decoder decoder, int minX, int minY, int width,
+			int height, int tileGridXOffset, int tileGridYOffset,
+			SampleModel tileSampleModel, ColorModel colorModel,
+			int[] bands) {
+		super(minX, minY, width, height, tileGridXOffset, tileGridYOffset,
+				tileSampleModel, colorModel);
+		// properties = new Hashtable<String, String>();
+		// properties.put("PIXELS PER LINE", "9516");
+		// properties.put("LINES PER IMAGE", "8616");
+		// properties.put("GAINS/BIASES",
+		// "1.26880/-0.0100  2.98126/-0.0232  1.76186/-0.0078  2.81771/-0.0193  0.65277/-0.0080  3.20107/0.25994  0.44375/-0.0040"
+		// );
+		this.decoder = decoder;
+		this.bands = new ArrayList<Integer>();
+		
+		for (int b=0; b<bands.length && b < 3; ++b){
+			//no se agregan mas de 3 bandas. Si llega a venir un arreglo con mas de 3 bandas, debe ser un error
+			this.bands.add(bands[b]);
+		}
+
+//		rayleigh = new L5Rayleigh();
 	}
 
 	public Rayleigh getRayleigh() {
@@ -585,35 +601,37 @@ public class SatelliteImage extends TiledImage {
 		return ret;
 	}
 
-	/**
-	 * @deprecated Sacar esto de acá cuando haya corroborado que funciona bien
-	 *             la generacion de imagenes corregidas por reflectancia
-	 * 
-	 */
-	private SatelliteImage makeCopy(DataBufferByte dbCorrected, int fromX,
-			int toX, int fromY, int toY, int band) {
-		// Create an pixel interleaved data sample model.
-		int cantBands = dbCorrected.getSize() / (toX - fromX) / (toY - fromY);
-		SampleModel sampleModel = RasterFactory
-				.createPixelInterleavedSampleModel(DataBuffer.TYPE_BYTE,
-				// createBandedSampleModel(DataBuffer.TYPE_FLOAT,
-						toX - fromX, toY - fromY, cantBands);
-		// Create a compatible ColorModel.
-		ColorModel colorModel = PlanarImage.createColorModel(sampleModel);
-		// Create a WritableRaster.
-		Raster raster = RasterFactory.createWritableRaster(sampleModel,
-				dbCorrected, new Point(0, 0));
-
-		int[] bands = new int[cantBands];
-		bands[0] = band;
-
-		// Create a TiledImage using the SampleModel.
-		SatelliteImage ret = new SatelliteImage(0, 0, toX - fromX, toY - fromY,
-				0, 0, sampleModel, colorModel, bands);
-		// Set the data of the tiled image to be the raster.
-		ret.setData(raster);
-		return ret;
-	}
+//	TODO Sacar esto de acá cuando haya corroborado que funciona bien
+//	 *             la generacion de imagenes corregidas por reflectancia
+//	/**
+//	 * @deprecated Sacar esto de acá cuando haya corroborado que funciona bien
+//	 *             la generacion de imagenes corregidas por reflectancia
+//	 * 
+//	 */
+//	private SatelliteImage makeCopy(DataBufferByte dbCorrected, int fromX,
+//			int toX, int fromY, int toY, int band) {
+//		// Create an pixel interleaved data sample model.
+//		int cantBands = dbCorrected.getSize() / (toX - fromX) / (toY - fromY);
+//		SampleModel sampleModel = RasterFactory
+//				.createPixelInterleavedSampleModel(DataBuffer.TYPE_BYTE,
+//				// createBandedSampleModel(DataBuffer.TYPE_FLOAT,
+//						toX - fromX, toY - fromY, cantBands);
+//		// Create a compatible ColorModel.
+//		ColorModel colorModel = PlanarImage.createColorModel(sampleModel);
+//		// Create a WritableRaster.
+//		Raster raster = RasterFactory.createWritableRaster(sampleModel,
+//				dbCorrected, new Point(0, 0));
+//
+//		int[] bands = new int[cantBands];
+//		bands[0] = band;
+//
+//		// Create a TiledImage using the SampleModel.
+//		SatelliteImage ret = new SatelliteImage(0, 0, toX - fromX, toY - fromY,
+//				0, 0, sampleModel, colorModel, bands);
+//		// Set the data of the tiled image to be the raster.
+//		ret.setData(raster);
+//		return ret;
+//	}
 
 	public DataBufferByte getOneBandData(int band) {
 		int size = getWidth() * getHeight();
@@ -643,6 +661,7 @@ public class SatelliteImage extends TiledImage {
 	 */
 	public SatelliteImage getOneBand(int band) {
 
+		
 		return ImageFactory.makeOneBandSatelliteImage(decoder,
 				getOneBandData(band), 0, getWidth(), 0, getHeight(), band);
 	}

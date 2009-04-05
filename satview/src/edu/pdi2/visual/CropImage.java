@@ -157,10 +157,10 @@ public class CropImage extends javax.swing.JDialog {
 				+ h);
 		// SatelliteImage si = fcr.read(filesList, 9516, 8616, x, x + w, y, y +
 		// h);
-		pdi.setX0(x);
-		pdi.setX1(w);
-		pdi.setY0(y);
-		pdi.setY1(h);
+		pdi.setUpperLeftX(x);
+		pdi.setPixelsWidth(w);
+		pdi.setUpperLeftY(y);
+		pdi.setPixelsHeight(h);
 		pdi.setSi(si);
 		pdi.setSelectedBands(filesList);
 		this.dispose();

@@ -1,20 +1,14 @@
 package edu.pdi2.visual;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import edu.pdi2.math.indexes.satellite.SatelliteImage;
@@ -33,6 +27,10 @@ import edu.pdi2.math.indexes.satellite.SatelliteImage;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class FourTabsDialog extends javax.swing.JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7984971832261741998L;
 	private JPanel thumPanel;
 	private DisplayJAIWithAnnotations dj2;
 	private JPanel jPanel7;

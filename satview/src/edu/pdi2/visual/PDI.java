@@ -44,11 +44,14 @@ import edu.pdi2.decoders.Decoder;
 import edu.pdi2.decoders.DecoderFactory;
 import edu.pdi2.forms.Point;
 import edu.pdi2.forms.Polygon;
+import edu.pdi2.imaging.ImageFactory;
+import edu.pdi2.imaging.RawDataUtils;
 import edu.pdi2.imaging.readers.BandsManager;
 import edu.pdi2.math.indexes.satellite.SatelliteImage;
 import edu.pdi2.math.signatures.comparators.SimilarSignatures;
 import edu.pdi2.math.transforms.ElasticTransform;
 import edu.pdi2.math.transforms.RectangleTransform;
+import edu.pdi2.visual.extradialogs.BandsThumbnailsDialog;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -82,12 +85,14 @@ public class PDI extends javax.swing.JFrame {
 	private JMenu jMenuOpenImage;
 	private JMenuItem jMenuItem2;
 	private JLabel jLabel1;
-//	private JPanel jPanel1;
+	// private JPanel jPanel1;
 
 	private JPanel latLon;
 	private JButton jButton1;
 	private ChartPanel chartpanel;
 	private JLabel jLong;
+	private JCheckBoxMenuItem jCheckBoxMISignature;
+	private JCheckBoxMenuItem jCheckBoxMIThumbs;
 	private JMenuItem jMenuItem5;
 	private JMenuItem jMenuItemSacc;
 	private JMenuItem jMenuItemLandsat7;
@@ -115,83 +120,93 @@ public class PDI extends javax.swing.JFrame {
 	private Vector mesh;
 	private BandsManager bandsManager;
 	private CreateMesh cm;
-	private int x0, x1, y0, y1;
+	private int upperLeftX, pixelsWidth, upperLeftY, pixelsHeight;
 	private JFreeChart signatureG;
 	private byte[] signature = null;
 	private List<SatelliteImage> corrected_reflectance = null;
 	private SatelliteImage signature_image = null;
 	private List<SatelliteImage> corrected_radiance = null;
+
 	private List<String> selectedBands;
-	private DisplayJAIWithAnnotations displayJAIWithAnnotations1;
-	private DisplayJAIWithAnnotations displayJAIWithAnnotations2;
-	private DisplayJAIWithAnnotations displayJAIWithAnnotations3;
+
+	private BandsThumbnailsDialog tnDialog = new BandsThumbnailsDialog(this);
+
+	// FIXME
+	// private DisplayJAIWithAnnotations band1TN;
+	// private DisplayJAIWithAnnotations band2TN;
+	// private DisplayJAIWithAnnotations band3TN;
+	private JMenuItem jMenuItemBandsThumbnails;
+	private JMenu jMenuView;
+
 	private JLabel jLabel2;
 	private JLabel jLabel3;
 
-	public int getX0() {
-		return x0;
+	/** El directorio en el que se encuentra la imagen satelital actual */
+	private String directory;
+
+	public int getUpperLeftX() {
+		return upperLeftX;
 	}
 
-	public int getX1() {
-		return x1;
+	public int getPixelsWidth() {
+		return pixelsWidth;
 	}
 
-	public int getY0() {
-		return y0;
+	public int getUpperLeftY() {
+		return upperLeftY;
 	}
 
-	public int getY1() {
-		return y1;
+	public int getPixelsHeight() {
+		return pixelsHeight;
 	}
 
 	public BandsManager getBandsManager() {
 		return bandsManager;
 	}
 
-	public void setX0(int x0) {
-		this.x0 = x0;
+	public void setUpperLeftX(int x0) {
+		this.upperLeftX = x0;
 	}
 
-	public void setX1(int x1) {
-		this.x1 = x1;
+	public void setPixelsWidth(int x1) {
+		this.pixelsWidth = x1;
 	}
 
-	public void setY0(int y0) {
-		this.y0 = y0;
+	public void setUpperLeftY(int y0) {
+		this.upperLeftY = y0;
 	}
 
-	public void setY1(int y1) {
-		this.y1 = y1;
+	public void setPixelsHeight(int y1) {
+		this.pixelsHeight = y1;
 	}
 
-	private PlanarImage getThumnail(PlanarImage pi){
-		ParameterBlock pb;
-		pb = new ParameterBlock();
-		pb.addSource(pi);
-		pb.add(0.15F);
-		pb.add(0.15F);
-		pb.add(0.0F);
-		pb.add(0.0F);
-		pb.add(new InterpolationNearest());
-		return JAI.create("scale", pb, null); //$NON-NLS-1$
-	}
+	// private PlanarImage getThumnail(PlanarImage pi) {
+	// ParameterBlock pb;
+	// pb = new ParameterBlock();
+	// pb.addSource(pi);
+	// pb.add(0.15F);
+	// pb.add(0.15F);
+	// pb.add(0.0F);
+	// pb.add(0.0F);
+	// pb.add(new InterpolationNearest());
+	//		return JAI.create("scale", pb, null); //$NON-NLS-1$
+	// }
+
 	public void setSi(SatelliteImage si) {
 		this.si = si;
 		dt.set(si, dWidth, dHeight);
 		dj.set(dt.getImage());
 		dj.setRectangle(getCrop());
-		String band1=selectedBands.get(0);
-		band1=band1.substring(band1.length()-5, band1.length()-4);
-		String band2=selectedBands.get(1);
-		band2=band2.substring(band2.length()-5, band2.length()-4);
-		String band3=selectedBands.get(2);
-		band3=band3.substring(band3.length()-5, band3.length()-4);
-		displayJAIWithAnnotations1.set(this.getThumnail(si.getOneBand(Integer.parseInt(band1))));
-		jLabel1.setText("Band "+band1+":"); //$NON-NLS-1$ //$NON-NLS-2$
-		displayJAIWithAnnotations2.set(this.getThumnail(si.getOneBand(Integer.parseInt(band2))));
-		jLabel2.setText("Band "+band2+":"); //$NON-NLS-1$ //$NON-NLS-2$
-		displayJAIWithAnnotations3.set(this.getThumnail(si.getOneBand(Integer.parseInt(band3))));
-		jLabel3.setText("Band "+band3+":"); //$NON-NLS-1$ //$NON-NLS-2$
+
+		if (tnDialog.isVisible())
+			updateThumbnails();
+		// FIXME
+		// band1TN.set(this.getThumnail(si.getOneBand(0)));
+		// jLabel1.setText("Band " + si.getBands()[0]);
+		// band2TN.set(this.getThumnail(si.getOneBand(1)));
+		// jLabel2.setText("Band " + si.getBands()[1]);
+		// band3TN.set(this.getThumnail(si.getOneBand(2)));
+		// jLabel3.setText("Band " + si.getBands()[2]);
 
 		repaint();
 	}
@@ -221,9 +236,7 @@ public class PDI extends javax.swing.JFrame {
 		files = new File[7];
 		mesh = new Vector();
 		selectedBands = new ArrayList<String>();
-		decoder = DecoderFactory
-//				.getDecoder("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\header.dat");
-				.getDecoder(AppConstants.getString("header")); //$NON-NLS-1$
+
 		si = null;
 	}
 
@@ -255,7 +268,7 @@ public class PDI extends javax.swing.JFrame {
 					jMenu1.setText("File"); //$NON-NLS-1$
 					{
 						jMenuItem1 = new JMenuItem();
-//						jMenu1.add(jMenuItem1);
+						// jMenu1.add(jMenuItem1);
 						jMenu1.add(getJMenuOpenImage());
 						jMenuItem1.setText("Open Image"); //$NON-NLS-1$
 						jMenuItem1.addMouseListener(new MouseAdapter() {
@@ -269,6 +282,7 @@ public class PDI extends javax.swing.JFrame {
 				{
 					jMenu3 = new JMenu();
 					jMenuBar1.add(jMenu3);
+					jMenuBar1.add(getJMenuView());
 					jMenu3.setText("Options"); //$NON-NLS-1$
 					jMenu3.setEnabled(false);
 					{
@@ -301,7 +315,8 @@ public class PDI extends javax.swing.JFrame {
 							jCheckBoxMenuItem1 = new JCheckBoxMenuItem();
 							jMenu4.add(jCheckBoxMenuItem1);
 							jCheckBoxMenuItem1.setText("Corrected Reflectance"); //$NON-NLS-1$
-							jCheckBoxMenuItem1.setAccelerator(KeyStroke.getKeyStroke("ctrl pressed 1")); //$NON-NLS-1$
+							jCheckBoxMenuItem1.setAccelerator(KeyStroke
+									.getKeyStroke("ctrl pressed 1")); //$NON-NLS-1$
 							jCheckBoxMenuItem1
 									.addActionListener(new ActionListener() {
 										public void actionPerformed(
@@ -314,7 +329,8 @@ public class PDI extends javax.swing.JFrame {
 							jCheckBoxMenuItem2 = new JCheckBoxMenuItem();
 							jMenu4.add(jCheckBoxMenuItem2);
 							jCheckBoxMenuItem2.setText("RAW"); //$NON-NLS-1$
-							jCheckBoxMenuItem2.setAccelerator(KeyStroke.getKeyStroke("ctrl pressed 2")); //$NON-NLS-1$
+							jCheckBoxMenuItem2.setAccelerator(KeyStroke
+									.getKeyStroke("ctrl pressed 2")); //$NON-NLS-1$
 							jCheckBoxMenuItem2
 									.addActionListener(new ActionListener() {
 										public void actionPerformed(
@@ -327,7 +343,8 @@ public class PDI extends javax.swing.JFrame {
 							jCheckBoxMenuItem3 = new JCheckBoxMenuItem();
 							jMenu4.add(jCheckBoxMenuItem3);
 							jCheckBoxMenuItem3.setText("Corrected Radiance"); //$NON-NLS-1$
-							jCheckBoxMenuItem3.setAccelerator(KeyStroke.getKeyStroke("ctrl pressed 3")); //$NON-NLS-1$
+							jCheckBoxMenuItem3.setAccelerator(KeyStroke
+									.getKeyStroke("ctrl pressed 3")); //$NON-NLS-1$
 							jCheckBoxMenuItem3
 									.addActionListener(new ActionListener() {
 										public void actionPerformed(
@@ -370,7 +387,7 @@ public class PDI extends javax.swing.JFrame {
 				{
 					dj = new DisplayJAIWithAnnotations();
 					image.add(dj);
-					dj.setBounds(0,0,dWidth, 520);
+					dj.setBounds(0, 0, dWidth, 520);
 					dj.setPreferredSize(new Dimension(dWidth, 520));
 					dj.setMinimumSize(new Dimension(dWidth, 520));
 					dj.setMaximumSize(new Dimension(dWidth, 520));
@@ -398,17 +415,18 @@ public class PDI extends javax.swing.JFrame {
 				getContentPane().add(getChartpanel());
 				getContentPane().add(getJButton1());
 				getContentPane().add(getLatLon());
-				getContentPane().add(getDisplayJAIWithAnnotations1());
-				getContentPane().add(getDisplayJAIWithAnnotations2());
-				getContentPane().add(getDisplayJAIWithAnnotations3());
-				getContentPane().add(getJLabel1x());
-				getContentPane().add(getJLabel2x());
-				getContentPane().add(getJLabel3x());
+				// FIXME
+				// getContentPane().add(getBand1TN());
+				// getContentPane().add(getBand2TN());
+				// getContentPane().add(getBand3TN());
+				// getContentPane().add(getJLabel1x());
+				// getContentPane().add(getJLabel2x());
+				// getContentPane().add(getJLabel3x());
 				thumPanel.setBounds(636, 18, 166, 123);
 			}
 
 			pack();
-			this.setSize(870, 768);
+			this.setSize(866, 626);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -428,10 +446,10 @@ public class PDI extends javax.swing.JFrame {
 			dj.setRectangle(r);
 		else {
 			if (dt.inViewport() == 1) {
-				r.x = x0 + x1 - dWidth;
+				r.x = upperLeftX + pixelsWidth - dWidth;
 				dj.setRectangle(r);
 			} else {
-				r.y = y0 + y1 - dHeight;
+				r.y = upperLeftY + pixelsHeight - dHeight;
 				dj.setRectangle(r);
 			}
 		}
@@ -444,53 +462,56 @@ public class PDI extends javax.swing.JFrame {
 			dj.setRectangle(r);
 		else {
 			if (dt.inViewport() == 1) {
-				r.x = x0 + x1 - dWidth;
+				r.x = upperLeftX + pixelsWidth - dWidth;
 				dj.setRectangle(r);
 			} else {
-				r.y = y0 + y1 - dHeight;
+				r.y = upperLeftY + pixelsHeight - dHeight;
 				dj.setRectangle(r);
 			}
 		}
 	}
 
 	private void jMenuItem1MouseReleased(MouseEvent evt) {
-//		JDirectoryChooser dc = new JDirectoryChooser();
-//		int choice = dc.showOpenDialog(this);
-//		if (choice != JDirectoryChooser.CANCEL_OPTION){
-//			File sel = dc.getSelectedFile();
-//			//		new OpenBands(this);
-//			new CropImage(this,sel.getAbsolutePath());
-//			jCheckBoxMenuItem1.setSelected(false);
-//			jCheckBoxMenuItem2.setSelected(false);
-//			jCheckBoxMenuItem3.setSelected(false);
-//		}
+		// JDirectoryChooser dc = new JDirectoryChooser();
+		// int choice = dc.showOpenDialog(this);
+		// if (choice != JDirectoryChooser.CANCEL_OPTION){
+		// File sel = dc.getSelectedFile();
+		// // new OpenBands(this);
+		// new CropImage(this,sel.getAbsolutePath());
+		// jCheckBoxMenuItem1.setSelected(false);
+		// jCheckBoxMenuItem2.setSelected(false);
+		// jCheckBoxMenuItem3.setSelected(false);
+		// }
 
 	}
 
 	private void djMouseDragged(MouseEvent evt) {
 		if (si != null) {
-			onMouseAction(evt,dt.getCroppedImageBounds(),true);
+			onMouseAction(evt, dt.getCroppedImageBounds(), true);
 		}
 	}
 
 	private void djMousePressed(MouseEvent evt) {
-		Rectangle crop =dt.getCroppedImageBounds();
+		Rectangle crop = dt.getCroppedImageBounds();
 		if (si != null) {
 			if (cm != null) {
-				cm.addPoint(evt.getX() + crop.x + x0, evt.getY() + crop.y + y0);
+				cm.addPoint(evt.getX() + crop.x + upperLeftX, evt.getY()
+						+ crop.y + upperLeftY);
 				return;
 			}
-			onMouseAction(evt, crop,true);
+			onMouseAction(evt, crop, true);
 		}
 	}
 
-	private void onMouseAction(MouseEvent evt, Rectangle crop,boolean chart) {
-		/*System.out.println("En la Imagen Completa:");
-		System.out.println("El X es:" + (evt.getX() + crop.x + x0)
-				+ " El Y es:" + (evt.getY() + crop.y + y0));*/
-		if(chart){
+	private void onMouseAction(MouseEvent evt, Rectangle crop, boolean chart) {
+		/*
+		 * System.out.println("En la Imagen Completa:");
+		 * System.out.println("El X es:" + (evt.getX() + crop.x + x0) +
+		 * " El Y es:" + (evt.getY() + crop.y + y0));
+		 */
+		if (chart) {
 			signature = bandsManager.getSignature(new Point(evt.getX() + crop.x
-					+ x0, evt.getY() + crop.y + y0));
+					+ upperLeftX, evt.getY() + crop.y + upperLeftY));
 			XYSeries signature1 = new XYSeries("Signature"); //$NON-NLS-1$
 			for (int i = 0; i < signature.length; i++) {
 				signature1.add(i, signature[i]);
@@ -499,16 +520,16 @@ public class PDI extends javax.swing.JFrame {
 			dataset.addSeries(signature1);
 			XYPlot plot = (XYPlot) signatureG.getPlot();
 			plot.setDataset(dataset);
-			}
-		int x = evt.getX() + crop.x + x0;
-		int y = evt.getY() + crop.y + y0;
+		}
+		int x = evt.getX() + crop.x + upperLeftX;
+		int y = evt.getY() + crop.y + upperLeftY;
 		edu.pdi2.forms.Point point = new Point(x, y);
-		double lat=et.getXi_(evt.getX() + crop.x + x0, evt.getY()
-				+ crop.y + y0);
-		double lon=et.getYi_(evt.getX() + crop.x + x0, evt.getY()
-				+ crop.y + y0);
-		jLat.setText("Lat: "+ToDegrees(lat)); //$NON-NLS-1$
-		jLong.setText("Long: "+ToDegrees(lon)); //$NON-NLS-1$
+		double lat = et.getXi_(evt.getX() + crop.x + upperLeftX, evt.getY()
+				+ crop.y + upperLeftY);
+		double lon = et.getYi_(evt.getX() + crop.x + upperLeftX, evt.getY()
+				+ crop.y + upperLeftY);
+		jLat.setText("Lat: " + ToDegrees(lat)); //$NON-NLS-1$
+		jLong.setText("Long: " + ToDegrees(lon)); //$NON-NLS-1$
 
 		for (int i = 0; i < mesh.size(); i++) {
 			Polygon p = (Polygon) mesh.get(i);
@@ -517,15 +538,15 @@ public class PDI extends javax.swing.JFrame {
 				p.changeColor();
 				System.err.println("Estoy dentro de un pfoygon!"); //$NON-NLS-1$
 				ElasticTransform etP = p.getET();
-				lat=etP.getYi_(x,y);
-				lon=etP.getXi_(x,y);
-				jLat.setText("Lat: "+ToDegrees(lat)); //$NON-NLS-1$
-				jLong.setText("Long: "+ToDegrees(lon)); //$NON-NLS-1$
+				lat = etP.getYi_(x, y);
+				lon = etP.getXi_(x, y);
+				jLat.setText("Lat: " + ToDegrees(lat)); //$NON-NLS-1$
+				jLong.setText("Long: " + ToDegrees(lon)); //$NON-NLS-1$
 				break;
 			}
 
 		}
-		
+
 	}
 
 	public void setNullCM() {
@@ -548,113 +569,127 @@ public class PDI extends javax.swing.JFrame {
 		jCheckBoxMenuItem2.setSelected(false);
 		jCheckBoxMenuItem3.setSelected(false);
 		// ---------------- Corrected Reflectance.
-//		if (corrected_reflectance == null) {
-			corrected_reflectance = si.getReflectanceCorrected(
-					si.getBounds().x, si.getBounds().width, si.getBounds().y,
-					si.getBounds().height);
-//		}
-		String band1=selectedBands.get(0);
-		band1=band1.substring(band1.length()-5, band1.length()-4);
-		String band2=selectedBands.get(1);
-		band2=band2.substring(band2.length()-5, band2.length()-4);
-		String band3=selectedBands.get(2);
-		band3=band3.substring(band3.length()-5, band3.length()-4);
-		corrected_reflectance.add(si);
-		new FourTabsDialog(this,x0,y0,corrected_reflectance,"Band "+band1,"Band "+band2,"Band "+band3,"All Bands","Corrected Reflectance"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		
-		
+		// if (corrected_reflectance == null) {
+		corrected_reflectance = si.getReflectanceCorrected(si.getBounds().x, si
+				.getBounds().width, si.getBounds().y, si.getBounds().height);
+		// }
+		// FIXME esto no se hace así...
+		// String band1 = selectedBands.get(0);
+		// band1 = band1.substring(band1.length() - 5, band1.length() - 4);
+		// String band2 = selectedBands.get(1);
+		// band2 = band2.substring(band2.length() - 5, band2.length() - 4);
+		// String band3 = selectedBands.get(2);
+		// band3 = band3.substring(band3.length() - 5, band3.length() - 4);
+
+		// se hace así
+		int[] currentBands = si.getBands();
+		int band1 = currentBands[0];
+		int band2 = currentBands[1];
+		int band3 = currentBands[2];
+
+		// FIXME Esta no era la idea. La idea era combinar las 3 bandas
+		// corregidas en
+		// una imagen nueva
+		// corrected_reflectance.add(si);
+		byte[] data = RawDataUtils.mergeBands(corrected_reflectance);
+		corrected_reflectance.add(ImageFactory.makeSatelliteImage(decoder,
+				data, si.getBounds().x, si.getBounds().width, si.getBounds().y,
+				si.getBounds().height, selectedBands));
+		new FourTabsDialog(
+				this,
+				upperLeftX,
+				upperLeftY,
+				corrected_reflectance,
+				"Band " + band1, "Band " + band2, "Band " + band3, "All Bands", "Corrected Reflectance"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
 	}
 
 	private void jCheckBoxMenuItem2ActionPerformed(ActionEvent evt) {
 		jCheckBoxMenuItem1.setSelected(false);
 		jCheckBoxMenuItem3.setSelected(false);
 		// ---------------- RAW.
-		SatelliteImage s = bandsManager.getRawImage(selectedBands, x0, x0 + x1,
-				y0, y0 + y1);
+		SatelliteImage s = bandsManager
+				.getRawImage(selectedBands, upperLeftX, upperLeftX
+						+ pixelsWidth, upperLeftY, upperLeftY + pixelsHeight);
 		this.setSi(s);
 
 	}
 
+	/**
+	 * Devuelve las direcciones de los archivos de las bandas que actualmente
+	 * tiene esta imagen.
+	 * 
+	 * @return Una lista con <b>3</b> elementos.
+	 */
 	public List<String> getListFiles() {
-		List<String> filesList = new ArrayList<String>();
-//		filesList
-//				.add("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\BAND1.dat");
-//		filesList
-//				.add("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\BAND2.dat");
-//		filesList
-//				.add("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\BAND3.dat");
-//		filesList
-//				.add("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\BAND4.dat");
-//		filesList
-//				.add("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\BAND5.dat");
-//		filesList
-//				.add("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\BAND6.dat");
-//		filesList
-//				.add("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\BAND7.dat");
-		filesList.add(AppConstants.getString("band1")); //$NON-NLS-1$
-		filesList.add(AppConstants.getString("band2")); //$NON-NLS-1$
-		filesList.add(AppConstants.getString("band3")); //$NON-NLS-1$
-		filesList.add(AppConstants.getString("band4")); //$NON-NLS-1$
-		filesList.add(AppConstants.getString("band5")); //$NON-NLS-1$
-//		filesList.add(AppConstants.getString("band6")); //$NON-NLS-1$
-//		filesList.add(AppConstants.getString("band7")); //$NON-NLS-1$
-		/*
-		 * filesList.add(files[1].getAbsolutePath());
-		 * System.out.println("filesList.add("+files[1].getAbsolutePath()+");");
-		 * filesList.add(files[2].getAbsolutePath());
-		 * System.out.println("filesList.add("+files[2].getAbsolutePath()+");");
-		 * filesList.add(files[3].getAbsolutePath());
-		 * System.out.println("filesList.add("+files[3].getAbsolutePath()+");");
-		 * filesList.add(files[4].getAbsolutePath());
-		 * System.out.println("filesList.add("+files[4].getAbsolutePath()+");");
-		 * filesList.add(files[5].getAbsolutePath());
-		 * System.out.println("filesList.add("+files[5].getAbsolutePath()+");");
-		 * filesList.add(files[6].getAbsolutePath());
-		 * System.out.println("filesList.add("+files[6].getAbsolutePath()+");");
-		 * filesList.add(files[7].getAbsolutePath());
-		 * System.out.println("filesList.add("+files[7].getAbsolutePath()+");");
-		 */
+		List<String> filesList = new ArrayList<String>(files.length);
+
+		for (File file : files) {
+			filesList.add(file.getAbsolutePath());
+		}
 		return filesList;
 	}
-	public void setDirectory(String dirPath, String satelliteId){
+
+	public void setDirectory(String dirPath, String satelliteId) {
+		this.directory = dirPath;
 		File[] theFiles = new File[3];
-		//obtengo los 3 archivos de las bandas de la imagen y los paso a setFiles
-		for (int i=1; i<=3; ++i){
-			theFiles[i-1] = new File(dirPath+SatelliteNamingUtils.getBandFilename(i, satelliteId));
+		// obtengo los 3 archivos de las bandas de la imagen y los paso a
+		// setFiles
+		for (int i = 1; i <= 3; ++i) {
+			theFiles[i - 1] = new File(dirPath
+					+ SatelliteNamingUtils.getBandFilename(i, satelliteId));
 		}
-		
+		setDecoder(dirPath, satelliteId);
+		setBands(theFiles);
 		setFiles(theFiles);
+		setBandsManager(dirPath, satelliteId);
+		setElasticTransform();
+		jMenu3.setEnabled(true);
+		jMenuView.setEnabled(true);
 	}
-	//TODO esto no tiene que estar hardcodeado.
-	public void setFiles(File[] f) {
-		files = f;
-		// decodifico el header
-		// decoder= DecoderFactory.getDecoder(files[0].getAbsolutePath());
-		decoder = DecoderFactory
-//				.getDecoder("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\header.dat");
-				.getDecoder(AppConstants.getString("header")); //$NON-NLS-1$
-		Rectangle r = new Rectangle(0, 0, decoder.getPPL(), decoder.getLPI());
-		bandsManager = new BandsManager(decoder, getListFiles(), r, decoder.getPPL(),
-				decoder.getLPI());
-		selectedBands = new ArrayList<String>();
-		// selectedBands.add(files[1].getAbsolutePath());
-		// selectedBands.add(files[2].getAbsolutePath());
-		// selectedBands.add(files[3].getAbsolutePath());
-		selectedBands.add(AppConstants.getString("band1")); //$NON-NLS-1$
-		selectedBands.add(AppConstants.getString("band2")); //$NON-NLS-1$
-		selectedBands.add(AppConstants.getString("band3")); //$NON-NLS-1$
-//		selectedBands
-//				.add("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\BAND1.dat");
-//		selectedBands
-//				.add("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\BAND2.dat");
-//		selectedBands
-//				.add("C:\\Documents and Settings\\Administrador\\Mis documentos\\l5\\BAND3.dat");
+
+	private void setElasticTransform() {
+		// esto se tiene que hacer después de haber decodificado el header
 		et = new RectangleTransform(0, decoder.getPPL(), decoder.getPPL(), 0,
 				0, 0, decoder.getLPI(), decoder.getLPI(), decoder.getUL_lon(),
 				decoder.getUR_lon(), decoder.getLR_lon(), decoder.getLL_lon(),
 				decoder.getUL_lat(), decoder.getUR_lat(), decoder.getLR_lat(),
 				decoder.getLL_lat());
-		jMenu3.setEnabled(true);
+	}
+
+	private void setBandsManager(String dirPath, String satelliteId) {
+		// esto se tiene que hacer después de haber decodificado el header
+		// y de haber seteado los archivos
+		int cantBands = SatelliteNamingUtils.getCantBands(satelliteId);
+
+		List<String> allBandsPaths = new ArrayList<String>(cantBands);
+
+		for (int i = 1; i <= cantBands; ++i) {
+			allBandsPaths.add(dirPath
+					+ SatelliteNamingUtils.getBandFilename(i, satelliteId));
+		}
+
+		Rectangle r = new Rectangle(0, 0, decoder.getPPL(), decoder.getLPI());
+		bandsManager = new BandsManager(decoder, allBandsPaths, r, decoder
+				.getPPL(), decoder.getLPI());
+	}
+
+	private void setBands(File[] files) {
+		selectedBands = new ArrayList<String>();
+		selectedBands.add(files[0].getAbsolutePath());
+		selectedBands.add(files[1].getAbsolutePath());
+		selectedBands.add(files[2].getAbsolutePath());
+
+	}
+
+	private void setDecoder(String dirPath, String satelliteId) {
+		decoder = DecoderFactory.getDecoder(dirPath
+				+ SatelliteNamingUtils.getHeaderFilename(satelliteId));
+	}
+
+	public void setFiles(File[] f) {
+		files = f;
+
 	}
 
 	public Decoder getDecoder() {
@@ -665,26 +700,48 @@ public class PDI extends javax.swing.JFrame {
 		jCheckBoxMenuItem2.setSelected(false);
 		jCheckBoxMenuItem1.setSelected(false);
 		// ---------------- Corrected Radiance.
-//		if (corrected_radiance == null)
-			corrected_radiance = (List<SatelliteImage>) si.getRadianceCorrected(si.getBounds().x,
-							si.getBounds().width, si.getBounds().y, si
-									.getBounds().height);
-		String band1=selectedBands.get(0);
-		band1=band1.substring(band1.length()-5, band1.length()-4);
-		String band2=selectedBands.get(1);
-		band2=band2.substring(band2.length()-5, band2.length()-4);
-		String band3=selectedBands.get(2);
-		band3=band3.substring(band3.length()-5, band3.length()-4);
-		corrected_radiance.add(si);
-		new FourTabsDialog(this,x0,y0,corrected_radiance,"Band "+band1,"Band "+band2,"Band "+band3,"All Bands","Corrected Radiance"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-//		List<SatelliteImage> s= new ArrayList<SatelliteImage>();
-//		s.add(si);
-//		s.add(si);
-//		s.add(si);
-//		
-//		new CorrectedDialog(this,x0,y0,s,"Band 1","Band 2","Band 3");
+		// if (corrected_radiance == null)
+		corrected_radiance = (List<SatelliteImage>) si.getRadianceCorrected(si
+				.getBounds().x, si.getBounds().width, si.getBounds().y, si
+				.getBounds().height);
+
+		// FIXME esto no se hace así...
+		// String band1 = selectedBands.get(0);
+		// band1 = band1.substring(band1.length() - 5, band1.length() - 4);
+		// String band2 = selectedBands.get(1);
+		// band2 = band2.substring(band2.length() - 5, band2.length() - 4);
+		// String band3 = selectedBands.get(2);
+		// band3 = band3.substring(band3.length() - 5, band3.length() - 4);
+
+		// se hace así
+		int[] currentBands = si.getBands();
+		int band1 = currentBands[0];
+		int band2 = currentBands[1];
+		int band3 = currentBands[2];
+
+		// FIXME Esta no era la idea. La idea era combinar las 3 bandas
+		// corregidas en
+		// una imagen nueva
+		// corrected_radiance.add(si);
+		byte[] data = RawDataUtils.mergeBands(corrected_radiance);
+
+		corrected_radiance.add(ImageFactory.makeSatelliteImage(decoder, data,
+				si.getBounds().x, si.getBounds().width, si.getBounds().y, si
+						.getBounds().height, selectedBands));
+
+		new FourTabsDialog(
+				this,
+				upperLeftX,
+				upperLeftY,
+				corrected_radiance,
+				"Band " + band1, "Band " + band2, "Band " + band3, "All Bands", "Corrected Radiance"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		// List<SatelliteImage> s= new ArrayList<SatelliteImage>();
+		// s.add(si);
+		// s.add(si);
+		// s.add(si);
+		//		
+		// new CorrectedDialog(this,x0,y0,s,"Band 1","Band 2","Band 3");
 	}
-	
 
 	private JLabel getJLabel1() {
 		if (jLat == null) {
@@ -729,31 +786,56 @@ public class PDI extends javax.swing.JFrame {
 	}
 
 	private void jButton1ActionPerformed(ActionEvent evt) {
-		
+
 		if (signature != null) {
-			//FIXME hacer que esto se haga por IGUALDAD o por SIMILITUD de firmas
+			// FIXME hacer que esto se haga por IGUALDAD o por SIMILITUD de
+			// firmas
 			byte[] bottom = new byte[signature.length];
 			byte[] top = new byte[signature.length];
-			
-			for (int i=0; i<signature.length; ++i){
-				bottom [i] = (byte) (signature[i] - 30);
-				
-					
+
+			for (int i = 0; i < signature.length; ++i) {
+				bottom[i] = (byte) (signature[i] - 30);
+
 				top[i] = (byte) (signature[i] + 30);
 				if (top[i] < 0)
 					top[i] = 127;
-				
+
 			}
-			bandsManager.setSignatureComparator(new SimilarSignatures(top, bottom));
-			signature_image = bandsManager.getImageWithThisSignature(x0, x1 + x0, y0, y1 + y0);
-			this.setSi(signature_image);
+			bandsManager.setSignatureComparator(new SimilarSignatures(top,
+					bottom));
+			signature_image = bandsManager.getImageWithThisSignature(
+					upperLeftX, pixelsWidth + upperLeftX, upperLeftY,
+					pixelsHeight + upperLeftY);
+
+			int[] currentBands = si.getBands();
+			int band1 = currentBands[0];
+			int band2 = currentBands[1];
+			int band3 = currentBands[2];
+
+			// ahora la separo en 3 imagenes
+			List<SatelliteImage> siList = new ArrayList<SatelliteImage>();
+			List<byte[]> dataList = RawDataUtils.splitBands(signature_image);
+			for (int i = 0; i < dataList.size(); ++i) {
+				byte[] bs = dataList.get(i);
+				siList.add(ImageFactory.makeOneBandSatelliteImage(decoder, bs,
+						si.getBounds().x, si.getBounds().width,
+						si.getBounds().y, si.getBounds().height,
+						currentBands[i]));
+			}
+
+			siList.add(signature_image);
+			new FourTabsDialog(this, upperLeftX, upperLeftY, siList, "Band "
+					+ band1, "Band " + band2, "Band " + band3, "All Bands",
+					"Generated with digital signature");
+			// this.setSi(signature_image);
 
 		}
 	}
 
 	public Rectangle getCrop() {
 		Rectangle crop = dt.getCroppedImageBounds();
-		return new Rectangle(x0 + crop.x, y0 + crop.y, crop.width, crop.height);
+		return new Rectangle(upperLeftX + crop.x, upperLeftY + crop.y,
+				crop.width, crop.height);
 	}
 
 	private JPanel getLatLon() {
@@ -771,71 +853,76 @@ public class PDI extends javax.swing.JFrame {
 
 	private void djMouseMoved(MouseEvent evt) {
 		if (si != null)
-			onMouseAction(evt,dt.getCroppedImageBounds(),false);
+			onMouseAction(evt, dt.getCroppedImageBounds(), false);
 	}
-	
-	private String ToDegrees(double ang ){
-		double angle=ang/10000;
-		String angleS=Double.toString(angle);
-		String grados=angleS.substring(0,angleS.indexOf('.'));
-		double c=Double.parseDouble(angleS.substring(angleS.indexOf('.')));
-		c= c*60;
-		angleS=Double.toString(c);
-		String minutos=angleS.substring(0,angleS.indexOf('.'));
-		c=Double.parseDouble(angleS.substring(angleS.indexOf('.')));
-		double segundos= c*60;
-		return new String(grados+"º "+minutos+"\' "+segundos+"\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+	private String ToDegrees(double ang) {
+		double angle = ang / 10000;
+		String angleS = Double.toString(angle);
+		String grados = angleS.substring(0, angleS.indexOf('.'));
+		double c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
+		c = c * 60;
+		angleS = Double.toString(c);
+		String minutos = angleS.substring(0, angleS.indexOf('.'));
+		c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
+		double segundos = c * 60;
+		return new String(grados + "º " + minutos + "\' " + segundos + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
-	
-	private DisplayJAIWithAnnotations getDisplayJAIWithAnnotations1() {
-		if(displayJAIWithAnnotations1 == null) {
-			displayJAIWithAnnotations1 = new DisplayJAIWithAnnotations();
-			displayJAIWithAnnotations1.setBounds(10, 560, 150, 150);
-		}
-		return displayJAIWithAnnotations1;
-	}
-	private DisplayJAIWithAnnotations getDisplayJAIWithAnnotations2() {
-		if(displayJAIWithAnnotations2 == null) {
-			displayJAIWithAnnotations2 = new DisplayJAIWithAnnotations();
-			displayJAIWithAnnotations2.setBounds(210, 560, 150, 150);
-		}
-		return displayJAIWithAnnotations2;
-	}
-	private DisplayJAIWithAnnotations getDisplayJAIWithAnnotations3() {
-		if(displayJAIWithAnnotations3 == null) {
-			displayJAIWithAnnotations3 = new DisplayJAIWithAnnotations();
-			displayJAIWithAnnotations3.setBounds(410, 560, 150, 150);
-		}
-		return displayJAIWithAnnotations3;
-	}
-	
+
+	// FIXME
+	// private DisplayJAIWithAnnotations getBand1TN() {
+	// if (band1TN == null) {
+	// band1TN = new DisplayJAIWithAnnotations();
+	// band1TN.setBounds(10, 560, 150, 150);
+	// }
+	// return band1TN;
+	// }
+	//
+	// private DisplayJAIWithAnnotations getBand2TN() {
+	// if (band2TN == null) {
+	// band2TN = new DisplayJAIWithAnnotations();
+	// band2TN.setBounds(210, 560, 150, 150);
+	// }
+	// return band2TN;
+	// }
+	//
+	// private DisplayJAIWithAnnotations getBand3TN() {
+	// if (band3TN == null) {
+	// band3TN = new DisplayJAIWithAnnotations();
+	// band3TN.setBounds(410, 560, 150, 150);
+	// }
+	// return band3TN;
+	// }
+
 	private JLabel getJLabel1x() {
-		if(jLabel1 == null) {
+		if (jLabel1 == null) {
 			jLabel1 = new JLabel();
 			jLabel1.setText("Band 1:"); //$NON-NLS-1$
-			jLabel1.setBounds(10, 540, 37, 14);
+			jLabel1.setBounds(10, 540, 128, 14);
 		}
 		return jLabel1;
 	}
+
 	private JLabel getJLabel2x() {
-		if(jLabel2 == null) {
+		if (jLabel2 == null) {
 			jLabel2 = new JLabel();
 			jLabel2.setText("Band 1:"); //$NON-NLS-1$
-			jLabel2.setBounds(210, 540, 37, 14);
+			jLabel2.setBounds(210, 540, 128, 14);
 		}
 		return jLabel2;
 	}
+
 	private JLabel getJLabel3x() {
-		if(jLabel3 == null) {
+		if (jLabel3 == null) {
 			jLabel3 = new JLabel();
 			jLabel3.setText("Band 1:"); //$NON-NLS-1$
-			jLabel3.setBounds(410, 540, 37, 14);
+			jLabel3.setBounds(410, 540, 128, 14);
 		}
 		return jLabel3;
 	}
-	
+
 	private JMenuItem getJMenuItem2() {
-		if(jMenuItem2 == null) {
+		if (jMenuItem2 == null) {
 			jMenuItem2 = new JMenuItem();
 			jMenuItem2.setText("Edit Rayleigh Data"); //$NON-NLS-1$
 			jMenuItem2.addActionListener(new ActionListener() {
@@ -846,13 +933,13 @@ public class PDI extends javax.swing.JFrame {
 		}
 		return jMenuItem2;
 	}
-	
+
 	private void jMenuItem2ActionPerformed(ActionEvent evt) {
-		new RayleighData(this,si.getRayleigh());
+		new RayleighData(this, si.getRayleigh());
 	}
-	
+
 	private JMenu getJMenuOpenImage() {
-		if(jMenuOpenImage == null) {
+		if (jMenuOpenImage == null) {
 			jMenuOpenImage = new JMenu();
 			jMenuOpenImage.setText("Open Satellite Image");
 			jMenuOpenImage.add(getJMenuItemOpenL5());
@@ -861,9 +948,9 @@ public class PDI extends javax.swing.JFrame {
 		}
 		return jMenuOpenImage;
 	}
-	
+
 	private JMenuItem getJMenuItemOpenL5() {
-		if(jMenuItemOpenL5 == null) {
+		if (jMenuItemOpenL5 == null) {
 			jMenuItemOpenL5 = new JMenuItem();
 			jMenuItemOpenL5.setText("Landsat 5");
 			jMenuItemOpenL5.addMouseListener(new MouseAdapter() {
@@ -874,9 +961,9 @@ public class PDI extends javax.swing.JFrame {
 		}
 		return jMenuItemOpenL5;
 	}
-	
+
 	private JMenuItem getJMenuItemLandsat7() {
-		if(jMenuItemLandsat7 == null) {
+		if (jMenuItemLandsat7 == null) {
 			jMenuItemLandsat7 = new JMenuItem();
 			jMenuItemLandsat7.setText("Landsat 7");
 			jMenuItemLandsat7.addMouseListener(new MouseAdapter() {
@@ -887,18 +974,21 @@ public class PDI extends javax.swing.JFrame {
 		}
 		return jMenuItemLandsat7;
 	}
-	
+
 	private String getSelectedDirectory() {
 		JDirectoryChooser dc = new JDirectoryChooser();
+		String defaultDir = AppConstants.getString("defaultDir");
+		if (!(defaultDir.equals("!defaultDir!")))
+			dc.setSelectedFile(new File(defaultDir));
 		int choice = dc.showOpenDialog(this);
-		if (choice != JDirectoryChooser.CANCEL_OPTION){
-			return dc.getSelectedFile().getAbsolutePath()+"/";
+		if (choice != JDirectoryChooser.CANCEL_OPTION) {
+			return dc.getSelectedFile().getAbsolutePath() + "/";
 		}
 		return null;
 	}
-	
+
 	private JMenuItem getJMenuItemSacc() {
-		if(jMenuItemSacc == null) {
+		if (jMenuItemSacc == null) {
 			jMenuItemSacc = new JMenuItem();
 			jMenuItemSacc.setText("SACC");
 			jMenuItemSacc.addMouseListener(new MouseAdapter() {
@@ -909,35 +999,34 @@ public class PDI extends javax.swing.JFrame {
 		}
 		return jMenuItemSacc;
 	}
-	
+
 	private void jMenuItemOpenL5MouseReleased(MouseEvent evt) {
 		String path = getSelectedDirectory();
-		if (path != null){
+		if (path != null) {
 			setDirectory(path, SatelliteNamingUtils.LANDSAT5_ID);
-			new CropImage(this,path,SatelliteNamingUtils.LANDSAT5_ID);
+			new CropImage(this, path, SatelliteNamingUtils.LANDSAT5_ID);
 		}
 	}
-	
+
 	private void jMenuItemLandsat7MouseReleased(MouseEvent evt) {
 		String path = getSelectedDirectory();
-		if (path != null){
+
+		if (path != null) {
 			setDirectory(path, SatelliteNamingUtils.LANDSAT7_ID);
-			new CropImage(this,path,SatelliteNamingUtils.LANDSAT7_ID);
+			new CropImage(this, path, SatelliteNamingUtils.LANDSAT7_ID);
 		}
 	}
-	
-	
 
 	private void jMenuItemSaccMouseReleased(MouseEvent evt) {
 		String path = getSelectedDirectory();
-		if (path != null){
+		if (path != null) {
 			setDirectory(path, SatelliteNamingUtils.SACC_ID);
-			new CropImage(this,path,SatelliteNamingUtils.SACC_ID);
+			new CropImage(this, path, SatelliteNamingUtils.SACC_ID);
 		}
 	}
-	
+
 	private JMenuItem getJMenuItem5() {
-		if(jMenuItem5 == null) {
+		if (jMenuItem5 == null) {
 			jMenuItem5 = new JMenuItem();
 			jMenuItem5.setText("Threshold Signature");
 			jMenuItem5.addActionListener(new ActionListener() {
@@ -948,24 +1037,157 @@ public class PDI extends javax.swing.JFrame {
 		}
 		return jMenuItem5;
 	}
-	
+
 	private void menuThresholdActionPerformed(ActionEvent evt) {
-		ThresholdSignature ts=new ThresholdSignature(this, SatelliteNamingUtils.getCantBands(decoder.getSatelliteId()));
-//		ThresholdSignature ts=new ThresholdSignature(this, 7);
+		ThresholdSignature ts = new ThresholdSignature(this,
+				SatelliteNamingUtils.getCantBands(decoder.getSatelliteId()));
+		// ThresholdSignature ts=new ThresholdSignature(this, 7);
 		ts.setSignature(signature);
 	}
 
 	/**
-	 * A este método lo llama el diálogo de generación de imágenes con una determinada firma digital. Le pasa los límites
-	 * de tolerancia para generar aceptar como <i>similar</i> a una firma, así que solamente tiene que llamar a la generación
-	 * de imágen y pasarle los datos.
+	 * A este método lo llama el diálogo de generación de imágenes con una
+	 * determinada firma digital. Le pasa los límites de tolerancia para generar
+	 * aceptar como <i>similar</i> a una firma, así que solamente tiene que
+	 * llamar a la generación de imágen y pasarle los datos.
 	 */
-	public void generateImageByThresholdSignature(byte[] bottom,
-			byte[] top) {
+	public void generateImageByThresholdSignature(byte[] bottom, byte[] top) {
 		bandsManager.setSignatureComparator(new SimilarSignatures(top, bottom));
-		signature_image = bandsManager.getImageWithThisSignature(x0, x1 + x0, y0, y1 + y0);
-		this.setSi(signature_image);
+		signature_image = bandsManager
+				.getImageWithThisSignature(upperLeftX,
+						pixelsWidth + upperLeftX, upperLeftY, pixelsHeight
+								+ upperLeftY);
+
+		int[] currentBands = si.getBands();
+		int band1 = currentBands[0];
+		int band2 = currentBands[1];
+		int band3 = currentBands[2];
+
+		// ahora la separo en 3 imagenes
+		List<SatelliteImage> siList = new ArrayList<SatelliteImage>();
+		List<byte[]> dataList = RawDataUtils.splitBands(signature_image);
+		for (int i = 0; i < dataList.size(); ++i) {
+			byte[] bs = dataList.get(i);
+			siList.add(ImageFactory.makeOneBandSatelliteImage(decoder, bs, si
+					.getBounds().x, si.getBounds().width, si.getBounds().y, si
+					.getBounds().height, currentBands[i]));
+		}
+
+		siList.add(signature_image);
+		new FourTabsDialog(this, upperLeftX, upperLeftY, siList, "Band "
+				+ band1, "Band " + band2, "Band " + band3, "All Bands",
+				"Generated with digital signature");
+
+		// this.setSi(signature_image);
+		// FIXME
+	}
+
+	/**
+	 * Cambia las bandas de acuerdo al orden que le devuelvan. Es llamado cuando
+	 * se cambian las bandas en el cuadro de generación de imágen de <b>falso
+	 * color</b>.
+	 * 
+	 * @param bandsNumbers
+	 *            Los números de las bandas. Es un arreglo que puede tener un
+	 *            tamaño distinto a 3 y los números de banda comienzan en
+	 *            <b>1</b> (no en cero).
+	 */
+	public void changeBands(int[] bandsNumbers) {
+
+		List<String> sel = new ArrayList<String>(bandsNumbers.length);
+
+		for (int i = 0; i < 3; ++i) {
+			sel.add(directory
+					+ SatelliteNamingUtils.getBandFilename(bandsNumbers[i],
+							decoder.getSatelliteId()));
+		}
+
+		setSelectedBands(sel);
+		BandsManager bandsManager = getBandsManager();
+		SatelliteImage si = bandsManager.getRawImage(sel, getUpperLeftX(),
+				getPixelsWidth() + getUpperLeftX(), getUpperLeftY(),
+				getPixelsHeight() + getUpperLeftY());
+		setSi(si);
+
+	}
+
+	private JMenu getJMenuView() {
+		if (jMenuView == null) {
+			jMenuView = new JMenu();
+			jMenuView.setText("View");
+			// jMenuView.add(getJMenuItemBandsThumbnails());
+			jMenuView.add(getJCheckBoxMIThumbs());
+			jMenuView.add(getJCheckBoxMISignature());
+			jMenuView.setEnabled(false);
+		}
+		return jMenuView;
+	}
+
+	// private JMenuItem getJMenuItemBandsThumbnails() {
+	// if(jMenuItemBandsThumbnails == null) {
+	// jMenuItemBandsThumbnails = new JMenuItem();
+	// jMenuItemBandsThumbnails.setText("Bands Thumbnails");
+	// jMenuItemBandsThumbnails.addMouseListener(new MouseAdapter() {
+	// public void mouseReleased(MouseEvent evt) {
+	// jMenuItemBandsThumbnailsMouseReleased(evt);
+	// }
+	// });
+	// }
+	// return jMenuItemBandsThumbnails;
+	// }
+
+	private void showThumbnails(MouseEvent evt) {
+		if (!tnDialog.isVisible()) {
+			tnDialog.setVisible(true);
+
+			updateThumbnails();
+			
+		} else {
+			tnDialog.setVisible(false);
+		}
+	}
+
+	private void updateThumbnails() {
+		int[] currentBands = si.getBands();
+
+		// ahora la separo en 3 imagenes
+		List<SatelliteImage> imgsList = new ArrayList<SatelliteImage>();
+
+		List<byte[]> dataList = RawDataUtils.splitBands(si);
+		for (int i = 0; i < dataList.size(); ++i) {
+			byte[] bs = dataList.get(i);
+			imgsList.add(ImageFactory.makeOneBandSatelliteImage(decoder, bs, si
+					.getBounds().x, si.getBounds().width, si.getBounds().y, si
+					.getBounds().height, currentBands[i]));
+		}
+
+		tnDialog.setImages(imgsList);
+	}
+
+	private JCheckBoxMenuItem getJCheckBoxMIThumbs() {
+		if (jCheckBoxMIThumbs == null) {
+			jCheckBoxMIThumbs = new JCheckBoxMenuItem();
+			jCheckBoxMIThumbs.setText("Bands Thumbnails");
+			jCheckBoxMIThumbs.addMouseListener(new MouseAdapter() {
+				public void mouseReleased(MouseEvent evt) {
+					showThumbnails(evt);
+				}
+			});
+		}
+		return jCheckBoxMIThumbs;
+	}
+
+	public void unselectThumbnailsMenuItem() {
+		jCheckBoxMIThumbs.setSelected(false);
+		
+	}
+	
+	private JCheckBoxMenuItem getJCheckBoxMISignature() {
+		if(jCheckBoxMISignature == null) {
+			jCheckBoxMISignature = new JCheckBoxMenuItem();
+			jCheckBoxMISignature.setText("Pixel Signature");
+		}
+		return jCheckBoxMISignature;
 	}
 
 }
-
