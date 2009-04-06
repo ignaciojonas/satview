@@ -8,7 +8,6 @@ public class AppConstants {
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
 			.getBundle(BUNDLE_NAME);
-
 	private AppConstants() {
 	}
 
@@ -20,3 +19,4 @@ public class AppConstants {
 		}
 	}
 }
+

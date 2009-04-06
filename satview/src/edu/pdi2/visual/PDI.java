@@ -52,6 +52,8 @@ import edu.pdi2.math.signatures.comparators.SimilarSignatures;
 import edu.pdi2.math.transforms.ElasticTransform;
 import edu.pdi2.math.transforms.RectangleTransform;
 import edu.pdi2.visual.extradialogs.BandsThumbnailsDialog;
+import edu.pdi2.visual.extradialogs.PositionDialog;
+import edu.pdi2.visual.extradialogs.SignatureDialog;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -91,6 +93,7 @@ public class PDI extends javax.swing.JFrame {
 	private JButton jButton1;
 	private ChartPanel chartpanel;
 	private JLabel jLong;
+	private JCheckBoxMenuItem JMenuPosition;
 	private JCheckBoxMenuItem jCheckBoxMISignature;
 	private JCheckBoxMenuItem jCheckBoxMIThumbs;
 	private JMenuItem jMenuItem5;
@@ -130,6 +133,8 @@ public class PDI extends javax.swing.JFrame {
 	private List<String> selectedBands;
 
 	private BandsThumbnailsDialog tnDialog = new BandsThumbnailsDialog(this);
+	private SignatureDialog signDialog;
+	private PositionDialog posDialog=new PositionDialog(this);
 
 	// FIXME
 	// private DisplayJAIWithAnnotations band1TN;
@@ -238,6 +243,7 @@ public class PDI extends javax.swing.JFrame {
 		selectedBands = new ArrayList<String>();
 
 		si = null;
+		signDialog=new SignatureDialog(this,signatureG);
 	}
 
 	public void setSelectedBands(List<String> sb) {
@@ -528,8 +534,10 @@ public class PDI extends javax.swing.JFrame {
 				+ crop.y + upperLeftY);
 		double lon = et.getYi_(evt.getX() + crop.x + upperLeftX, evt.getY()
 				+ crop.y + upperLeftY);
-		jLat.setText("Lat: " + ToDegrees(lat)); //$NON-NLS-1$
-		jLong.setText("Long: " + ToDegrees(lon)); //$NON-NLS-1$
+		posDialog.setLat(lat);
+		posDialog.setLon(lon);
+//		jLat.setText("Lat: " + ToDegrees(lat)); //$NON-NLS-1$
+//		jLong.setText("Long: " + ToDegrees(lon)); //$NON-NLS-1$
 
 		for (int i = 0; i < mesh.size(); i++) {
 			Polygon p = (Polygon) mesh.get(i);
@@ -540,8 +548,10 @@ public class PDI extends javax.swing.JFrame {
 				ElasticTransform etP = p.getET();
 				lat = etP.getYi_(x, y);
 				lon = etP.getXi_(x, y);
-				jLat.setText("Lat: " + ToDegrees(lat)); //$NON-NLS-1$
-				jLong.setText("Long: " + ToDegrees(lon)); //$NON-NLS-1$
+				posDialog.setLat(lat);
+				posDialog.setLon(lon);
+//				jLat.setText("Lat: " + ToDegrees(lat)); //$NON-NLS-1$
+//				jLong.setText("Long: " + ToDegrees(lon)); //$NON-NLS-1$
 				break;
 			}
 
@@ -1118,6 +1128,7 @@ public class PDI extends javax.swing.JFrame {
 			// jMenuView.add(getJMenuItemBandsThumbnails());
 			jMenuView.add(getJCheckBoxMIThumbs());
 			jMenuView.add(getJCheckBoxMISignature());
+			jMenuView.add(getJMenuPosition());
 			jMenuView.setEnabled(false);
 		}
 		return jMenuView;
@@ -1186,8 +1197,46 @@ public class PDI extends javax.swing.JFrame {
 		if(jCheckBoxMISignature == null) {
 			jCheckBoxMISignature = new JCheckBoxMenuItem();
 			jCheckBoxMISignature.setText("Pixel Signature");
+			jCheckBoxMISignature.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					jCheckBoxMISignatureActionPerformed(evt);
+				}
+			});
 		}
 		return jCheckBoxMISignature;
+	}
+	
+	private void jCheckBoxMISignatureActionPerformed(ActionEvent evt) {
+		if (!signDialog.isVisible()) {
+			signDialog.setVisible(true);
+			jCheckBoxMISignature.setSelected(true);
+			
+		} else {
+			signDialog.setVisible(false);
+			jCheckBoxMISignature.setSelected(false);
+		}
+	}
+	
+	private JCheckBoxMenuItem getJMenuPosition() {
+		if(JMenuPosition == null) {
+			JMenuPosition = new JCheckBoxMenuItem();
+			JMenuPosition.setText("Position");
+			JMenuPosition.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					JMenuPositionActionPerformed(evt);
+				}
+			});
+		}
+		return JMenuPosition;
+	}
+	
+	private void JMenuPositionActionPerformed(ActionEvent evt) {
+		if(posDialog.isVisible()){
+			posDialog.setVisible(false);
+		}
+		else{
+			posDialog.setVisible(true);
+		}
 	}
 
 }
