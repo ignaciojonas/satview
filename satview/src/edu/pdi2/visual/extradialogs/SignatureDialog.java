@@ -1,6 +1,8 @@
 package edu.pdi2.visual.extradialogs;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
@@ -8,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+
+import edu.pdi2.visual.PDI;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -22,12 +26,18 @@ import org.jfree.chart.JFreeChart;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class SignatureDialog extends javax.swing.JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2323461838981889233L;
 	private ChartPanel chartpanel;
 	private JFreeChart signatureG;
+	private PDI pdi;
 	
 	
-	public SignatureDialog(JFrame frame, JFreeChart signatureG) {
+	public SignatureDialog(PDI frame, JFreeChart signatureG) {
 		super(frame);
+		this.pdi = frame;
 		this.signatureG=signatureG;
 		initGUI();
 	}
@@ -36,6 +46,11 @@ public class SignatureDialog extends javax.swing.JDialog {
 		try {
 			{
 				getContentPane().setLayout(null);
+				this.addWindowListener(new WindowAdapter() {
+					public void windowClosed(WindowEvent evt) {
+						thisWindowClosed(evt);
+					}
+				});
 				{
 					chartpanel = new ChartPanel(signatureG);
 					getContentPane().add(chartpanel);
@@ -47,6 +62,10 @@ public class SignatureDialog extends javax.swing.JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void thisWindowClosed(WindowEvent evt) {
+		pdi.unselectSignatureMenuItem();
 	}
 
 }
