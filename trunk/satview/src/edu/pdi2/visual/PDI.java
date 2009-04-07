@@ -7,26 +7,24 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.image.renderable.ParameterBlock;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.media.jai.InterpolationNearest;
-import javax.media.jai.JAI;
-import javax.media.jai.PlanarImage;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -86,13 +84,16 @@ public class PDI extends javax.swing.JFrame {
 	private JMenuItem jMenuItemOpenL5;
 	private JMenu jMenuOpenImage;
 	private JMenuItem jMenuItem2;
-	private JLabel jLabel1;
+//	private JLabel jLabel1;
 	// private JPanel jPanel1;
 
 	private JPanel latLon;
 	private JButton jButton1;
 	private ChartPanel chartpanel;
 	private JLabel jLong;
+	private JMenuItem jMenuItemExit;
+	private JMenu jMenuExit;
+	private JSeparator jSeparator1;
 	private JCheckBoxMenuItem JMenuPosition;
 	private JCheckBoxMenuItem jCheckBoxMISignature;
 	private JCheckBoxMenuItem jCheckBoxMIThumbs;
@@ -108,7 +109,7 @@ public class PDI extends javax.swing.JFrame {
 	private JMenuItem jMenuItem3;
 	private JMenu jMenu3;
 	private JPanel thumPanel;
-	private JFileChooser jFileChooser2;
+//	private JFileChooser jFileChooser2;
 	private JMenuItem jMenuItem1;
 	private JMenu jMenu1;
 	private JMenuBar jMenuBar1;
@@ -120,7 +121,7 @@ public class PDI extends javax.swing.JFrame {
 	private File[] files;
 	private DisplayJAIWithAnnotations dj;
 	private SatelliteImage si = null;
-	private Vector mesh;
+	private Vector<Polygon> mesh;
 	private BandsManager bandsManager;
 	private CreateMesh cm;
 	private int upperLeftX, pixelsWidth, upperLeftY, pixelsHeight;
@@ -140,11 +141,11 @@ public class PDI extends javax.swing.JFrame {
 	// private DisplayJAIWithAnnotations band1TN;
 	// private DisplayJAIWithAnnotations band2TN;
 	// private DisplayJAIWithAnnotations band3TN;
-	private JMenuItem jMenuItemBandsThumbnails;
+//	private JMenuItem jMenuItemBandsThumbnails;
 	private JMenu jMenuView;
 
-	private JLabel jLabel2;
-	private JLabel jLabel3;
+//	private JLabel jLabel2;
+//	private JLabel jLabel3;
 
 	/** El directorio en el que se encuentra la imagen satelital actual */
 	private String directory;
@@ -216,11 +217,11 @@ public class PDI extends javax.swing.JFrame {
 		repaint();
 	}
 
-	public void setMesh(Vector mesh) {
+	public void setMesh(Vector<Polygon> mesh) {
 		this.mesh = mesh;
 	}
 
-	public Vector getMesh() {
+	public Vector<Polygon> getMesh() {
 		return mesh;
 	}
 
@@ -239,7 +240,7 @@ public class PDI extends javax.swing.JFrame {
 				"Valory", null, PlotOrientation.VERTICAL, true, true, false); //$NON-NLS-1$
 		initGUI();
 		files = new File[7];
-		mesh = new Vector();
+		mesh = new Vector<Polygon>();
 		selectedBands = new ArrayList<String>();
 
 		si = null;
@@ -276,6 +277,9 @@ public class PDI extends javax.swing.JFrame {
 						jMenuItem1 = new JMenuItem();
 						// jMenu1.add(jMenuItem1);
 						jMenu1.add(getJMenuOpenImage());
+						jMenu1.add(getJSeparator1());
+						jMenu1.add(getJMenuItemExit());
+
 						jMenuItem1.setText("Open Image"); //$NON-NLS-1$
 						jMenuItem1.addMouseListener(new MouseAdapter() {
 							public void mouseReleased(MouseEvent evt) {
@@ -438,12 +442,12 @@ public class PDI extends javax.swing.JFrame {
 		}
 	}
 
-	private JFileChooser getJFileChooser2() {
-		if (jFileChooser2 == null) {
-			jFileChooser2 = new JFileChooser();
-		}
-		return jFileChooser2;
-	}
+//	private JFileChooser getJFileChooser2() {
+//		if (jFileChooser2 == null) {
+//			jFileChooser2 = new JFileChooser();
+//		}
+//		return jFileChooser2;
+//	}
 
 	private void thumPanelMousePressed(MouseEvent evt) {
 		dj.set(dt.getImage());
@@ -540,8 +544,8 @@ public class PDI extends javax.swing.JFrame {
 //		jLong.setText("Long: " + ToDegrees(lon)); //$NON-NLS-1$
 
 		for (int i = 0; i < mesh.size(); i++) {
-			Polygon p = (Polygon) mesh.get(i);
-			Vector gPoints = p.getGPoints();
+			Polygon p = mesh.get(i);
+//			Vector gPoints = p.getGPoints();
 			if (p.isIn(point)) {
 				p.changeColor();
 				System.err.println("Estoy dentro de un pfoygon!"); //$NON-NLS-1$
@@ -866,18 +870,18 @@ public class PDI extends javax.swing.JFrame {
 			onMouseAction(evt, dt.getCroppedImageBounds(), false);
 	}
 
-	private String ToDegrees(double ang) {
-		double angle = ang / 10000;
-		String angleS = Double.toString(angle);
-		String grados = angleS.substring(0, angleS.indexOf('.'));
-		double c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
-		c = c * 60;
-		angleS = Double.toString(c);
-		String minutos = angleS.substring(0, angleS.indexOf('.'));
-		c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
-		double segundos = c * 60;
-		return new String(grados + "º " + minutos + "\' " + segundos + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
+//	private String ToDegrees(double ang) {
+//		double angle = ang / 10000;
+//		String angleS = Double.toString(angle);
+//		String grados = angleS.substring(0, angleS.indexOf('.'));
+//		double c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
+//		c = c * 60;
+//		angleS = Double.toString(c);
+//		String minutos = angleS.substring(0, angleS.indexOf('.'));
+//		c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
+//		double segundos = c * 60;
+//		return new String(grados + "º " + minutos + "\' " + segundos + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//	}
 
 	// FIXME
 	// private DisplayJAIWithAnnotations getBand1TN() {
@@ -904,32 +908,32 @@ public class PDI extends javax.swing.JFrame {
 	// return band3TN;
 	// }
 
-	private JLabel getJLabel1x() {
-		if (jLabel1 == null) {
-			jLabel1 = new JLabel();
-			jLabel1.setText("Band 1:"); //$NON-NLS-1$
-			jLabel1.setBounds(10, 540, 128, 14);
-		}
-		return jLabel1;
-	}
-
-	private JLabel getJLabel2x() {
-		if (jLabel2 == null) {
-			jLabel2 = new JLabel();
-			jLabel2.setText("Band 1:"); //$NON-NLS-1$
-			jLabel2.setBounds(210, 540, 128, 14);
-		}
-		return jLabel2;
-	}
-
-	private JLabel getJLabel3x() {
-		if (jLabel3 == null) {
-			jLabel3 = new JLabel();
-			jLabel3.setText("Band 1:"); //$NON-NLS-1$
-			jLabel3.setBounds(410, 540, 128, 14);
-		}
-		return jLabel3;
-	}
+//	private JLabel getJLabel1x() {
+//		if (jLabel1 == null) {
+//			jLabel1 = new JLabel();
+//			jLabel1.setText("Band 1:"); //$NON-NLS-1$
+//			jLabel1.setBounds(10, 540, 128, 14);
+//		}
+//		return jLabel1;
+//	}
+//
+//	private JLabel getJLabel2x() {
+//		if (jLabel2 == null) {
+//			jLabel2 = new JLabel();
+//			jLabel2.setText("Band 1:"); //$NON-NLS-1$
+//			jLabel2.setBounds(210, 540, 128, 14);
+//		}
+//		return jLabel2;
+//	}
+//
+//	private JLabel getJLabel3x() {
+//		if (jLabel3 == null) {
+//			jLabel3 = new JLabel();
+//			jLabel3.setText("Band 1:"); //$NON-NLS-1$
+//			jLabel3.setBounds(410, 540, 128, 14);
+//		}
+//		return jLabel3;
+//	}
 
 	private JMenuItem getJMenuItem2() {
 		if (jMenuItem2 == null) {
@@ -1237,6 +1241,38 @@ public class PDI extends javax.swing.JFrame {
 		else{
 			posDialog.setVisible(true);
 		}
+	}
+
+	public void unselectPositionMenuItem() {
+		JMenuPosition.setSelected(false);
+	}
+
+	public void unselectSignatureMenuItem() {
+		jCheckBoxMISignature.setSelected(false);
+	}
+	
+	private JSeparator getJSeparator1() {
+		if(jSeparator1 == null) {
+			jSeparator1 = new JSeparator();
+		}
+		return jSeparator1;
+	}
+	
+	private JMenuItem getJMenuItemExit() {
+		if(jMenuItemExit == null) {
+			jMenuItemExit = new JMenuItem();
+			jMenuItemExit.setText("Exit");
+			jMenuItemExit.addMouseListener(new MouseAdapter() {
+				public void mouseReleased(MouseEvent evt) {
+					jMenuItemExitMouseReleased(evt);
+				}
+			});
+		}
+		return jMenuItemExit;
+	}
+	
+	private void jMenuItemExitMouseReleased(MouseEvent evt) {
+		System.exit(0);
 	}
 
 }

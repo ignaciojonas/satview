@@ -1,11 +1,12 @@
 package edu.pdi2.visual.extradialogs;
-import javax.swing.BorderFactory;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import javax.swing.JFrame;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
+import edu.pdi2.visual.PDI;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -20,13 +21,19 @@ import javax.swing.SwingUtilities;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class PositionDialog extends javax.swing.JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2122848969086647677L;
 	private JPanel jPanel1;
 	private JLabel jLabel2;
 	private JLabel jLabel1;
+	private PDI pdi;
 
 	
-	public PositionDialog(JFrame frame) {
+	public PositionDialog(PDI frame) {
 		super(frame);
+		this.pdi = frame;
 		initGUI();
 	}
 	
@@ -34,7 +41,12 @@ public class PositionDialog extends javax.swing.JDialog {
 		try {
 			{
 				getContentPane().setLayout(null);
-	
+				this.addWindowListener(new WindowAdapter() {
+					public void windowClosing(WindowEvent evt) {
+						thisWindowClosing(evt);
+					}
+				});
+
 				{
 					jPanel1 = new JPanel();
 					getContentPane().add(jPanel1);
@@ -76,5 +88,9 @@ public class PositionDialog extends javax.swing.JDialog {
 		c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
 		double segundos = c * 60;
 		return new String(grados + "º " + minutos + "\' " + segundos + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	}
+	
+	private void thisWindowClosing(WindowEvent evt) {
+		pdi.unselectPositionMenuItem();
 	}
 }

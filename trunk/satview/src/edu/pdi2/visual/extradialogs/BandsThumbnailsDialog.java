@@ -1,21 +1,18 @@
 package edu.pdi2.visual.extradialogs;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.renderable.ParameterBlock;
 import java.util.List;
 
 import javax.media.jai.InterpolationNearest;
 import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
 
 import edu.pdi2.math.indexes.satellite.SatelliteImage;
 import edu.pdi2.visual.DisplayJAIWithAnnotations;
 import edu.pdi2.visual.PDI;
-
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
