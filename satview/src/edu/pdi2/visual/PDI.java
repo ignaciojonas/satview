@@ -21,6 +21,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import javax.swing.event.MenuEvent;
@@ -88,13 +89,11 @@ public class PDI extends javax.swing.JFrame {
 	// private JPanel jPanel1;
 
 	private JPanel latLon;
-	private JButton jButton1;
-	private ChartPanel chartpanel;
 	private JLabel jLong;
+	private JMenuItem JGenerarSignature;
 	private JMenuItem jMenuItemExit;
 	private JMenu jMenuExit;
 	private JSeparator jSeparator1;
-	private JCheckBoxMenuItem JMenuPosition;
 	private JCheckBoxMenuItem jCheckBoxMISignature;
 	private JCheckBoxMenuItem jCheckBoxMIThumbs;
 	private JMenuItem jMenuItem5;
@@ -115,7 +114,7 @@ public class PDI extends javax.swing.JFrame {
 	private JMenuBar jMenuBar1;
 	private JPanel image;
 	private static int dWidth = 590;
-	private static int dHeight = 490;
+	private static int dHeight = 470;
 	private Decoder decoder;
 	private ElasticTransform et;
 	private File[] files;
@@ -320,6 +319,7 @@ public class PDI extends javax.swing.JFrame {
 						jMenu4 = new JMenu();
 						jMenu3.add(jMenu4);
 						jMenu3.add(getJMenuItem5());
+						jMenu3.add(getJGenerarSignature());
 						jMenu4.setText("Image"); //$NON-NLS-1$
 						{
 							jCheckBoxMenuItem1 = new JCheckBoxMenuItem();
@@ -393,14 +393,14 @@ public class PDI extends javax.swing.JFrame {
 				image = new JPanel();
 
 				getContentPane().add(image);
-				image.setBounds(1, 10, 590, 525);
+				image.setBounds(1, 10, 590, dHeight+10);
 				{
 					dj = new DisplayJAIWithAnnotations();
 					image.add(dj);
-					dj.setBounds(0, 0, dWidth, 520);
-					dj.setPreferredSize(new Dimension(dWidth, 520));
-					dj.setMinimumSize(new Dimension(dWidth, 520));
-					dj.setMaximumSize(new Dimension(dWidth, 520));
+					dj.setBounds(0, 0, dWidth, dHeight);
+					dj.setPreferredSize(new Dimension(dWidth, dHeight));
+					dj.setMinimumSize(new Dimension(dWidth, dHeight));
+					dj.setMaximumSize(new Dimension(dWidth, dHeight));
 					dj.setBorder(BorderFactory.createTitledBorder("")); //$NON-NLS-1$
 					dj.addMouseListener(new MouseAdapter() {
 						public void mousePressed(MouseEvent evt) {
@@ -422,8 +422,6 @@ public class PDI extends javax.swing.JFrame {
 				thumPanel = new JPanel();
 				thumPanel.add(dt);
 				getContentPane().add(thumPanel);
-				getContentPane().add(getChartpanel());
-				getContentPane().add(getJButton1());
 				getContentPane().add(getLatLon());
 				// FIXME
 				// getContentPane().add(getBand1TN());
@@ -436,7 +434,7 @@ public class PDI extends javax.swing.JFrame {
 			}
 
 			pack();
-			this.setSize(866, 626);
+			this.setSize(866, 555);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -540,8 +538,8 @@ public class PDI extends javax.swing.JFrame {
 				+ crop.y + upperLeftY);
 		posDialog.setLat(lat);
 		posDialog.setLon(lon);
-//		jLat.setText("Lat: " + ToDegrees(lat)); //$NON-NLS-1$
-//		jLong.setText("Long: " + ToDegrees(lon)); //$NON-NLS-1$
+		jLat.setText("Lat: " + ToDegrees(lat)); //$NON-NLS-1$
+		jLong.setText("Long: " + ToDegrees(lon)); //$NON-NLS-1$
 
 		for (int i = 0; i < mesh.size(); i++) {
 			Polygon p = mesh.get(i);
@@ -562,7 +560,18 @@ public class PDI extends javax.swing.JFrame {
 		}
 
 	}
-
+	private String ToDegrees(double ang) {
+		double angle = ang / 10000;
+		String angleS = Double.toString(angle);
+		String grados = angleS.substring(0, angleS.indexOf('.'));
+		double c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
+		c = c * 60;
+		angleS = Double.toString(c);
+		String minutos = angleS.substring(0, angleS.indexOf('.'));
+		c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
+		double segundos = c * 60;
+		return new String(grados + "º " + minutos + "\' " + segundos + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	}
 	public void setNullCM() {
 		cm = null;
 	}
@@ -761,7 +770,7 @@ public class PDI extends javax.swing.JFrame {
 		if (jLat == null) {
 			jLat = new JLabel();
 			jLat.setText("Lat:"); //$NON-NLS-1$
-			jLat.setBounds(5, 5, 198, 14);
+			jLat.setBounds(10, 6, 198, 14);
 		}
 		return jLat;
 	}
@@ -770,33 +779,9 @@ public class PDI extends javax.swing.JFrame {
 		if (jLong == null) {
 			jLong = new JLabel();
 			jLong.setText("Long:"); //$NON-NLS-1$
-			jLong.setBounds(5, 25, 198, 14);
+			jLong.setBounds(245, 6, 198, 14);
 		}
 		return jLong;
-	}
-
-	private ChartPanel getChartpanel() {
-		if (chartpanel == null) {
-			chartpanel = new ChartPanel(signatureG);
-			chartpanel.setBounds(605, 154, 229, 155);
-			chartpanel.setBorder(BorderFactory.createTitledBorder("")); //$NON-NLS-1$
-		}
-		return chartpanel;
-	}
-
-	private JButton getJButton1() {
-		if (jButton1 == null) {
-			jButton1 = new JButton();
-			jButton1.setText("Generate"); //$NON-NLS-1$
-			jButton1.setBounds(749, 320, 85, 21);
-			jButton1.setBorder(BorderFactory.createTitledBorder("")); //$NON-NLS-1$
-			jButton1.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					jButton1ActionPerformed(evt);
-				}
-			});
-		}
-		return jButton1;
 	}
 
 	private void jButton1ActionPerformed(ActionEvent evt) {
@@ -855,11 +840,11 @@ public class PDI extends javax.swing.JFrame {
 	private JPanel getLatLon() {
 		if (latLon == null) {
 			latLon = new JPanel();
-			latLon.setBounds(620, 386, 200, 46);
+			latLon.setBounds(0, 480, 591, 27);
 			latLon.setLayout(null);
-			latLon.setBorder(BorderFactory.createTitledBorder("")); //$NON-NLS-1$
-			latLon.add(getJLabel2());
+			//latLon.setBorder(BorderFactory.createTitledBorder("")); //$NON-NLS-1$
 			latLon.add(getJLabel1());
+			latLon.add(getJLabel2());
 
 		}
 		return latLon;
@@ -1132,7 +1117,6 @@ public class PDI extends javax.swing.JFrame {
 			// jMenuView.add(getJMenuItemBandsThumbnails());
 			jMenuView.add(getJCheckBoxMIThumbs());
 			jMenuView.add(getJCheckBoxMISignature());
-			jMenuView.add(getJMenuPosition());
 			jMenuView.setEnabled(false);
 		}
 		return jMenuView;
@@ -1220,20 +1204,7 @@ public class PDI extends javax.swing.JFrame {
 			jCheckBoxMISignature.setSelected(false);
 		}
 	}
-	
-	private JCheckBoxMenuItem getJMenuPosition() {
-		if(JMenuPosition == null) {
-			JMenuPosition = new JCheckBoxMenuItem();
-			JMenuPosition.setText("Position");
-			JMenuPosition.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					JMenuPositionActionPerformed(evt);
-				}
-			});
-		}
-		return JMenuPosition;
-	}
-	
+
 	private void JMenuPositionActionPerformed(ActionEvent evt) {
 		if(posDialog.isVisible()){
 			posDialog.setVisible(false);
@@ -1273,6 +1244,65 @@ public class PDI extends javax.swing.JFrame {
 	
 	private void jMenuItemExitMouseReleased(MouseEvent evt) {
 		System.exit(0);
+	}
+	
+	private JMenuItem getJGenerarSignature() {
+		if(JGenerarSignature == null) {
+			JGenerarSignature = new JMenuItem();
+			JGenerarSignature.setText("Generate Image With Signatures");
+			JGenerarSignature.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					JGenerarSignatureActionPerformed(evt);
+				}
+			});
+		}
+		return JGenerarSignature;
+	}
+	
+	private void JGenerarSignatureActionPerformed(ActionEvent evt) {
+		if (signature != null) {
+			// FIXME hacer que esto se haga por IGUALDAD o por SIMILITUD de
+			// firmas
+			byte[] bottom = new byte[signature.length];
+			byte[] top = new byte[signature.length];
+
+			for (int i = 0; i < signature.length; ++i) {
+				bottom[i] = (byte) (signature[i] - 30);
+
+				top[i] = (byte) (signature[i] + 30);
+				if (top[i] < 0)
+					top[i] = 127;
+
+			}
+			bandsManager.setSignatureComparator(new SimilarSignatures(top,
+					bottom));
+			signature_image = bandsManager.getImageWithThisSignature(
+					upperLeftX, pixelsWidth + upperLeftX, upperLeftY,
+					pixelsHeight + upperLeftY);
+
+			int[] currentBands = si.getBands();
+			int band1 = currentBands[0];
+			int band2 = currentBands[1];
+			int band3 = currentBands[2];
+
+			// ahora la separo en 3 imagenes
+			List<SatelliteImage> siList = new ArrayList<SatelliteImage>();
+			List<byte[]> dataList = RawDataUtils.splitBands(signature_image);
+			for (int i = 0; i < dataList.size(); ++i) {
+				byte[] bs = dataList.get(i);
+				siList.add(ImageFactory.makeOneBandSatelliteImage(decoder, bs,
+						si.getBounds().x, si.getBounds().width,
+						si.getBounds().y, si.getBounds().height,
+						currentBands[i]));
+			}
+
+			siList.add(signature_image);
+			new FourTabsDialog(this, upperLeftX, upperLeftY, siList, "Band "
+					+ band1, "Band " + band2, "Band " + band3, "All Bands",
+					"Generated with digital signature");
+			// this.setSi(signature_image);
+
+		}
 	}
 
 }
