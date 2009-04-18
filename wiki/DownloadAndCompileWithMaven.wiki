@@ -234,7 +234,8 @@ y luego el de *jai_codec*
 
     ` mvn install:install-file -DgroupId=com.sun.media -DartifactId=jai_codec -Dversion=1.1.2 -Dpackaging=jar -Dfile=jai_codec.jar`
 
-Para instalar el jar correspondiente se hace lo mismo que antes:
+Para instalar el jar correspondiente a *directorychooser* se hace lo mismo que antes:
+
 Bajar y descomprimir los archivos desde
 
     [http://l2fprod.com/common/download.php]
