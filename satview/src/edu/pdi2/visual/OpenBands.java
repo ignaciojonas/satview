@@ -5,15 +5,13 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.BorderFactory;
-
 import javax.swing.JButton;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 import edu.pdi2.constants.AppConstants;
 
@@ -28,6 +26,10 @@ import edu.pdi2.constants.AppConstants;
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
 public class OpenBands extends javax.swing.JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7884212932131066271L;
 	private JLabel jLabel1;
 	private JLabel jLabel2;
 	private JLabel jLabel3;

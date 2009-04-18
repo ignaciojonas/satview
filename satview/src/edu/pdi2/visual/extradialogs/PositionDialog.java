@@ -28,12 +28,12 @@ public class PositionDialog extends javax.swing.JDialog {
 	private JPanel jPanel1;
 	private JLabel jLabel2;
 	private JLabel jLabel1;
-	private PDI pdi;
+//	private PDI pdi;
 
 	
 	public PositionDialog(PDI frame) {
 		super(frame);
-		this.pdi = frame;
+//		this.pdi = frame;
 		initGUI();
 	}
 	
@@ -91,6 +91,6 @@ public class PositionDialog extends javax.swing.JDialog {
 	}
 	
 	private void thisWindowClosing(WindowEvent evt) {
-		pdi.unselectPositionMenuItem();
+//		pdi.unselectPositionMenuItem();
 	}
 }

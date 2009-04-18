@@ -6,11 +6,10 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Vector;
-import javax.swing.BorderFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,14 +18,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.ListModel;
-import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
 
-import edu.pdi2.decoders.DecoderFactory;
 import edu.pdi2.forms.GeographicPoint;
 import edu.pdi2.forms.Polygon;
 import edu.pdi2.xml.Decoder;
@@ -46,6 +39,10 @@ import edu.pdi2.xml.Encoder;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class CreateMesh extends javax.swing.JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2797708846455598702L;
 	private JList jListForms;
 	private JLabel jLabel1;
 	private PDI pdi;
@@ -58,8 +55,6 @@ public class CreateMesh extends javax.swing.JDialog {
 	private JMenuItem jMenuItem1;
 	private JMenu jMenu1;
 	private JMenuBar jMenuBar1;
-	private JButton jButton6;
-	private JButton jButton5;
 	private SaveTriangle st;
 	private SavePolygon sp;
 
@@ -139,16 +134,16 @@ public class CreateMesh extends javax.swing.JDialog {
 	}
 	
 	private String[] generateList(){
-		Vector mesh=pdi.getMesh();
+		Vector<Polygon> mesh=pdi.getMesh();
 		String[] list= new String[mesh.size()];
 		Polygon p;
-		Vector gPoints;
+		Vector<GeographicPoint> gPoints;
 		for(int i=0;i<mesh.size();i++){
-			p=(Polygon) mesh.get(i);
+			p=mesh.get(i);
 			gPoints=p.getGPoints();
 			String puntos="";
-			for (Iterator iterator = gPoints.iterator(); iterator.hasNext();) {
-				GeographicPoint point = (GeographicPoint) iterator.next();
+			for (Iterator<GeographicPoint> iterator = gPoints.iterator(); iterator.hasNext();) {
+				GeographicPoint point = iterator.next();
 				puntos+="("+point.getP().getX()+","+point.getP().getY()+")";
 			}
 			list[i]="Polygon "+puntos;
@@ -160,44 +155,6 @@ public class CreateMesh extends javax.swing.JDialog {
 			new DefaultComboBoxModel(
 					generateList());
 		jListForms.setModel(jListFormsModel);
-	}
-	
-	private JButton getJButton5() {
-		if(jButton5 == null) {
-			jButton5 = new JButton();
-			jButton5.setText("Cancel");
-			jButton5.setBounds(496, 374, 85, 21);
-			jButton5.setBorder(BorderFactory.createTitledBorder(""));
-			jButton5.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					jButton5ActionPerformed(evt);
-				}
-			});
-		}
-		return jButton5;
-	}
-	
-	private void jButton5ActionPerformed(ActionEvent evt) {
-		this.dispose();
-	}
-	
-	private JButton getJButton6() {
-		if(jButton6 == null) {
-			jButton6 = new JButton();
-			jButton6.setText("Ok");
-			jButton6.setBounds(400, 374, 85, 21);
-			jButton6.setBorder(BorderFactory.createTitledBorder(""));
-			jButton6.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					jButton6ActionPerformed(evt);
-				}
-			});
-		}
-		return jButton6;
-	}
-	
-	private void jButton6ActionPerformed(ActionEvent evt) {
-		this.dispose();
 	}
 	
 	private JMenu getJMenu1() {
@@ -272,6 +229,7 @@ public class CreateMesh extends javax.swing.JDialog {
 		return jMenuItem4;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void jMenuItem2ActionPerformed(ActionEvent evt) {
 		JFileChooser jfc = new JFileChooser();
 		jfc.setDialogTitle("Load Mesh");

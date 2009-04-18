@@ -1,6 +1,6 @@
 package edu.pdi2.math.indexes.Rayleigh;
 /*inutil*/
-public abstract class L7Rayleigh extends Rayleigh {
+public class L7Rayleigh extends Rayleigh {
 
 	public L7Rayleigh() {
 		super();

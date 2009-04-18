@@ -1,14 +1,4 @@
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.media.jai.JAI;
-import javax.media.jai.PlanarImage;
-import edu.pdi2.imaging.readers.FileChopReader;
-import edu.pdi2.math.indexes.Rayleigh.Rayleigh;
-import edu.pdi2.math.indexes.satellite.SatelliteImage;
 import edu.pdi2.visual.PDI;
-import edu.pdi2.visual.ThresholdSignature;
 
 
 public class Main {

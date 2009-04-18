@@ -2,22 +2,13 @@ package edu.pdi2.visual;
 
 import java.awt.Dimension;
 
-import javax.swing.WindowConstants;
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.CategoryLabelPositions;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.renderer.category.CategoryItemRenderer;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -35,6 +26,11 @@ import org.jfree.data.xy.XYSeriesCollection;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class ViewSignature extends javax.swing.JPanel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4455829839421588341L;
 
 	public ViewSignature(String name,byte[] sign){
 		super();

@@ -48,11 +48,12 @@ public class Polygon  {
 			
 		}
 	}
-		System.out.println(angle);
+//		System.out.println(angle);
 		Double d=Math.abs(Math.toDegrees(angle));
 		return (d.isNaN()||d>180.0);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public double getVolume(){
 		Vector<GeographicPoint> points = (Vector<GeographicPoint>) getGPoints().clone();
 		GeographicPoint p0 = points.get(0);

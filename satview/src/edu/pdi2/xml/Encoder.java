@@ -7,8 +7,6 @@ import java.util.Vector;
 
 import org.exolab.castor.xml.Marshaller;
 
-import edu.pdi2.forms.Polygon;
-
 
  public  class Encoder {
 	
@@ -17,7 +15,8 @@ public Encoder() {
 }
 
 
-    public static boolean encode(Vector pol, String nameFile)
+    @SuppressWarnings("unchecked")
+	public static boolean encode(Vector pol, String nameFile)
     {
         try
         {

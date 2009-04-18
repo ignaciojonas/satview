@@ -7,12 +7,11 @@ import java.util.Vector;
 
 import org.exolab.castor.xml.Unmarshaller;
 
-import edu.pdi2.forms.Polygon;
-
 
 public class Decoder {
 
 
+	@SuppressWarnings("unchecked")
 	public static Vector decode(String fileName){
 		Vector ret=null;
 		try {

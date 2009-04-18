@@ -2,8 +2,6 @@ package edu.pdi2.visual;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 
 public abstract class DrawableAnnotation {

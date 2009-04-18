@@ -1,5 +1,7 @@
 package edu.pdi2.math.indexes.Rayleigh;
 
+import edu.pdi2.constants.SatelliteNamingUtils;
+
 
 /**
  * Encapsula el ćalculo de todos los índices que se pueden extraer del efecto Rayleigh
@@ -7,6 +9,19 @@ package edu.pdi2.math.indexes.Rayleigh;
  *
  */
 public abstract class Rayleigh {
+
+	public static Rayleigh createInstance(String satelliteId) {
+		if (satelliteId.equals(SatelliteNamingUtils.LANDSAT5_ID))
+			return new L5Rayleigh();
+		
+		if (satelliteId.equals(SatelliteNamingUtils.LANDSAT7_ID))
+			return new L7Rayleigh();
+		
+//		if (satelliteId.equals(SatelliteNamingUtils.SACC_ID))
+//			return new SaccRayleigh();
+		
+		return null;
+	}
 
 	protected double[] taug = {0.01,0.03,0.02,0.02,0};
 	protected double[] solct = {1957,1829,1557,1047,219.3};
@@ -17,7 +32,7 @@ public abstract class Rayleigh {
 	protected double azimuthSen = 0;
 	protected double azimuthSolar = 80.0;
 
-	public Rayleigh() {
+	protected Rayleigh() {
 		taug[0] = 0.01;taug[1] = 0.03;taug[2] = 0.02;taug[3] = 0.02;taug[4] = 0;
 //		diaJuliano = 357;
 //		cenitSen = 0;

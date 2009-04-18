@@ -1,6 +1,4 @@
 package edu.pdi2.visual;
-import edu.pdi2.forms.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -18,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.pdi2.forms.GeographicPoint;
+import edu.pdi2.forms.Point;
 import edu.pdi2.forms.Polygon;
 
 /**
@@ -33,6 +32,11 @@ import edu.pdi2.forms.Polygon;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class SavePolygon extends javax.swing.JDialog {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	{
 		//Set Look & Feel
@@ -267,7 +271,7 @@ public class SavePolygon extends javax.swing.JDialog {
 	
 	private void jButton1MouseClicked(MouseEvent evt) {
 		if(index==5){
-			Rectangle r=jframe.getCrop();
+//			Rectangle r=jframe.getCrop();
 			Point p1,p2,p3,p4;
 			if((!jP1X.getText().equals(""))&&(!jP1Y.getText().equals(""))&&(!jP2X.getText().equals(""))&&(!jP2Y.getText().equals(""))&&(!jP3X.getText().equals(""))&&(!jP3Y.getText().equals(""))&&(!jP4X.getText().equals(""))&&(!jP4Y.getText().equals(""))){
 				Polygon pol;
@@ -281,7 +285,7 @@ public class SavePolygon extends javax.swing.JDialog {
 					gP2=new GeographicPoint(p2,Double.parseDouble(jP2Lat.getText()),Double.parseDouble(jP2Lon.getText()));
 					gP3=new GeographicPoint(p3,Double.parseDouble(jP3Lat.getText()),Double.parseDouble(jP3Lon.getText()));
 					gP4=new GeographicPoint(p4,Double.parseDouble(jP4Lat.getText()),Double.parseDouble(jP4Lon.getText()));
-					Vector<GeographicPoint> gPoints=new Vector();
+					Vector<GeographicPoint> gPoints=new Vector<GeographicPoint>();
 					gPoints.add(gP1);
 					gPoints.add(gP2);
 					gPoints.add(gP3);

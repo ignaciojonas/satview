@@ -3,7 +3,6 @@ package edu.pdi2.visual;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,7 +138,7 @@ public class CropImage extends javax.swing.JDialog {
 
 	private void btOkActionPerformed(ActionEvent evt) {
 		Rectangle b = djai.getViewportBounds();
-		FileChopReader fcr = new FileChopReader();
+//		FileChopReader fcr = new FileChopReader();
 		int x = (b.x * 9516) / image.getWidth();
 		if (x < 0)
 			x = 0;

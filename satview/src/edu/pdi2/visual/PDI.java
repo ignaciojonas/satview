@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -21,14 +20,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -47,6 +42,7 @@ import edu.pdi2.imaging.ImageFactory;
 import edu.pdi2.imaging.RawDataUtils;
 import edu.pdi2.imaging.readers.BandsManager;
 import edu.pdi2.math.indexes.satellite.SatelliteImage;
+import edu.pdi2.math.signatures.comparators.EqualSignature;
 import edu.pdi2.math.signatures.comparators.SimilarSignatures;
 import edu.pdi2.math.transforms.ElasticTransform;
 import edu.pdi2.math.transforms.RectangleTransform;
@@ -85,14 +81,14 @@ public class PDI extends javax.swing.JFrame {
 	private JMenuItem jMenuItemOpenL5;
 	private JMenu jMenuOpenImage;
 	private JMenuItem jMenuItem2;
-//	private JLabel jLabel1;
+	// private JLabel jLabel1;
 	// private JPanel jPanel1;
 
 	private JPanel latLon;
 	private JLabel jLong;
 	private JMenuItem JGenerarSignature;
 	private JMenuItem jMenuItemExit;
-	private JMenu jMenuExit;
+	// private JMenu jMenuExit;
 	private JSeparator jSeparator1;
 	private JCheckBoxMenuItem jCheckBoxMISignature;
 	private JCheckBoxMenuItem jCheckBoxMIThumbs;
@@ -100,15 +96,14 @@ public class PDI extends javax.swing.JFrame {
 	private JMenuItem jMenuItemSacc;
 	private JMenuItem jMenuItemLandsat7;
 	private JLabel jLat;
-	private JCheckBoxMenuItem jCheckBoxMenuItem3;
-	private JCheckBoxMenuItem jCheckBoxMenuItem2;
+	private JMenuItem jmiCorrectedRadiance;
 	private JMenu jMenu4;
-	private JCheckBoxMenuItem jCheckBoxMenuItem1;
+	private JMenuItem jmiCorrectedReflectance;
 	private JMenuItem jMenuItem4;
 	private JMenuItem jMenuItem3;
 	private JMenu jMenu3;
 	private JPanel thumPanel;
-//	private JFileChooser jFileChooser2;
+	// private JFileChooser jFileChooser2;
 	private JMenuItem jMenuItem1;
 	private JMenu jMenu1;
 	private JMenuBar jMenuBar1;
@@ -134,17 +129,9 @@ public class PDI extends javax.swing.JFrame {
 
 	private BandsThumbnailsDialog tnDialog = new BandsThumbnailsDialog(this);
 	private SignatureDialog signDialog;
-	private PositionDialog posDialog=new PositionDialog(this);
+	private PositionDialog posDialog = new PositionDialog(this);
 
-	// FIXME
-	// private DisplayJAIWithAnnotations band1TN;
-	// private DisplayJAIWithAnnotations band2TN;
-	// private DisplayJAIWithAnnotations band3TN;
-//	private JMenuItem jMenuItemBandsThumbnails;
 	private JMenu jMenuView;
-
-//	private JLabel jLabel2;
-//	private JLabel jLabel3;
 
 	/** El directorio en el que se encuentra la imagen satelital actual */
 	private String directory;
@@ -205,14 +192,6 @@ public class PDI extends javax.swing.JFrame {
 
 		if (tnDialog.isVisible())
 			updateThumbnails();
-		// FIXME
-		// band1TN.set(this.getThumnail(si.getOneBand(0)));
-		// jLabel1.setText("Band " + si.getBands()[0]);
-		// band2TN.set(this.getThumnail(si.getOneBand(1)));
-		// jLabel2.setText("Band " + si.getBands()[1]);
-		// band3TN.set(this.getThumnail(si.getOneBand(2)));
-		// jLabel3.setText("Band " + si.getBands()[2]);
-
 		repaint();
 	}
 
@@ -243,7 +222,7 @@ public class PDI extends javax.swing.JFrame {
 		selectedBands = new ArrayList<String>();
 
 		si = null;
-		signDialog=new SignatureDialog(this,signatureG);
+		signDialog = new SignatureDialog(this, signatureG);
 	}
 
 	public void setSelectedBands(List<String> sb) {
@@ -322,12 +301,13 @@ public class PDI extends javax.swing.JFrame {
 						jMenu3.add(getJGenerarSignature());
 						jMenu4.setText("Image"); //$NON-NLS-1$
 						{
-							jCheckBoxMenuItem1 = new JCheckBoxMenuItem();
-							jMenu4.add(jCheckBoxMenuItem1);
-							jCheckBoxMenuItem1.setText("Corrected Reflectance"); //$NON-NLS-1$
-							jCheckBoxMenuItem1.setAccelerator(KeyStroke
+							jmiCorrectedReflectance = new JMenuItem();
+							jMenu4.add(jmiCorrectedReflectance);
+							jmiCorrectedReflectance
+									.setText("Corrected Reflectance"); //$NON-NLS-1$
+							jmiCorrectedReflectance.setAccelerator(KeyStroke
 									.getKeyStroke("ctrl pressed 1")); //$NON-NLS-1$
-							jCheckBoxMenuItem1
+							jmiCorrectedReflectance
 									.addActionListener(new ActionListener() {
 										public void actionPerformed(
 												ActionEvent evt) {
@@ -336,26 +316,12 @@ public class PDI extends javax.swing.JFrame {
 									});
 						}
 						{
-							jCheckBoxMenuItem2 = new JCheckBoxMenuItem();
-							jMenu4.add(jCheckBoxMenuItem2);
-							jCheckBoxMenuItem2.setText("RAW"); //$NON-NLS-1$
-							jCheckBoxMenuItem2.setAccelerator(KeyStroke
-									.getKeyStroke("ctrl pressed 2")); //$NON-NLS-1$
-							jCheckBoxMenuItem2
-									.addActionListener(new ActionListener() {
-										public void actionPerformed(
-												ActionEvent evt) {
-											jCheckBoxMenuItem2ActionPerformed(evt);
-										}
-									});
-						}
-						{
-							jCheckBoxMenuItem3 = new JCheckBoxMenuItem();
-							jMenu4.add(jCheckBoxMenuItem3);
-							jCheckBoxMenuItem3.setText("Corrected Radiance"); //$NON-NLS-1$
-							jCheckBoxMenuItem3.setAccelerator(KeyStroke
-									.getKeyStroke("ctrl pressed 3")); //$NON-NLS-1$
-							jCheckBoxMenuItem3
+							jmiCorrectedRadiance = new JMenuItem();
+							jMenu4.add(jmiCorrectedRadiance);
+							jmiCorrectedRadiance.setText("Corrected Radiance"); //$NON-NLS-1$
+							jmiCorrectedRadiance.setAccelerator(KeyStroke
+									.getKeyStroke("ctrl pressed 2"));
+							jmiCorrectedRadiance
 									.addActionListener(new ActionListener() {
 										public void actionPerformed(
 												ActionEvent evt) {
@@ -393,7 +359,7 @@ public class PDI extends javax.swing.JFrame {
 				image = new JPanel();
 
 				getContentPane().add(image);
-				image.setBounds(1, 10, 590, dHeight+10);
+				image.setBounds(1, 10, 590, dHeight + 10);
 				{
 					dj = new DisplayJAIWithAnnotations();
 					image.add(dj);
@@ -401,7 +367,7 @@ public class PDI extends javax.swing.JFrame {
 					dj.setPreferredSize(new Dimension(dWidth, dHeight));
 					dj.setMinimumSize(new Dimension(dWidth, dHeight));
 					dj.setMaximumSize(new Dimension(dWidth, dHeight));
-					dj.setBorder(BorderFactory.createTitledBorder("")); //$NON-NLS-1$
+					dj.setBorder(BorderFactory.createTitledBorder(""));
 					dj.addMouseListener(new MouseAdapter() {
 						public void mousePressed(MouseEvent evt) {
 							djMousePressed(evt);
@@ -423,29 +389,23 @@ public class PDI extends javax.swing.JFrame {
 				thumPanel.add(dt);
 				getContentPane().add(thumPanel);
 				getContentPane().add(getLatLon());
-				// FIXME
-				// getContentPane().add(getBand1TN());
-				// getContentPane().add(getBand2TN());
-				// getContentPane().add(getBand3TN());
-				// getContentPane().add(getJLabel1x());
-				// getContentPane().add(getJLabel2x());
-				// getContentPane().add(getJLabel3x());
+
 				thumPanel.setBounds(636, 18, 166, 123);
 			}
 
 			pack();
-			this.setSize(866, 555);
+			this.setSize(866, 575);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-//	private JFileChooser getJFileChooser2() {
-//		if (jFileChooser2 == null) {
-//			jFileChooser2 = new JFileChooser();
-//		}
-//		return jFileChooser2;
-//	}
+	// private JFileChooser getJFileChooser2() {
+	// if (jFileChooser2 == null) {
+	// jFileChooser2 = new JFileChooser();
+	// }
+	// return jFileChooser2;
+	// }
 
 	private void thumPanelMousePressed(MouseEvent evt) {
 		dj.set(dt.getImage());
@@ -520,7 +480,7 @@ public class PDI extends javax.swing.JFrame {
 		if (chart) {
 			signature = bandsManager.getSignature(new Point(evt.getX() + crop.x
 					+ upperLeftX, evt.getY() + crop.y + upperLeftY));
-			XYSeries signature1 = new XYSeries("Signature"); //$NON-NLS-1$
+			XYSeries signature1 = new XYSeries("Signature");
 			for (int i = 0; i < signature.length; i++) {
 				signature1.add(i, signature[i]);
 			}
@@ -532,36 +492,35 @@ public class PDI extends javax.swing.JFrame {
 		int x = evt.getX() + crop.x + upperLeftX;
 		int y = evt.getY() + crop.y + upperLeftY;
 		edu.pdi2.forms.Point point = new Point(x, y);
-		double lat = et.getXi_(evt.getX() + crop.x + upperLeftX, evt.getY()
-				+ crop.y + upperLeftY);
-		double lon = et.getYi_(evt.getX() + crop.x + upperLeftX, evt.getY()
-				+ crop.y + upperLeftY);
+		double lat = et.getXi_(x, y);
+		double lon = et.getYi_(x, y);
 		posDialog.setLat(lat);
 		posDialog.setLon(lon);
-		jLat.setText("Lat: " + ToDegrees(lat)); //$NON-NLS-1$
-		jLong.setText("Long: " + ToDegrees(lon)); //$NON-NLS-1$
+		jLat.setText("Lat: " + ToDegrees(lat / 10000));
+		jLong.setText("Long: " + ToDegrees(lon / 10000));
 
 		for (int i = 0; i < mesh.size(); i++) {
 			Polygon p = mesh.get(i);
-//			Vector gPoints = p.getGPoints();
+			// Vector gPoints = p.getGPoints();
 			if (p.isIn(point)) {
 				p.changeColor();
-				System.err.println("Estoy dentro de un pfoygon!"); //$NON-NLS-1$
+
 				ElasticTransform etP = p.getET();
 				lat = etP.getYi_(x, y);
 				lon = etP.getXi_(x, y);
 				posDialog.setLat(lat);
 				posDialog.setLon(lon);
-//				jLat.setText("Lat: " + ToDegrees(lat)); //$NON-NLS-1$
-//				jLong.setText("Long: " + ToDegrees(lon)); //$NON-NLS-1$
+				jLat.setText("Lat: " + ToDegrees(lat));
+				jLong.setText("Long: " + ToDegrees(lon));
 				break;
 			}
 
 		}
 
 	}
+
 	private String ToDegrees(double ang) {
-		double angle = ang / 10000;
+		double angle = ang;
 		String angleS = Double.toString(angle);
 		String grados = angleS.substring(0, angleS.indexOf('.'));
 		double c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
@@ -570,8 +529,9 @@ public class PDI extends javax.swing.JFrame {
 		String minutos = angleS.substring(0, angleS.indexOf('.'));
 		c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
 		double segundos = c * 60;
-		return new String(grados + "º " + minutos + "\' " + segundos + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return new String(grados + "º " + minutos + "\' " + segundos + "\""); //$NON-NLS-2$ //$NON-NLS-3$
 	}
+
 	public void setNullCM() {
 		cm = null;
 	}
@@ -589,31 +549,17 @@ public class PDI extends javax.swing.JFrame {
 	}
 
 	private void jCheckBoxMenuItem1ActionPerformed(ActionEvent evt) {
-		jCheckBoxMenuItem2.setSelected(false);
-		jCheckBoxMenuItem3.setSelected(false);
+		jmiCorrectedRadiance.setSelected(false);
 		// ---------------- Corrected Reflectance.
 		// if (corrected_reflectance == null) {
 		corrected_reflectance = si.getReflectanceCorrected(si.getBounds().x, si
 				.getBounds().width, si.getBounds().y, si.getBounds().height);
-		// }
-		// FIXME esto no se hace así...
-		// String band1 = selectedBands.get(0);
-		// band1 = band1.substring(band1.length() - 5, band1.length() - 4);
-		// String band2 = selectedBands.get(1);
-		// band2 = band2.substring(band2.length() - 5, band2.length() - 4);
-		// String band3 = selectedBands.get(2);
-		// band3 = band3.substring(band3.length() - 5, band3.length() - 4);
 
-		// se hace así
 		int[] currentBands = si.getBands();
 		int band1 = currentBands[0];
 		int band2 = currentBands[1];
 		int band3 = currentBands[2];
 
-		// FIXME Esta no era la idea. La idea era combinar las 3 bandas
-		// corregidas en
-		// una imagen nueva
-		// corrected_reflectance.add(si);
 		byte[] data = RawDataUtils.mergeBands(corrected_reflectance);
 		corrected_reflectance.add(ImageFactory.makeSatelliteImage(decoder,
 				data, si.getBounds().x, si.getBounds().width, si.getBounds().y,
@@ -623,18 +569,7 @@ public class PDI extends javax.swing.JFrame {
 				upperLeftX,
 				upperLeftY,
 				corrected_reflectance,
-				"Band " + band1, "Band " + band2, "Band " + band3, "All Bands", "Corrected Reflectance"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-	}
-
-	private void jCheckBoxMenuItem2ActionPerformed(ActionEvent evt) {
-		jCheckBoxMenuItem1.setSelected(false);
-		jCheckBoxMenuItem3.setSelected(false);
-		// ---------------- RAW.
-		SatelliteImage s = bandsManager
-				.getRawImage(selectedBands, upperLeftX, upperLeftX
-						+ pixelsWidth, upperLeftY, upperLeftY + pixelsHeight);
-		this.setSi(s);
+				"Band " + band1, "Band " + band2, "Band " + band3, "All Bands", "Corrected Reflectance"); //$NON-NLS-2$ //$NON-NLS-3$
 
 	}
 
@@ -674,10 +609,10 @@ public class PDI extends javax.swing.JFrame {
 	private void setElasticTransform() {
 		// esto se tiene que hacer después de haber decodificado el header
 		et = new RectangleTransform(0, decoder.getPPL(), decoder.getPPL(), 0,
-				0, 0, decoder.getLPI(), decoder.getLPI(), decoder.getUL_lon(),
-				decoder.getUR_lon(), decoder.getLR_lon(), decoder.getLL_lon(),
-				decoder.getUL_lat(), decoder.getUR_lat(), decoder.getLR_lat(),
-				decoder.getLL_lat());
+				0, 0, decoder.getLPI(), decoder.getLPI(), decoder.getUL_lat(),
+				decoder.getUR_lat(), decoder.getLR_lat(), decoder.getLL_lat(),
+				decoder.getUL_lon(), decoder.getUR_lon(), decoder.getLR_lon(),
+				decoder.getLL_lon());
 	}
 
 	private void setBandsManager(String dirPath, String satelliteId) {
@@ -720,56 +655,32 @@ public class PDI extends javax.swing.JFrame {
 	}
 
 	private void jCheckBoxMenuItem3ActionPerformed(ActionEvent evt) {
-		jCheckBoxMenuItem2.setSelected(false);
-		jCheckBoxMenuItem1.setSelected(false);
 		// ---------------- Corrected Radiance.
 		// if (corrected_radiance == null)
 		corrected_radiance = (List<SatelliteImage>) si.getRadianceCorrected(si
 				.getBounds().x, si.getBounds().width, si.getBounds().y, si
 				.getBounds().height);
 
-		// FIXME esto no se hace así...
-		// String band1 = selectedBands.get(0);
-		// band1 = band1.substring(band1.length() - 5, band1.length() - 4);
-		// String band2 = selectedBands.get(1);
-		// band2 = band2.substring(band2.length() - 5, band2.length() - 4);
-		// String band3 = selectedBands.get(2);
-		// band3 = band3.substring(band3.length() - 5, band3.length() - 4);
-
-		// se hace así
 		int[] currentBands = si.getBands();
 		int band1 = currentBands[0];
 		int band2 = currentBands[1];
 		int band3 = currentBands[2];
 
-		// FIXME Esta no era la idea. La idea era combinar las 3 bandas
-		// corregidas en
-		// una imagen nueva
-		// corrected_radiance.add(si);
 		byte[] data = RawDataUtils.mergeBands(corrected_radiance);
 
 		corrected_radiance.add(ImageFactory.makeSatelliteImage(decoder, data,
 				si.getBounds().x, si.getBounds().width, si.getBounds().y, si
 						.getBounds().height, selectedBands));
 
-		new FourTabsDialog(
-				this,
-				upperLeftX,
-				upperLeftY,
-				corrected_radiance,
-				"Band " + band1, "Band " + band2, "Band " + band3, "All Bands", "Corrected Radiance"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		// List<SatelliteImage> s= new ArrayList<SatelliteImage>();
-		// s.add(si);
-		// s.add(si);
-		// s.add(si);
-		//		
-		// new CorrectedDialog(this,x0,y0,s,"Band 1","Band 2","Band 3");
+		new FourTabsDialog(this, upperLeftX, upperLeftY, corrected_radiance,
+				"Band " + band1, "Band " + band2, "Band " + band3, "All Bands",
+				"Corrected Radiance");
 	}
 
 	private JLabel getJLabel1() {
 		if (jLat == null) {
 			jLat = new JLabel();
-			jLat.setText("Lat:"); //$NON-NLS-1$
+			jLat.setText("Lat:");
 			jLat.setBounds(10, 6, 198, 14);
 		}
 		return jLat;
@@ -778,57 +689,10 @@ public class PDI extends javax.swing.JFrame {
 	private JLabel getJLabel2() {
 		if (jLong == null) {
 			jLong = new JLabel();
-			jLong.setText("Long:"); //$NON-NLS-1$
+			jLong.setText("Long:");
 			jLong.setBounds(245, 6, 198, 14);
 		}
 		return jLong;
-	}
-
-	private void jButton1ActionPerformed(ActionEvent evt) {
-
-		if (signature != null) {
-			// FIXME hacer que esto se haga por IGUALDAD o por SIMILITUD de
-			// firmas
-			byte[] bottom = new byte[signature.length];
-			byte[] top = new byte[signature.length];
-
-			for (int i = 0; i < signature.length; ++i) {
-				bottom[i] = (byte) (signature[i] - 30);
-
-				top[i] = (byte) (signature[i] + 30);
-				if (top[i] < 0)
-					top[i] = 127;
-
-			}
-			bandsManager.setSignatureComparator(new SimilarSignatures(top,
-					bottom));
-			signature_image = bandsManager.getImageWithThisSignature(
-					upperLeftX, pixelsWidth + upperLeftX, upperLeftY,
-					pixelsHeight + upperLeftY);
-
-			int[] currentBands = si.getBands();
-			int band1 = currentBands[0];
-			int band2 = currentBands[1];
-			int band3 = currentBands[2];
-
-			// ahora la separo en 3 imagenes
-			List<SatelliteImage> siList = new ArrayList<SatelliteImage>();
-			List<byte[]> dataList = RawDataUtils.splitBands(signature_image);
-			for (int i = 0; i < dataList.size(); ++i) {
-				byte[] bs = dataList.get(i);
-				siList.add(ImageFactory.makeOneBandSatelliteImage(decoder, bs,
-						si.getBounds().x, si.getBounds().width,
-						si.getBounds().y, si.getBounds().height,
-						currentBands[i]));
-			}
-
-			siList.add(signature_image);
-			new FourTabsDialog(this, upperLeftX, upperLeftY, siList, "Band "
-					+ band1, "Band " + band2, "Band " + band3, "All Bands",
-					"Generated with digital signature");
-			// this.setSi(signature_image);
-
-		}
 	}
 
 	public Rectangle getCrop() {
@@ -842,7 +706,7 @@ public class PDI extends javax.swing.JFrame {
 			latLon = new JPanel();
 			latLon.setBounds(0, 480, 591, 27);
 			latLon.setLayout(null);
-			//latLon.setBorder(BorderFactory.createTitledBorder("")); //$NON-NLS-1$
+			// latLon.setBorder(BorderFactory.createTitledBorder(""));
 			latLon.add(getJLabel1());
 			latLon.add(getJLabel2());
 
@@ -855,75 +719,10 @@ public class PDI extends javax.swing.JFrame {
 			onMouseAction(evt, dt.getCroppedImageBounds(), false);
 	}
 
-//	private String ToDegrees(double ang) {
-//		double angle = ang / 10000;
-//		String angleS = Double.toString(angle);
-//		String grados = angleS.substring(0, angleS.indexOf('.'));
-//		double c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
-//		c = c * 60;
-//		angleS = Double.toString(c);
-//		String minutos = angleS.substring(0, angleS.indexOf('.'));
-//		c = Double.parseDouble(angleS.substring(angleS.indexOf('.')));
-//		double segundos = c * 60;
-//		return new String(grados + "º " + minutos + "\' " + segundos + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-//	}
-
-	// FIXME
-	// private DisplayJAIWithAnnotations getBand1TN() {
-	// if (band1TN == null) {
-	// band1TN = new DisplayJAIWithAnnotations();
-	// band1TN.setBounds(10, 560, 150, 150);
-	// }
-	// return band1TN;
-	// }
-	//
-	// private DisplayJAIWithAnnotations getBand2TN() {
-	// if (band2TN == null) {
-	// band2TN = new DisplayJAIWithAnnotations();
-	// band2TN.setBounds(210, 560, 150, 150);
-	// }
-	// return band2TN;
-	// }
-	//
-	// private DisplayJAIWithAnnotations getBand3TN() {
-	// if (band3TN == null) {
-	// band3TN = new DisplayJAIWithAnnotations();
-	// band3TN.setBounds(410, 560, 150, 150);
-	// }
-	// return band3TN;
-	// }
-
-//	private JLabel getJLabel1x() {
-//		if (jLabel1 == null) {
-//			jLabel1 = new JLabel();
-//			jLabel1.setText("Band 1:"); //$NON-NLS-1$
-//			jLabel1.setBounds(10, 540, 128, 14);
-//		}
-//		return jLabel1;
-//	}
-//
-//	private JLabel getJLabel2x() {
-//		if (jLabel2 == null) {
-//			jLabel2 = new JLabel();
-//			jLabel2.setText("Band 1:"); //$NON-NLS-1$
-//			jLabel2.setBounds(210, 540, 128, 14);
-//		}
-//		return jLabel2;
-//	}
-//
-//	private JLabel getJLabel3x() {
-//		if (jLabel3 == null) {
-//			jLabel3 = new JLabel();
-//			jLabel3.setText("Band 1:"); //$NON-NLS-1$
-//			jLabel3.setBounds(410, 540, 128, 14);
-//		}
-//		return jLabel3;
-//	}
-
 	private JMenuItem getJMenuItem2() {
 		if (jMenuItem2 == null) {
 			jMenuItem2 = new JMenuItem();
-			jMenuItem2.setText("Edit Rayleigh Data"); //$NON-NLS-1$
+			jMenuItem2.setText("Edit Rayleigh Data");
 			jMenuItem2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					jMenuItem2ActionPerformed(evt);
@@ -1077,8 +876,6 @@ public class PDI extends javax.swing.JFrame {
 				+ band1, "Band " + band2, "Band " + band3, "All Bands",
 				"Generated with digital signature");
 
-		// this.setSi(signature_image);
-		// FIXME
 	}
 
 	/**
@@ -1122,25 +919,12 @@ public class PDI extends javax.swing.JFrame {
 		return jMenuView;
 	}
 
-	// private JMenuItem getJMenuItemBandsThumbnails() {
-	// if(jMenuItemBandsThumbnails == null) {
-	// jMenuItemBandsThumbnails = new JMenuItem();
-	// jMenuItemBandsThumbnails.setText("Bands Thumbnails");
-	// jMenuItemBandsThumbnails.addMouseListener(new MouseAdapter() {
-	// public void mouseReleased(MouseEvent evt) {
-	// jMenuItemBandsThumbnailsMouseReleased(evt);
-	// }
-	// });
-	// }
-	// return jMenuItemBandsThumbnails;
-	// }
-
 	private void showThumbnails(MouseEvent evt) {
 		if (!tnDialog.isVisible()) {
 			tnDialog.setVisible(true);
 
 			updateThumbnails();
-			
+
 		} else {
 			tnDialog.setVisible(false);
 		}
@@ -1178,11 +962,11 @@ public class PDI extends javax.swing.JFrame {
 
 	public void unselectThumbnailsMenuItem() {
 		jCheckBoxMIThumbs.setSelected(false);
-		
+
 	}
-	
+
 	private JCheckBoxMenuItem getJCheckBoxMISignature() {
-		if(jCheckBoxMISignature == null) {
+		if (jCheckBoxMISignature == null) {
 			jCheckBoxMISignature = new JCheckBoxMenuItem();
 			jCheckBoxMISignature.setText("Pixel Signature");
 			jCheckBoxMISignature.addActionListener(new ActionListener() {
@@ -1193,44 +977,31 @@ public class PDI extends javax.swing.JFrame {
 		}
 		return jCheckBoxMISignature;
 	}
-	
+
 	private void jCheckBoxMISignatureActionPerformed(ActionEvent evt) {
 		if (!signDialog.isVisible()) {
 			signDialog.setVisible(true);
 			jCheckBoxMISignature.setSelected(true);
-			
+
 		} else {
 			signDialog.setVisible(false);
 			jCheckBoxMISignature.setSelected(false);
 		}
 	}
 
-	private void JMenuPositionActionPerformed(ActionEvent evt) {
-		if(posDialog.isVisible()){
-			posDialog.setVisible(false);
-		}
-		else{
-			posDialog.setVisible(true);
-		}
-	}
-
-	public void unselectPositionMenuItem() {
-		JMenuPosition.setSelected(false);
-	}
-
 	public void unselectSignatureMenuItem() {
 		jCheckBoxMISignature.setSelected(false);
 	}
-	
+
 	private JSeparator getJSeparator1() {
-		if(jSeparator1 == null) {
+		if (jSeparator1 == null) {
 			jSeparator1 = new JSeparator();
 		}
 		return jSeparator1;
 	}
-	
+
 	private JMenuItem getJMenuItemExit() {
-		if(jMenuItemExit == null) {
+		if (jMenuItemExit == null) {
 			jMenuItemExit = new JMenuItem();
 			jMenuItemExit.setText("Exit");
 			jMenuItemExit.addMouseListener(new MouseAdapter() {
@@ -1241,15 +1012,15 @@ public class PDI extends javax.swing.JFrame {
 		}
 		return jMenuItemExit;
 	}
-	
+
 	private void jMenuItemExitMouseReleased(MouseEvent evt) {
 		System.exit(0);
 	}
-	
+
 	private JMenuItem getJGenerarSignature() {
-		if(JGenerarSignature == null) {
+		if (JGenerarSignature == null) {
 			JGenerarSignature = new JMenuItem();
-			JGenerarSignature.setText("Generate Image With Signatures");
+			JGenerarSignature.setText("Same Signature");
 			JGenerarSignature.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					JGenerarSignatureActionPerformed(evt);
@@ -1258,24 +1029,21 @@ public class PDI extends javax.swing.JFrame {
 		}
 		return JGenerarSignature;
 	}
-	
+
 	private void JGenerarSignatureActionPerformed(ActionEvent evt) {
 		if (signature != null) {
-			// FIXME hacer que esto se haga por IGUALDAD o por SIMILITUD de
-			// firmas
-			byte[] bottom = new byte[signature.length];
-			byte[] top = new byte[signature.length];
-
-			for (int i = 0; i < signature.length; ++i) {
-				bottom[i] = (byte) (signature[i] - 30);
-
-				top[i] = (byte) (signature[i] + 30);
-				if (top[i] < 0)
-					top[i] = 127;
-
-			}
-			bandsManager.setSignatureComparator(new SimilarSignatures(top,
-					bottom));
+			// byte[] bottom = new byte[signature.length];
+			// byte[] top = new byte[signature.length];
+			//
+			// for (int i = 0; i < signature.length; ++i) {
+			// bottom[i] = (byte) (signature[i] - 30);
+			//
+			// top[i] = (byte) (signature[i] + 30);
+			// if (top[i] < 0)
+			// top[i] = 127;
+			//
+			// }
+			bandsManager.setSignatureComparator(new EqualSignature(signature));
 			signature_image = bandsManager.getImageWithThisSignature(
 					upperLeftX, pixelsWidth + upperLeftX, upperLeftY,
 					pixelsHeight + upperLeftY);
