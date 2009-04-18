@@ -136,15 +136,17 @@ Con esto simplemente indicamos los jars de los cuales depende este proyecto, per
 
 === Configurando el JAR de salida ===
 
-Para decirle a _maven_ el formato en que queremos nuestro JAR de salida y configurar algunos parámetros como el `classpath` de la aplicación, vamos a agregar 3 plugins en la sección `<plugins>` del archivo _pom_
+Para decirle a _maven_ el formato en que queremos nuestro JAR de salida y configurar algunos parámetros como el `classpath` de la aplicación, los directorios del código y de los archivos de salida y los niveles de _compliance_ para ambos, vamos a agregar la sección `<build>` en el archivo *pom.xml* y 3 plugins dentro de ella (más precisamente, en la sección `<plugins>` dentro de `<build>`).
 
 {{{
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-              ...
-                 <plugins>
+          <build>
+		<sourceDirectory>target/checkout/src</sourceDirectory>
+		<outputDirectory>target/checkout/bin</outputDirectory>
+                <plugins>
 
                    ...
 
@@ -197,6 +199,7 @@ Para decirle a _maven_ el formato en que queremos nuestro JAR de salida y config
 			</plugin>
 
                </plugins>
+         </build>
 }}}
 
 Ahora ya estamos en condiciones de correr la generación del JAR para nuestro proyecto. Posicionados desde el directorio en donde se encuentra el archivo _pom_, usamos el comando
