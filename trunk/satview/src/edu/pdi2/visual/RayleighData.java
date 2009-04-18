@@ -1,36 +1,32 @@
 package edu.pdi2.visual;
-import java.awt.GridLayout;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.LineBorder;
 
-import edu.pdi2.math.indexes.Rayleigh.L5Rayleigh;
 import edu.pdi2.math.indexes.Rayleigh.Rayleigh;
 
 /**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
+ * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
+ * Builder, which is free for non-commercial use. If Jigloo is being used
+ * commercially (ie, by a corporation, company or business for any purpose
+ * whatever) then you should purchase a license for each developer using Jigloo.
+ * Please visit www.cloudgarden.com for details. Use of Jigloo implies
+ * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
+ * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
+ * ANY CORPORATE OR COMMERCIAL PURPOSE.
+ */
 public class RayleighData extends javax.swing.JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5750007670934624183L;
 	private JPanel jPanel1;
 	private JTextField jZSolar;
 	private JTextField jJulianDay;
@@ -79,17 +75,15 @@ public class RayleighData extends javax.swing.JDialog {
 	private JTextField jsolst2;
 	private JTextField jsolst1;
 	private Rayleigh r;
-	
 
-	
 	public RayleighData(JFrame frame, Rayleigh r) {
 		super(frame);
 		initGUI();
-		this.r=r;
+		this.r = r;
 		loadData();
 		this.setVisible(true);
 	}
-	
+
 	private void initGUI() {
 		try {
 			{
@@ -100,7 +94,9 @@ public class RayleighData extends javax.swing.JDialog {
 					getContentPane().add(jPanel1);
 					jPanel1.setBounds(12, 17, 483, 176);
 					jPanel1.setEnabled(false);
-					jPanel1.setBorder(BorderFactory.createTitledBorder("Atmospheric Optical Thickness"));
+					jPanel1
+							.setBorder(BorderFactory
+									.createTitledBorder("Atmospheric Optical Thickness"));
 					jPanel1.setLayout(null);
 					{
 						jLabel1 = new JLabel();
@@ -213,12 +209,13 @@ public class RayleighData extends javax.swing.JDialog {
 						jtaur5.setBounds(315, 144, 151, 21);
 					}
 				}
-					jPanel2 = new JPanel();
-					getContentPane().add(jPanel2);
-					jPanel2.setBounds(12, 199, 235, 204);
-					jPanel2.setLayout(null);
-					jPanel2.setBorder(BorderFactory.createTitledBorder("Solar Irradiance"));
-				
+				jPanel2 = new JPanel();
+				getContentPane().add(jPanel2);
+				jPanel2.setBounds(12, 199, 235, 210);
+				jPanel2.setLayout(null);
+				jPanel2.setBorder(BorderFactory
+						.createTitledBorder("Solar Irradiance"));
+
 				{
 					jLabel11 = new JLabel();
 					jPanel2.add(jLabel11);
@@ -274,12 +271,13 @@ public class RayleighData extends javax.swing.JDialog {
 					jPanel2.add(jsolst5);
 					jsolst5.setBounds(61, 158, 151, 21);
 				}
-				}
+			}
 			{
 				jPanel3 = new JPanel();
 				getContentPane().add(jPanel3);
 				jPanel3.setBounds(270, 198, 225, 44);
-				jPanel3.setBorder(BorderFactory.createTitledBorder("Julian Day"));
+				jPanel3.setBorder(BorderFactory
+						.createTitledBorder("Julian Day"));
 				jPanel3.setLayout(null);
 				{
 					jLabel19 = new JLabel();
@@ -298,7 +296,8 @@ public class RayleighData extends javax.swing.JDialog {
 				getContentPane().add(jPanel4);
 				jPanel4.setBounds(270, 248, 225, 75);
 				jPanel4.setLayout(null);
-				jPanel4.setBorder(BorderFactory.createTitledBorder("Zenith Angle"));
+				jPanel4.setBorder(BorderFactory
+						.createTitledBorder("Zenith Angle"));
 				{
 					jLabel18 = new JLabel();
 					jPanel4.add(jLabel18);
@@ -325,9 +324,10 @@ public class RayleighData extends javax.swing.JDialog {
 			{
 				jPanel5 = new JPanel();
 				getContentPane().add(jPanel5);
-				jPanel5.setBounds(270, 329, 225, 74);
+				jPanel5.setBounds(270, 329, 225, 80);
 				jPanel5.setLayout(null);
-				jPanel5.setBorder(BorderFactory.createTitledBorder("Azimuth Angle"));
+				jPanel5.setBorder(BorderFactory
+						.createTitledBorder("Azimuth Angle"));
 				{
 					jLabel16 = new JLabel();
 					jPanel5.add(jLabel16);
@@ -355,7 +355,7 @@ public class RayleighData extends javax.swing.JDialog {
 				jButton1 = new JButton();
 				getContentPane().add(jButton1);
 				jButton1.setText("Ok");
-				jButton1.setBounds(324, 415, 76, 23);
+				jButton1.setBounds(324, 427, 76, 23);
 				jButton1.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						jButton1ActionPerformed(evt);
@@ -366,7 +366,7 @@ public class RayleighData extends javax.swing.JDialog {
 				jButton2 = new JButton();
 				getContentPane().add(jButton2);
 				jButton2.setText("Cancel");
-				jButton2.setBounds(419, 415, 76, 23);
+				jButton2.setBounds(419, 427, 76, 23);
 				jButton2.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent evt) {
 						jButton2ActionPerformed(evt);
@@ -374,53 +374,65 @@ public class RayleighData extends javax.swing.JDialog {
 				});
 			}
 
-			this.setSize(531, 476);
+			this.setSize(527, 485);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-private void jButton1ActionPerformed(ActionEvent evt) {
-	r.setAzimuthSen(Double.parseDouble(jaSensor.getText()));
-	r.setAzimuthSolar(Double.parseDouble(jaSolar.getText()));
-	r.setCenitSen(Double.parseDouble(jZSensor.getText()));
-	r.setCenitSolar(Double.parseDouble(jZSolar.getText()));
-	r.setDiaJuliano(Integer.parseInt(jJulianDay.getText()));
-	double[] solct={Double.parseDouble(jsolst1.getText()),Double.parseDouble(jsolst2.getText()),Double.parseDouble(jsolst3.getText()),Double.parseDouble(jsolst4.getText()),Double.parseDouble(jsolst5.getText())};
-	r.setSolct(solct);
-	double[] taug = {Double.parseDouble(jtaug1.getText()),Double.parseDouble(jtaug2.getText()),Double.parseDouble(jtaug3.getText()),Double.parseDouble(jtaug4.getText()),Double.parseDouble(jtaug5.getText())};
-	r.setTaug(taug);
-	double[] taur = {Double.parseDouble(jtaur1.getText()),Double.parseDouble(jtaur2.getText()),Double.parseDouble(jtaur3.getText()),Double.parseDouble(jtaur4.getText()),Double.parseDouble(jtaur5.getText())};
-	r.setTaur(taur);
-}
+	private void jButton1ActionPerformed(ActionEvent evt) {
+		r.setAzimuthSen(Double.parseDouble(jaSensor.getText()));
+		r.setAzimuthSolar(Double.parseDouble(jaSolar.getText()));
+		r.setCenitSen(Double.parseDouble(jZSensor.getText()));
+		r.setCenitSolar(Double.parseDouble(jZSolar.getText()));
+		r.setDiaJuliano(Integer.parseInt(jJulianDay.getText()));
+		double[] solct = { Double.parseDouble(jsolst1.getText()),
+				Double.parseDouble(jsolst2.getText()),
+				Double.parseDouble(jsolst3.getText()),
+				Double.parseDouble(jsolst4.getText()),
+				Double.parseDouble(jsolst5.getText()) };
+		r.setSolct(solct);
+		double[] taug = { Double.parseDouble(jtaug1.getText()),
+				Double.parseDouble(jtaug2.getText()),
+				Double.parseDouble(jtaug3.getText()),
+				Double.parseDouble(jtaug4.getText()),
+				Double.parseDouble(jtaug5.getText()) };
+		r.setTaug(taug);
+		double[] taur = { Double.parseDouble(jtaur1.getText()),
+				Double.parseDouble(jtaur2.getText()),
+				Double.parseDouble(jtaur3.getText()),
+				Double.parseDouble(jtaur4.getText()),
+				Double.parseDouble(jtaur5.getText()) };
+		r.setTaur(taur);
+	}
 
-private void jButton2ActionPerformed(ActionEvent evt) {
-	this.dispose();
-}
-private void loadData(){
-	jaSensor.setText(String.valueOf(r.getAzimuthSen()));
-	jaSolar.setText(String.valueOf(r.getAzimuthSolar()));
-	jZSensor.setText(String.valueOf(r.getCenitSen()));
-	jZSolar.setText(String.valueOf(r.getCenitSolar()));
-	jJulianDay.setText(String.valueOf(r.getDiaJuliano()));
-	double[] solct=r.getSolct();
-	double[] taug =r.getTaug();
-	double[] taur =r.getTaur();
-	jsolst1.setText(String.valueOf(solct[0]));
-	jsolst2.setText(String.valueOf(solct[1]));
-	jsolst3.setText(String.valueOf(solct[2]));
-	jsolst4.setText(String.valueOf(solct[3]));
-	jsolst5.setText(String.valueOf(solct[4]));
-	jtaug1.setText(String.valueOf(taug[0]));
-	jtaug2.setText(String.valueOf(taug[1]));
-	jtaug3.setText(String.valueOf(taug[2]));
-	jtaug4.setText(String.valueOf(taug[3]));
-	jtaug5.setText(String.valueOf(taug[4]));
-	jtaur1.setText(String.valueOf(taur[0]));
-	jtaur2.setText(String.valueOf(taur[1]));
-	jtaur3.setText(String.valueOf(taur[2]));
-	jtaur4.setText(String.valueOf(taur[3]));
-	jtaur5.setText(String.valueOf(taur[4]));
-}
-}
+	private void jButton2ActionPerformed(ActionEvent evt) {
+		this.dispose();
+	}
 
+	private void loadData() {
+		jaSensor.setText(String.valueOf(r.getAzimuthSen()));
+		jaSolar.setText(String.valueOf(r.getAzimuthSolar()));
+		jZSensor.setText(String.valueOf(r.getCenitSen()));
+		jZSolar.setText(String.valueOf(r.getCenitSolar()));
+		jJulianDay.setText(String.valueOf(r.getDiaJuliano()));
+		double[] solct = r.getSolct();
+		double[] taug = r.getTaug();
+		double[] taur = r.getTaur();
+		jsolst1.setText(String.valueOf(solct[0]));
+		jsolst2.setText(String.valueOf(solct[1]));
+		jsolst3.setText(String.valueOf(solct[2]));
+		jsolst4.setText(String.valueOf(solct[3]));
+		jsolst5.setText(String.valueOf(solct[4]));
+		jtaug1.setText(String.valueOf(taug[0]));
+		jtaug2.setText(String.valueOf(taug[1]));
+		jtaug3.setText(String.valueOf(taug[2]));
+		jtaug4.setText(String.valueOf(taug[3]));
+		jtaug5.setText(String.valueOf(taug[4]));
+		jtaur1.setText(String.valueOf(taur[0]));
+		jtaur2.setText(String.valueOf(taur[1]));
+		jtaur3.setText(String.valueOf(taur[2]));
+		jtaur4.setText(String.valueOf(taur[3]));
+		jtaur5.setText(String.valueOf(taur[4]));
+	}
+}

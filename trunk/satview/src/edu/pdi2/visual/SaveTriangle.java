@@ -1,6 +1,4 @@
 package edu.pdi2.visual;
-import edu.pdi2.forms.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -18,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.pdi2.forms.GeographicPoint;
+import edu.pdi2.forms.Point;
 import edu.pdi2.forms.Polygon;
 
 /**
@@ -33,6 +32,11 @@ import edu.pdi2.forms.Polygon;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class SaveTriangle extends javax.swing.JDialog {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6865581683127117499L;
 
 	{
 		//Set Look & Feel
@@ -234,8 +238,8 @@ public class SaveTriangle extends javax.swing.JDialog {
 	
 	private void jButton1MouseClicked(MouseEvent evt) {
 		if(index==4){
-			Rectangle r=jframe.getCrop();
-			Point p1,p2,p3,p4;
+//			Rectangle r=jframe.getCrop();
+			Point p1,p2,p3;
 			if((!jP1X.getText().equals(""))&&(!jP1Y.getText().equals(""))&&(!jP2X.getText().equals(""))&&(!jP2Y.getText().equals(""))&&(!jP3X.getText().equals(""))&&(!jP3Y.getText().equals(""))){
 				Polygon pol;
 				p1=new Point(Integer.parseInt(jP1X.getText()),Integer.parseInt(jP1Y.getText()));
@@ -243,11 +247,11 @@ public class SaveTriangle extends javax.swing.JDialog {
 				p3=new Point(Integer.parseInt(jP3X.getText()),Integer.parseInt(jP3Y.getText()));
 				
 				if((!jP1Lat.getText().equals(""))&&(!jP1Lon.getText().equals(""))&&(!jP2Lat.getText().equals(""))&&(!jP2Lon.getText().equals(""))&&(!jP3Lat.getText().equals(""))&&(!jP3Lon.getText().equals(""))){
-					GeographicPoint gP1,gP2,gP3,gP4;
+					GeographicPoint gP1,gP2,gP3;
 					gP1=new GeographicPoint(p1,Double.parseDouble(jP1Lat.getText()),Double.parseDouble(jP1Lon.getText()));
 					gP2=new GeographicPoint(p2,Double.parseDouble(jP2Lat.getText()),Double.parseDouble(jP2Lon.getText()));
 					gP3=new GeographicPoint(p3,Double.parseDouble(jP3Lat.getText()),Double.parseDouble(jP3Lon.getText()));
-					Vector<GeographicPoint> gPoints=new Vector();
+					Vector<GeographicPoint> gPoints=new Vector<GeographicPoint>();
 					gPoints.add(gP1);
 					gPoints.add(gP2);
 					gPoints.add(gP3);

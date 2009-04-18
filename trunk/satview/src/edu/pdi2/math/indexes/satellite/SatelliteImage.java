@@ -11,7 +11,6 @@ import javax.media.jai.TiledImage;
 import edu.pdi2.constants.SatelliteNamingUtils;
 import edu.pdi2.decoders.Decoder;
 import edu.pdi2.imaging.ImageFactory;
-import edu.pdi2.math.indexes.Rayleigh.L5Rayleigh;
 import edu.pdi2.math.indexes.Rayleigh.Rayleigh;
 
 public class SatelliteImage extends TiledImage {
@@ -22,10 +21,6 @@ public class SatelliteImage extends TiledImage {
 
 	/** Identifica al satélite del cual proviene esta imagen */
 	private String satelliteId;
-
-	// TODO hacer esto flexible
-	// private SignatureComparator signatureComparator = new
-	// SimilarSignatures();
 
 	public SatelliteImage(Decoder decoder, int minX, int minY, int width,
 			int height, int tileGridXOffset, int tileGridYOffset,
@@ -44,12 +39,6 @@ public class SatelliteImage extends TiledImage {
 		int con = 0;
 		for (String string : bandsPaths) {
 			if (con < 3) {
-				// FIXME esto no tiene q "adivinar" el n° de banda por sí mismo.
-				// tiene q usar
-				// la clase SatelliteNamingUtils para pedirle el numero a partir
-				// del nombre del archivo
-				// this.bands.add(Integer.valueOf(string.substring(
-				// string.length() - 5, string.length() - 4)));
 				String bandFileName = string.substring(string.lastIndexOf("/")+1);
 				try {
 					this.bands.add(SatelliteNamingUtils.getBandNumber(decoder
@@ -60,7 +49,7 @@ public class SatelliteImage extends TiledImage {
 			}
 			con++;
 		}
-
+		rayleigh = Rayleigh.createInstance(decoder.getSatelliteId());
 //		rayleigh = new L5Rayleigh();
 	}
 	
@@ -83,7 +72,7 @@ public class SatelliteImage extends TiledImage {
 			//no se agregan mas de 3 bandas. Si llega a venir un arreglo con mas de 3 bandas, debe ser un error
 			this.bands.add(bands[b]);
 		}
-
+		rayleigh = Rayleigh.createInstance(decoder.getSatelliteId());
 //		rayleigh = new L5Rayleigh();
 	}
 
@@ -267,6 +256,7 @@ public class SatelliteImage extends TiledImage {
 			this.bands.add(new Integer(bands[i]));
 		}
 
+		rayleigh = Rayleigh.createInstance(decoder.getSatelliteId());
 		// rayleigh = new L5Rayleigh();
 	}
 

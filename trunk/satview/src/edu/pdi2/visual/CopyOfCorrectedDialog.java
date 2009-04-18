@@ -3,11 +3,10 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import javax.swing.BorderFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import edu.pdi2.math.indexes.satellite.SatelliteImage;
@@ -26,17 +25,20 @@ import edu.pdi2.math.indexes.satellite.SatelliteImage;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class CopyOfCorrectedDialog extends javax.swing.JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5159393937462577825L;
 	private JPanel thumPanel;
 	private DisplayThumbnail dt;
 	private DisplayJAIWithAnnotations dj;
 	private JPanel image;
 	private static int dWidth = 590;
 	private static int dHeight = 490;
-	private SatelliteImage si = null;
 	private int x0, y0;
 	
 	
-	public CopyOfCorrectedDialog(JFrame frame,int x0, int yo, SatelliteImage si, String title) {
+	public CopyOfCorrectedDialog(JFrame frame,int x0, int y0, SatelliteImage si, String title) {
 		super(frame);
 		initGUI();
 		this.x0=x0;
@@ -97,7 +99,6 @@ public class CopyOfCorrectedDialog extends javax.swing.JDialog {
 	}
 
 	public void setSi(SatelliteImage si) {
-		this.si = si;
 		dt.set(si, dWidth, dHeight);
 		dj.set(dt.getImage());
 		dj.setRectangle(getCrop());

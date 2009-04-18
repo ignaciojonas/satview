@@ -1,13 +1,9 @@
 package edu.pdi2.visual.extradialogs;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import javax.swing.BorderFactory;
+
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
@@ -47,8 +43,8 @@ public class SignatureDialog extends javax.swing.JDialog {
 			{
 				getContentPane().setLayout(null);
 				this.addWindowListener(new WindowAdapter() {
-					public void windowClosed(WindowEvent evt) {
-						thisWindowClosed(evt);
+					public void windowClosing(WindowEvent evt) {
+						thisWindowClosing(evt);
 					}
 				});
 				{
@@ -64,7 +60,7 @@ public class SignatureDialog extends javax.swing.JDialog {
 		}
 	}
 	
-	private void thisWindowClosed(WindowEvent evt) {
+	private void thisWindowClosing(WindowEvent evt) {
 		pdi.unselectSignatureMenuItem();
 	}
 

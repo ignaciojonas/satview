@@ -1,27 +1,15 @@
 package edu.pdi2.visual;
-import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.BorderFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JScrollPane;
 import javax.swing.ListModel;
-import javax.swing.SwingUtilities;
-
-import com.sun.media.jai.widget.DisplayJAI;
-
-import edu.pdi2.imaging.readers.BandsManager;
-import edu.pdi2.math.indexes.satellite.SatelliteImage;
 
 
 /**
@@ -37,6 +25,10 @@ import edu.pdi2.math.indexes.satellite.SatelliteImage;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class BandDialog extends javax.swing.JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3722465768602809902L;
 	private JList jList1;
 	private JButton btUp;
 	private JButton btCancel;
@@ -165,24 +157,6 @@ public class BandDialog extends javax.swing.JDialog {
 	}
 	
 	private void btGenerateMouseClicked(MouseEvent evt) {
-		List<String> filesList=pdi.getListFiles();
-		List<String> selectedBands=new ArrayList<String>();
-		
-//		FIXME esto no se hace así, acá no hay suficiente información para
-//		hacer el cambio de bandas.
-//		selectedBands.add(filesList.get(Integer.parseInt(bands[0].substring(5))-1));
-//		System.out.println("Banda "+Integer.parseInt(bands[0].substring(5))+"File :"+filesList.get(Integer.parseInt(bands[0].substring(5))-1));
-//		selectedBands.add(filesList.get(Integer.parseInt(bands[1].substring(5))-1));
-//		System.out.println("Banda "+Integer.parseInt(bands[1].substring(5))+"File :"+filesList.get(Integer.parseInt(bands[1].substring(5))-1));
-//		selectedBands.add(filesList.get(Integer.parseInt(bands[2].substring(5))-1));
-//		System.out.println("Banda "+Integer.parseInt(bands[2].substring(5))+"File :"+filesList.get(Integer.parseInt(bands[2].substring(5))-1));
-//		pdi.setSelectedBands(selectedBands);
-//		/* GENERAR LA IMAGEN A FALSO COLOR */
-//		BandsManager bandsManager = pdi.getBandsManager();
-//		SatelliteImage si=bandsManager.getRawImage(selectedBands, pdi.getX0(), pdi.getX1()+ pdi.getX0(), pdi.getY0(), pdi.getY1()+ pdi.getY0());
-//		pdi.setSi(si);
-		
-//		se hace así
 		int[] bandsNumbers = new int[bands.length];
 		for (int i=0; i<bands.length; ++i){
 			bandsNumbers[i] = Integer.valueOf(bands[i].substring(bands[i].length() - 1));

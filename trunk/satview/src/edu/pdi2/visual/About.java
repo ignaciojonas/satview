@@ -18,6 +18,10 @@ import javax.swing.SwingConstants;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class About extends javax.swing.JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3357903995563447375L;
 	private JLabel jLabel1;
 	private JLabel jLabel2;
 	private JLabel jLabel3;

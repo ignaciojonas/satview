@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.image.RenderedImage;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 import com.sun.media.jai.widget.DisplayJAI;
 
@@ -23,6 +22,10 @@ import com.sun.media.jai.widget.DisplayJAI;
 */
 public class ViewSignatureImage extends javax.swing.JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3658157598855859643L;
 	private DisplayJAI dj;
 	private RenderedImage image;
 	

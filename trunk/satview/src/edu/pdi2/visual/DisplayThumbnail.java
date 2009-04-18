@@ -6,8 +6,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.InputEvent;
@@ -50,6 +48,11 @@ import com.sun.media.jai.widget.DisplayJAI;
  */
 public class DisplayThumbnail extends DisplayJAI implements
 		MouseMotionListener, MouseListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6305938470019248783L;
+
 	// The original image.
 	private PlanarImage originalImage;
 
@@ -76,7 +79,7 @@ public class DisplayThumbnail extends DisplayJAI implements
 	private Color viewportColor;
 
 	// Colors to be used when the mouse is/isn't over the viewport.
-	private static Color viewportOn = new Color(120, 255, 120);
+//	private static Color viewportOn = new Color(120, 255, 120);
 
 	private static Color viewportOff = new Color(0, 192, 0);
 
