@@ -1,4 +1,4 @@
-
+package edu.pdi2;
 
 import java.awt.Point;
 import java.awt.image.ColorModel;

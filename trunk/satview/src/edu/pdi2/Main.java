@@ -1,3 +1,5 @@
+package edu.pdi2;
+
 import edu.pdi2.visual.PDI;
 
 
