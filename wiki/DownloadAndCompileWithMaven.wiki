@@ -1,17 +1,49 @@
-Instrucciones para bajar el código y compilarlo usando _Maven_
-= Introduction =
+Instrucciones para bajar el código y compilarlo usando _SVN_ y _Maven_
+
+----
+= Introducción =
+----
 
 Esta página contiene un par de pasos sencillos para bajar el código fuente desde este repositorio y compilarlo para obtener un jar.
 Luego, se puede correr el programa como cualquier otro JAR!
 
 Para hacer todo esto vamos a usar _Maven_, ya que parece ser la forma más fácil y además es una herramienta bastante poderosa y con la que varios parecen estar familiarizados!
 
+----
+= Herramientas necesarias =
+----
 
-= ¿Cómo bajar y compilar el código usando _Maven_? =
+Para realizar todos los pasos de este tutorial se necesitan solamente 2 herramientas:
 
-Lo primero que hay que hacer es instalar la versión más reciente de _Maven_ (este tutorial está probado con la versión *2.0.9*).
+ * SVN: para obtener el código fuente de la aplicación _satview_
+ * Maven: para  obtener las dependencias necesarias y crear el JAR con el código fuente.
 
-== Instalar _Maven_ ==
+Pasemos a las intrucciones para obtener ambas herramientas
+
+== Instalando SVN ==
+
+Para realizar la instalación en sistemas Linux, se puede usar el administrador de paquetes e instalar el paquete *subversion*. Una forma sencilla de hacer esto es ejecutar el siguiente comando en la consola (para sistemas con `apt-get`, como Ubuntu o Debian)
+
+    `fede@fede-ILD:$ sudo apt-get install subversion`
+
+En sistemas Windows, lo que se debe hacer es obtener el binario de *svn* y colocarlo en el path de ejecución, para poder usarlo como un comando.
+Descargar los binarios desde
+
+    [http://subversion.tigris.org/servlets/ProjectDocumentList?folderID=8100]
+
+el paquete con la versión más reciente en el momento de hacer este tutorial se llama `svn-win32-1.6.1.zip`.
+Luego se descomprime este archivo en una locación cualquiera y se modifica la variable de entorno _PATH_ para que encuentre la carpeta *bin* dentro de la carpeta recién descomprimida.
+Por ejemplo, si se descomprime el archivo en `C:\svn-1.1.6` entonces se debe modificar la variable _PATH_ para que contenga también la dirección
+
+   `C:\svn-1.1.6\bin`
+
+Si esto se realizó correctamente, podemos dirigirnos a la consola y ejecutar el comando
+
+   `fede@fede-ILD:~$ svn help`
+
+y nos dará una lista completa con todos los comandos extras que puede recibir _svn_
+
+== Instalando _Maven_ ==
 
 Hay muchos y muy buenos tutoriales para instalar _Maven_. En la página oficial se pueden encontrar las instrucciones para bajar e instalar la última versión.
 
@@ -34,6 +66,11 @@ Una vez hecho esto se puede corroborar que se instaló correctamente _maven_ usa
  `Java version: 1.6.0_07`
  `OS name: "linux" version: "2.6.27-11-generic" arch: "amd64" Family: "unix"`
 
+----
+= ¿Cómo bajar y compilar el código usando _Maven_? =
+----
+
+Una vez instalados _Maven_ y _SVN_ podemos proceder a bajar y compilar el código. Lo primero es obtener el código desde el repositorio.
 
 == Usar _maven_ para descargar el código ==
 
@@ -291,7 +328,9 @@ Ahora que ya se instalaron las dependencias ya se puede intentar la compilación
 
 Esto le dirá a _maven_ que corra la compilación y que use una variable de entorno para ubicar el repositorio y apuntar a los jars necesarios (la variable de entorno *M2_REPO* ya se encontraba configurada desde que se realizó la instalación de _maven_ al principio de este tutorial).
 
-== Voilà! ==
+----
+= Voilà! =
+----
 
 Ahora ya deberíamos tener el jar listo para correr dentro del directorio `target`. para correrlo simplemente hay que ejecutar el comando
 
