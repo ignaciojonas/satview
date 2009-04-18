@@ -147,9 +147,6 @@ Para decirle a _maven_ el formato en que queremos nuestro JAR de salida y config
 		<sourceDirectory>target/checkout/src</sourceDirectory>
 		<outputDirectory>target/checkout/bin</outputDirectory>
                 <plugins>
-
-                   ...
-
                         <!-- plugin para el nivel de compliance del codigo y del target -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -200,6 +197,9 @@ Para decirle a _maven_ el formato en que queremos nuestro JAR de salida y config
 
                </plugins>
          </build>
+     
+      ...
+ </project>
 }}}
 
 Ahora ya estamos en condiciones de correr la generación del JAR para nuestro proyecto. Posicionados desde el directorio en donde se encuentra el archivo _pom_, usamos el comando
