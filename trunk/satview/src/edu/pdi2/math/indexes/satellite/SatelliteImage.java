@@ -335,15 +335,16 @@ public class SatelliteImage extends TiledImage {
 			System.err.println("maxRho= " + maxRho + " | minRho= " + minRho);
 
 			// FIXME hacer minimos y maximos para el ajuste de la escala
-			DataBufferByte dbCorrected = new DataBufferByte(bufSize);
+			byte[] ds = new byte[bufSize];
+//			DataBufferByte dbCorrected = new DataBufferByte(bufSize);
 			for (int i = 0; i < rhos.length; ++i) {
-				// dbCorrected.setElem(i, (byte) (rhos[i]*255.0));
-				dbCorrected.setElem(i, (byte) ((rhos[i] - minRho) * factor));
+//				dbCorrected.setElem(i, (byte) ((rhos[i] - minRho) * factor));
+				ds[i] = (byte) ((rhos[i] - minRho) * factor);
 			}
 
 			// ret.add(makeCopy(dbCorrected,fromX,toX,fromY,toY,b));
 			ret.add(ImageFactory.makeOneBandSatelliteImage(decoder,
-					dbCorrected, fromX, toX, fromY, toY, b));
+					ds, fromX, toX, fromY, toY, b));
 		}
 		/*
 		 * double[] radiances = getRadiance(fromX, toX, fromY, toY); int

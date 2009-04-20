@@ -378,7 +378,7 @@ public class BandsManager {
 				} else {
 					// las firmas son distintas. Se llena el pixel con un color
 					// por defecto
-					RawDataUtils.erasePixel(newData, i - posInterna + 1, posInterna - 1);
+					RawDataUtils.erasePixel(newData, i - posInterna + 1, signSize);
 				}
 				posInterna = 0;
 			}
