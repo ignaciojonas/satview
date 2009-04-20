@@ -311,7 +311,7 @@ public class PDI extends javax.swing.JFrame {
 									.addActionListener(new ActionListener() {
 										public void actionPerformed(
 												ActionEvent evt) {
-											jCheckBoxMenuItem1ActionPerformed(evt);
+											jmiCorrectedRadianceActionPerformed(evt);
 										}
 									});
 						}
@@ -325,7 +325,7 @@ public class PDI extends javax.swing.JFrame {
 									.addActionListener(new ActionListener() {
 										public void actionPerformed(
 												ActionEvent evt) {
-											jCheckBoxMenuItem3ActionPerformed(evt);
+											jmiCorrectedReflectanceActionPerformed(evt);
 										}
 									});
 						}
@@ -548,28 +548,44 @@ public class PDI extends javax.swing.JFrame {
 		cm = new CreateMesh(this);
 	}
 
-	private void jCheckBoxMenuItem1ActionPerformed(ActionEvent evt) {
+	private void jmiCorrectedRadianceActionPerformed(ActionEvent evt) {
 		jmiCorrectedRadiance.setSelected(false);
 		// ---------------- Corrected Reflectance.
 		// if (corrected_reflectance == null) {
 		corrected_reflectance = si.getReflectanceCorrected(si.getBounds().x, si
 				.getBounds().width, si.getBounds().y, si.getBounds().height);
 
-		int[] currentBands = si.getBands();
-		int band1 = currentBands[0];
-		int band2 = currentBands[1];
-		int band3 = currentBands[2];
-
-		byte[] data = RawDataUtils.mergeBands(corrected_reflectance);
-		corrected_reflectance.add(ImageFactory.makeSatelliteImage(decoder,
-				data, si.getBounds().x, si.getBounds().width, si.getBounds().y,
-				si.getBounds().height, selectedBands));
-		new FourTabsDialog(
-				this,
-				upperLeftX,
-				upperLeftY,
-				corrected_reflectance,
-				"Band " + band1, "Band " + band2, "Band " + band3, "All Bands", "Corrected Reflectance"); //$NON-NLS-2$ //$NON-NLS-3$
+		showInManyTabsDialog(corrected_reflectance, "Corrected By Reflectance");
+//		int[] currentBands = si.getBands();
+//
+//		List<String> titles = new ArrayList<String>();
+//		
+//		List<SatelliteImage> allImages = new ArrayList<SatelliteImage>();
+//		
+//		for (int i=0; i<si.getNumBands(); ++i){
+//			titles.add("B"+ currentBands[i]);
+//			allImages.add(si.getOneBand(i));
+//			
+//			titles.add("B"+ currentBands[i] + " corrected");
+//			allImages.add(corrected_reflectance.get(i));
+//		}
+//		
+//		titles.add("All");
+//		allImages.add(si);
+//		
+//		byte[] data = RawDataUtils.mergeBands(corrected_reflectance);
+//		
+//		titles.add("All corrected");
+//		allImages.add(ImageFactory.makeSatelliteImage(decoder,
+//				data, si.getBounds().x, si.getBounds().width, si.getBounds().y,
+//				si.getBounds().height, selectedBands));
+//		
+//		new ManyTabsDialog(
+//				this,
+//				upperLeftX,
+//				upperLeftY,
+//				allImages,
+//				titles, "Corrected Reflectance"); //$NON-NLS-2$ //$NON-NLS-3$
 
 	}
 
@@ -654,34 +670,52 @@ public class PDI extends javax.swing.JFrame {
 		return decoder;
 	}
 
-	private void jCheckBoxMenuItem3ActionPerformed(ActionEvent evt) {
+	private void jmiCorrectedReflectanceActionPerformed(ActionEvent evt) {
 		// ---------------- Corrected Radiance.
 		// if (corrected_radiance == null)
 		corrected_radiance = (List<SatelliteImage>) si.getRadianceCorrected(si
 				.getBounds().x, si.getBounds().width, si.getBounds().y, si
 				.getBounds().height);
 
+		showInManyTabsDialog(corrected_radiance, "Corrected By Radiance");
+	}
+
+	private void showInManyTabsDialog(List<SatelliteImage> correctedImgsList, String dialogTitle) {
 		int[] currentBands = si.getBands();
-		int band1 = currentBands[0];
-		int band2 = currentBands[1];
-		int band3 = currentBands[2];
 
+		List<String> titles = new ArrayList<String>();
+		
+		List<SatelliteImage> allImages = new ArrayList<SatelliteImage>();
+		
+		for (int i=0; i<si.getNumBands(); ++i){
+			titles.add("B"+ currentBands[i]);
+			allImages.add(si.getOneBand(i));
+			
+			titles.add("B"+ currentBands[i] + " corrected");
+			allImages.add(correctedImgsList.get(i));
+		}
+		
+		titles.add("All");
+		allImages.add(si);
+		
 		byte[] data = RawDataUtils.mergeBands(corrected_radiance);
+		
+		titles.add("All corrected");
+		allImages.add(ImageFactory.makeSatelliteImage(decoder,
+				data, si.getBounds().x, si.getBounds().width, si.getBounds().y,
+				si.getBounds().height, selectedBands));
 
-		corrected_radiance.add(ImageFactory.makeSatelliteImage(decoder, data,
-				si.getBounds().x, si.getBounds().width, si.getBounds().y, si
-						.getBounds().height, selectedBands));
-
-		new FourTabsDialog(this, upperLeftX, upperLeftY, corrected_radiance,
-				"Band " + band1, "Band " + band2, "Band " + band3, "All Bands",
-				"Corrected Radiance");
+		
+		new ManyTabsDialog(this, upperLeftX, upperLeftY, allImages,
+				titles,
+				dialogTitle);
 	}
 
 	private JLabel getJLabel1() {
 		if (jLat == null) {
 			jLat = new JLabel();
 			jLat.setText("Lat:");
-			jLat.setBounds(10, 6, 198, 14);
+			jLat.setBounds(10, 6, 198, 21);
 		}
 		return jLat;
 	}
@@ -690,7 +724,7 @@ public class PDI extends javax.swing.JFrame {
 		if (jLong == null) {
 			jLong = new JLabel();
 			jLong.setText("Long:");
-			jLong.setBounds(245, 6, 198, 14);
+			jLong.setBounds(245, 6, 198, 21);
 		}
 		return jLong;
 	}
@@ -872,8 +906,13 @@ public class PDI extends javax.swing.JFrame {
 		}
 
 		siList.add(signature_image);
-		new FourTabsDialog(this, upperLeftX, upperLeftY, siList, "Band "
-				+ band1, "Band " + band2, "Band " + band3, "All Bands",
+		List<String> titles = new ArrayList<String>();
+		titles.add("Band "+ band1);
+		titles.add("Band "+ band2);
+		titles.add("Band "+ band3);
+		titles.add("All bands");
+		
+		new ManyTabsDialog(this, upperLeftX, upperLeftY, siList, titles,
 				"Generated with digital signature");
 
 	}
@@ -1065,8 +1104,13 @@ public class PDI extends javax.swing.JFrame {
 			}
 
 			siList.add(signature_image);
-			new FourTabsDialog(this, upperLeftX, upperLeftY, siList, "Band "
-					+ band1, "Band " + band2, "Band " + band3, "All Bands",
+			List<String> titles = new ArrayList<String>();
+			titles.add("Band "+ band1);
+			titles.add("Band "+ band2);
+			titles.add("Band "+ band3);
+			titles.add("All bands");
+			
+			new ManyTabsDialog(this, upperLeftX, upperLeftY, siList, titles,
 					"Generated with digital signature");
 			// this.setSi(signature_image);
 
