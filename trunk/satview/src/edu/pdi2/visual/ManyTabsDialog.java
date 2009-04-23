@@ -1,5 +1,7 @@
 package edu.pdi2.visual;
 import java.awt.Rectangle;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -46,7 +48,7 @@ public class ManyTabsDialog extends javax.swing.JDialog {
 	private JPanel image;
 	private static int dWidth = 590;
 	private static int dHeight = 490;
-	
+	private int lastx=0, lasty=0;
 	private List<String> titles;
 	
 	List<SatelliteImage> si = null;
@@ -73,6 +75,8 @@ public class ManyTabsDialog extends javax.swing.JDialog {
 		setSi(si);
 		this.setTitle(titulo_ventana);
 		this.setVisible(true);
+		PDI.td.setDj(djs[0]);
+		PDI.td.setSI(si.get(0));
 	}
 	
 	private void initGUI() {
@@ -82,76 +86,84 @@ public class ManyTabsDialog extends javax.swing.JDialog {
 				this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 				this.setResizable(false);
 				getContentPane().add(this.getJTabbedPane1());
+				
 			}
-			this.setSize(800, 600);
+			this.setSize(600, 600);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	private void thumPanelMouseDragged(MouseEvent evt) {
-		DisplayThumbnail src = (DisplayThumbnail) evt.getSource();
-		for (int i=0; i<djs.length; ++i){
-			dts[i].updateLocation(src.getLastX(), src.getLastY());
-			djs[i].set(dts[i].getImage());
-			djs[i].setRectangle(dts[i].getCroppedImageBounds());
-			
-		}
-//		dj.set(dt.getImage());
-//		dj.setRectangle(dt.getCroppedImageBounds());
-//		dt1.updateLocation(dt.getLastX(), dt.getLastY());
-//		dj1.set(dt1.getImage());
-//		dj1.setRectangle(dt1.getCroppedImageBounds());
-//		dt2.updateLocation(dt.getLastX(), dt.getLastY());
-//		dj2.set(dt2.getImage());
-//		dj2.setRectangle(dt2.getCroppedImageBounds());
-//		dt3.updateLocation(dt.getLastX(), dt.getLastY());
-//		dj3.set(dt3.getImage());
-//		dj3.setRectangle(dt3.getCroppedImageBounds());
-		
-	}
-	private void thumPanelMousePressed(MouseEvent evt) {
-		thumPanelMousePressed(evt);		
-	}
+
+
+//	private void thumPanelMouseDragged(MouseEvent evt) {
+//		//DisplayThumbnail src = (DisplayThumbnail) evt.getSource();
+//		for (int i=0; i<djs.length; ++i){
+//			//dts[i].updateLocation(src.getLastX(), src.getLastY());
+//			//djs[i].set(dts[i].getImage());
+//			//djs[i].setRectangle(dts[i].getCroppedImageBounds());
+//		
+//		}
+//		
+//
+//		
+//	}
+//	private void thumPanelMousePressed(MouseEvent evt) {
+//		thumPanelMouseDragged(evt);		
+//	}
 
 	public void setSi(List<SatelliteImage> si) {
 		this.si = si;
-		for (int i=0; i<djs.length; ++i){
-			dts[i].set(si.get(i), dWidth, dHeight);
-			djs[i].set(dts[i].getImage());
-			djs[i].setRectangle(getCrop());
-		}
-//		dt.set(si.get(0), dWidth, dHeight);
-//		dj.set(dt.getImage());
-//		dj.setRectangle(getCrop());
-//		dt1.set(si.get(1), dWidth, dHeight);
-//		dj1.set(dt1.getImage());
-//		dj1.setRectangle(getCrop());
-//		dt2.set(si.get(2), dWidth, dHeight);
-//		dj2.set(dt2.getImage());
-//		dj2.setRectangle(getCrop());
-//		dt3.set(si.get(3), dWidth, dHeight);
-//		dj3.set(dt3.getImage());
-//		dj3.setRectangle(getCrop());
-
+		PDI.td.setDj(djs[0]);
+		PDI.td.setSI(si.get(0));
+//		for (int i=0; i<djs.length; ++i){
+//			//dts[i].set(si.get(i), dWidth, dHeight);
+//			//djs[i].set(dts[i].getImage());
+//			//djs[i].setRectangle(getCrop());
+//			
+//		}
+		
 		repaint();
 	}
-	public Rectangle getCrop() {
-		Rectangle crop = dts[0].getCroppedImageBounds();
-		return new Rectangle(x0 + crop.x, y0 + crop.y, crop.width, crop.height);
-	}
+//	public Rectangle getCrop() {
+//		//Rectangle crop = dts[0].getCroppedImageBounds();
+//		return new Rectangle(x0 + crop.x, y0 + crop.y, crop.width, crop.height);
+//	}
 	
 	private JTabbedPane getJTabbedPane1() {
 		if(jTabbedPane1 == null) {
 			jTabbedPane1 = new JTabbedPane();
-			jTabbedPane1.setBounds(0, 0, 794, 555);
-			
+			jTabbedPane1.setBounds(0, 0, 600, 555);
+			jTabbedPane1.addMouseListener(new MouseAdapter(){
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					// TODO Auto-generated method stub
+					actualizarViewPort(e);
+				}
+				@Override
+				public void mousePressed(MouseEvent e) {
+					// TODO Auto-generated method stub
+					actualizarViewPort(e);
+				}
+			});
+			jTabbedPane1.addFocusListener(new FocusAdapter() {
+				public void focusGained(FocusEvent evt) {
+					thisFocusGained(evt);
+				}
+
+				private void thisFocusGained(FocusEvent evt) {
+					for (int i=0; i<tabs.length; ++i){
+						if(tabs[i].isShowing()){
+							PDI.td.setDj(djs[i]);
+							PDI.td.setSI(si.get(i));
+						}
+					}
+					
+				}
+			});
 			for (int i=0; i<tabs.length; ++i){
 				jTabbedPane1.addTab(titles.get(i), null, getTab(i), null);
 			}
-//			jTabbedPane1.addTab(title1, null, getJPanel1(), null);
-//			jTabbedPane1.addTab(title2, null, getJPanel2(), null);
-//			jTabbedPane1.addTab(title3, null, getJPanel5(), null);
-//			jTabbedPane1.addTab(title4, null, getJPanel8(), null);
+
 		}
 		return jTabbedPane1;
 	}
@@ -160,25 +172,27 @@ public class ManyTabsDialog extends javax.swing.JDialog {
 		if(tabs[numTab] == null) {
 			tabs[numTab] = new JPanel();
 			tabs[numTab].setLayout(null);
-			{
-				thumPanel = new JPanel();
-				tabs[numTab].add(thumPanel);
-				thumPanel.setBounds(599, 4, 166, 123);
-				{
-					dts[numTab] = new DisplayThumbnail(0.1f);
-					thumPanel.add(dts[numTab]);
-					dts[numTab].addMouseMotionListener(new MouseMotionAdapter() {
-						public void mouseDragged(MouseEvent evt) {
-							thumPanelMouseDragged(evt);
-						}
-					});
-					dts[numTab].addMouseListener(new MouseAdapter() {
-						public void mousePressed(MouseEvent evt) {
-							thumPanelMousePressed(evt);
-						}
-					});
-				}
-			}
+			
+			
+//			{
+//				thumPanel = new JPanel();
+//				tabs[numTab].add(thumPanel);
+//				thumPanel.setBounds(599, 4, 166, 123);
+//				{
+//					dts[numTab] = new DisplayThumbnail(0.1f);
+//					thumPanel.add(dts[numTab]);
+//					dts[numTab].addMouseMotionListener(new MouseMotionAdapter() {
+//						public void mouseDragged(MouseEvent evt) {
+//							thumPanelMouseDragged(evt);
+//						}
+//					});
+//					dts[numTab].addMouseListener(new MouseAdapter() {
+//						public void mousePressed(MouseEvent evt) {
+//							thumPanelMousePressed(evt);
+//						}
+//					});
+//				}
+//			}
 			{
 				image = new JPanel();
 				tabs[numTab].add(image);
@@ -193,268 +207,17 @@ public class ManyTabsDialog extends javax.swing.JDialog {
 		}
 		return tabs[numTab];
 	}
-//	private JPanel getJPanel1() {
-//		if(jPanel1 == null) {
-//			jPanel1 = new JPanel();
-//			jPanel1.setLayout(null);
-//			{
-//				thumPanel = new JPanel();
-//				jPanel1.add(thumPanel);
-//				thumPanel.setBounds(599, 4, 166, 123);
-//				{
-//					dt = new DisplayThumbnail(0.1f);
-//					thumPanel.add(dt);
-//					dt.addMouseMotionListener(new MouseMotionAdapter() {
-//						public void mouseDragged(MouseEvent evt) {
-//							thumPanelMouseDragged(evt);
-//						}
-//					});
-//					dt.addMouseListener(new MouseAdapter() {
-//						public void mousePressed(MouseEvent evt) {
-//							thumPanelMousePressed(evt);
-//						}
-//					});
-//				}
-//			}
-//			{
-//				image = new JPanel();
-//				jPanel1.add(image);
-//				getContentPane().add(getJTabbedPane1());
-//				image.setBounds(-1, 4, 590, 488);
-//				image.setBorder(BorderFactory.createTitledBorder(""));
-//				{
-//					dj = new DisplayJAIWithAnnotations();
-//					image.add(dj);
-//				}
-//			}
-//		}
-//		return jPanel1;
-//	}
-//	private JPanel getJPanel8() {
-//		if(jPanel8 == null) {
-//			jPanel8 = new JPanel();
-//			jPanel8.setLayout(null);
-//			{
-//				thumPanel1 = new JPanel();
-//				jPanel8.add(thumPanel1);
-//				thumPanel1.setBounds(599, 4, 166, 123);
-//				{
-//					dt3 = new DisplayThumbnail(0.1f);
-//					thumPanel1.add(dt3);
-//					dt3.addMouseMotionListener(new MouseMotionAdapter() {
-//						public void mouseDragged(MouseEvent evt) {
-//							thumPanel1MouseDragged(evt);
-//						}
-//					});
-//					dt3.addMouseListener(new MouseAdapter() {
-//						public void mousePressed(MouseEvent evt) {
-//							thumPanel1MousePressed(evt);
-//						}
-//					});
-//				}
-//			}
-//			{
-//				image1 = new JPanel();
-//				jPanel8.add(image1);
-//				getContentPane().add(getJTabbedPane1());
-//				image1.setBorder(BorderFactory.createTitledBorder(""));
-//				image1.setBounds(0, 4, 590, 488);
-//				{
-//					dj3 = new DisplayJAIWithAnnotations();
-//					image1.add(dj3);
-//				}
-//			}
-//		}
-//		return jPanel8;
-//	}
-//	protected void thumPanel1MousePressed(MouseEvent evt) {
-//		dj3.set(dt3.getImage());
-//		dj3.setRectangle(dt3.getCroppedImageBounds());
-//		dt.updateLocation(dt3.getLastX(), dt3.getLastY());
-//		dj.set(dt.getImage());
-//		dj.setRectangle(dt.getCroppedImageBounds());
-//		dt1.updateLocation(dt3.getLastX(), dt3.getLastY());
-//		dj1.set(dt1.getImage());
-//		dj1.setRectangle(dt1.getCroppedImageBounds());
-//		dt2.updateLocation(dt3.getLastX(), dt3.getLastY());
-//		dj2.set(dt2.getImage());
-//		dj2.setRectangle(dt2.getCroppedImageBounds());
-//		
-//	}
-//
-//	protected void thumPanel1MouseDragged(MouseEvent evt) {
-//		dj3.set(dt3.getImage());
-//		dj3.setRectangle(dt3.getCroppedImageBounds());
-//		dt.updateLocation(dt3.getLastX(), dt3.getLastY());
-//		dj.set(dt.getImage());
-//		dj.setRectangle(dt.getCroppedImageBounds());
-//		dt1.updateLocation(dt3.getLastX(), dt3.getLastY());
-//		dj1.set(dt1.getImage());
-//		dj1.setRectangle(dt1.getCroppedImageBounds());
-//		dt2.updateLocation(dt3.getLastX(), dt3.getLastY());
-//		dj2.set(dt2.getImage());
-//		dj2.setRectangle(dt2.getCroppedImageBounds());
-//		
-//	}
 
-//	private JPanel getJPanel2() {
-//		if(jPanel2 == null) {
-//			jPanel2 = new JPanel();
-//			jPanel2.setLayout(null);
-//			jPanel2.add(getJPanel3());
-//			jPanel2.add(getJPanel4());
-//		}
-//		return jPanel2;
-//	}
-//	
-//	private JPanel getJPanel3() {
-//		if(jPanel3 == null) {
-//			jPanel3 = new JPanel();
-//			jPanel3.setBorder(BorderFactory.createTitledBorder(""));
-//			jPanel3.setBounds(0, 4, 590, 488);
-//			jPanel3.add(getDisplayJAIWithAnnotations1());
-//		}
-//		return jPanel3;
-//	}
-//	
-//	private DisplayJAIWithAnnotations getDisplayJAIWithAnnotations1() {
-//		if(dj1 == null) {
-//			dj1 = new DisplayJAIWithAnnotations();
-//		}
-//		return dj1;
-//	}
-//	
-//	private JPanel getJPanel4() {
-//		if(jPanel4 == null) {
-//			jPanel4 = new JPanel();
-//			jPanel4.setBounds(599, 4, 166, 123);
-//			jPanel4.add(getDisplayThumbnail1());
-//		}
-//		return jPanel4;
-//	}
-	
-//	private DisplayThumbnail getDisplayThumbnail1() {
-//		if(dt1 == null) {
-//			dt1 = new DisplayThumbnail(0.1f);
-//			dt1.addMouseMotionListener(new MouseMotionAdapter() {
-//				public void mouseDragged(MouseEvent evt) {
-//					displayThumbnail1MouseDragged(evt);
-//				}
-//			});
-//			dt1.addMouseListener(new MouseAdapter() {
-//				public void mousePressed(MouseEvent evt) {
-//					displayThumbnail1MousePressed(evt);
-//				}
-//			});
-//		}
-//		return dt1;
-//	}
-//	
-//	private JPanel getJPanel5() {
-//		if(jPanel5 == null) {
-//			jPanel5 = new JPanel();
-//			jPanel5.setLayout(null);
-//			jPanel5.add(getJPanel6());
-//			jPanel5.add(getJPanel7());
-//		}
-//		return jPanel5;
-//	}
-	
-//	private JPanel getJPanel6() {
-//		if(jPanel6 == null) {
-//			jPanel6 = new JPanel();
-//			jPanel6.setBounds(599, 4, 166, 123);
-//			jPanel6.add(getDisplayThumbnail1x());
-//		}
-//		return jPanel6;
-//	}
-	
-//	private DisplayThumbnail getDisplayThumbnail1x() {
-//		if(dt2 == null) {
-//			dt2 = new DisplayThumbnail(0.1f);
-//			dt2.addMouseMotionListener(new MouseMotionAdapter() {
-//				public void mouseDragged(MouseEvent evt) {
-//					displayThumbnail2MouseDragged(evt);
-//				}
-//			});
-//			dt2.addMouseListener(new MouseAdapter() {
-//				public void mousePressed(MouseEvent evt) {
-//					displayThumbnail2MousePressed(evt);
-//				}
-//			});
-//		}
-//		return dt2;
-//	}
-//	
-//	private JPanel getJPanel7() {
-//		if(jPanel7 == null) {
-//			jPanel7 = new JPanel();
-//			jPanel7.setBorder(BorderFactory.createTitledBorder(""));
-//			jPanel7.setBounds(0, 4, 590, 488);
-//			jPanel7.add(getDisplayJAIWithAnnotations1x());
-//		}
-//		return jPanel7;
-//	}
-//	
-//	private DisplayJAIWithAnnotations getDisplayJAIWithAnnotations1x() {
-//		if(dj2 == null) {
-//			dj2 = new DisplayJAIWithAnnotations();
-//		}
-//		return dj2;
-//	}
-//		
-//	private void displayThumbnail1MouseDragged(MouseEvent evt) {
-//		dj1.set(dt1.getImage());
-//		dj1.setRectangle(dt1.getCroppedImageBounds());
-//		dt.updateLocation(dt1.getLastX(), dt1.getLastY());
-//		dj.set(dt.getImage());
-//		dj.setRectangle(dt.getCroppedImageBounds());
-//		dt2.updateLocation(dt1.getLastX(), dt1.getLastY());
-//		dj2.set(dt2.getImage());
-//		dj2.setRectangle(dt2.getCroppedImageBounds());
-//		dt3.updateLocation(dt1.getLastX(), dt1.getLastY());
-//		dj3.set(dt3.getImage());
-//		dj3.setRectangle(dt3.getCroppedImageBounds());
-//	}
-//
-//	private void displayThumbnail1MousePressed(MouseEvent evt) {
-//		dj1.set(dt.getImage());
-//		dj1.setRectangle(dt1.getCroppedImageBounds());
-//		dt.updateLocation(dt1.getLastX(), dt1.getLastY());
-//		dj.set(dt.getImage());
-//		dj.setRectangle(dt.getCroppedImageBounds());
-//		dt2.updateLocation(dt1.getLastX(), dt1.getLastY());
-//		dj2.set(dt2.getImage());
-//		dj2.setRectangle(dt2.getCroppedImageBounds());
-//		dt3.updateLocation(dt1.getLastX(), dt1.getLastY());
-//		dj3.set(dt3.getImage());
-//		dj3.setRectangle(dt3.getCroppedImageBounds());
-//	}
-//	private void displayThumbnail2MouseDragged(MouseEvent evt) {
-//		dj2.set(dt2.getImage());
-//		dj2.setRectangle(dt2.getCroppedImageBounds());
-//		dt1.updateLocation(dt2.getLastX(), dt2.getLastY());
-//		dj1.set(dt1.getImage());
-//		dj1.setRectangle(dt1.getCroppedImageBounds());
-//		dt.updateLocation(dt2.getLastX(), dt2.getLastY());
-//		dj.set(dt.getImage());
-//		dj.setRectangle(dt.getCroppedImageBounds());
-//		dt3.updateLocation(dt2.getLastX(), dt2.getLastY());
-//		dj3.set(dt3.getImage());
-//		dj3.setRectangle(dt3.getCroppedImageBounds());
-//	}
-//	private void displayThumbnail2MousePressed(MouseEvent evt) {
-//		dj2.set(dt2.getImage());
-//		dj2.setRectangle(dt2.getCroppedImageBounds());
-//		dt1.updateLocation(dt2.getLastX(), dt2.getLastY());
-//		dj1.set(dt1.getImage());
-//		dj1.setRectangle(dt1.getCroppedImageBounds());
-//		dt.updateLocation(dt2.getLastX(), dt2.getLastY());
-//		dj.set(dt.getImage());
-//		dj.setRectangle(dt.getCroppedImageBounds());
-//		dt3.updateLocation(dt2.getLastX(), dt2.getLastY());
-//		dj3.set(dt3.getImage());
-//		dj3.setRectangle(dt3.getCroppedImageBounds());
-//	}
+	protected void actualizarViewPort(MouseEvent e) {
+		for (int i=0; i<tabs.length; ++i){
+			if(tabs[i].isShowing()){
+				PDI.td.setDj(djs[i]);
+				PDI.td.setSI(si.get(i));
+			}
+		}
+		//System.out.println("Lalalalalalala");
+		
+	}
+
 
 }
