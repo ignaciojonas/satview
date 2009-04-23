@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -49,6 +51,7 @@ import edu.pdi2.math.transforms.RectangleTransform;
 import edu.pdi2.visual.extradialogs.BandsThumbnailsDialog;
 import edu.pdi2.visual.extradialogs.PositionDialog;
 import edu.pdi2.visual.extradialogs.SignatureDialog;
+import edu.pdi2.visual.extradialogs.ThumnailDialog;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -77,15 +80,15 @@ public class PDI extends javax.swing.JFrame {
 		}
 	}
 
-	private DisplayThumbnail dt;
 	private JMenuItem jMenuItemOpenL5;
 	private JMenu jMenuOpenImage;
 	private JMenuItem jMenuItem2;
 	// private JLabel jLabel1;
 	// private JPanel jPanel1;
-
+	public static ThumnailDialog td;
 	private JPanel latLon;
 	private JLabel jLong;
+	private JCheckBoxMenuItem jViewThumnail;
 	private JMenuItem JGenerarSignature;
 	private JMenuItem jMenuItemExit;
 	// private JMenu jMenuExit;
@@ -102,14 +105,13 @@ public class PDI extends javax.swing.JFrame {
 	private JMenuItem jMenuItem4;
 	private JMenuItem jMenuItem3;
 	private JMenu jMenu3;
-	private JPanel thumPanel;
 	// private JFileChooser jFileChooser2;
 	private JMenuItem jMenuItem1;
 	private JMenu jMenu1;
 	private JMenuBar jMenuBar1;
 	private JPanel image;
-	private static int dWidth = 590;
-	private static int dHeight = 470;
+	public static int dWidth = 590;
+	public static int dHeight = 470;
 	private Decoder decoder;
 	private ElasticTransform et;
 	private File[] files;
@@ -162,6 +164,7 @@ public class PDI extends javax.swing.JFrame {
 
 	public void setPixelsWidth(int x1) {
 		this.pixelsWidth = x1;
+		
 	}
 
 	public void setUpperLeftY(int y0) {
@@ -186,10 +189,8 @@ public class PDI extends javax.swing.JFrame {
 
 	public void setSi(SatelliteImage si) {
 		this.si = si;
-		dt.set(si, dWidth, dHeight);
-		dj.set(dt.getImage());
-		dj.setRectangle(getCrop());
-
+		td.setDj(dj);
+		td.setSI(si);
 		if (tnDialog.isVisible())
 			updateThumbnails();
 		repaint();
@@ -223,6 +224,13 @@ public class PDI extends javax.swing.JFrame {
 
 		si = null;
 		signDialog = new SignatureDialog(this, signatureG);
+		td=new ThumnailDialog(this);
+		td.setDj(dj);
+		td.setUpperLeftX(upperLeftX);
+		td.setUpperLeftY(upperLeftY);
+		td.setPixelsWidth(pixelsWidth);
+		td.setPixelsHeight(pixelsHeight);
+		
 	}
 
 	public void setSelectedBands(List<String> sb) {
@@ -244,6 +252,11 @@ public class PDI extends javax.swing.JFrame {
 			this.setTitle("Procesamiento Digital de Imagenes"); //$NON-NLS-1$
 			getContentPane().setBackground(new java.awt.Color(212, 208, 200));
 			this.setResizable(false);
+			this.addFocusListener(new FocusAdapter() {
+				public void focusGained(FocusEvent evt) {
+					thisFocusGained(evt);
+				}
+			});
 			{
 				jMenuBar1 = new JMenuBar();
 				setJMenuBar(jMenuBar1);
@@ -334,22 +347,8 @@ public class PDI extends javax.swing.JFrame {
 			}
 			// First we create the instance of DisplayThumbnail with a 0.1
 			// scale.
-			dt = new DisplayThumbnail(0.1f);
-			dt.setPreferredSize(new Dimension(150, 100));
-			dt.setMinimumSize(new Dimension(150, 100));
-			dt.setMaximumSize(new Dimension(150, 100));
 			// dt.setBorder(BorderFactory.createTitledBorder(""));
 			// We must register mouse motion listeners to it !
-			dt.addMouseMotionListener(new MouseMotionAdapter() {
-				public void mouseDragged(MouseEvent evt) {
-					thumPanelMouseDragged(evt);
-				}
-			});
-			dt.addMouseListener(new MouseAdapter() {
-				public void mousePressed(MouseEvent evt) {
-					thumPanelMousePressed(evt);
-				}
-			});
 
 			// Now we create the instance of DisplayJAI to show the region
 			// corresponding to the viewport.
@@ -383,18 +382,11 @@ public class PDI extends javax.swing.JFrame {
 						}
 					});
 				}
-			}
-			{
-				thumPanel = new JPanel();
-				thumPanel.add(dt);
-				getContentPane().add(thumPanel);
 				getContentPane().add(getLatLon());
-
-				thumPanel.setBounds(636, 18, 166, 123);
 			}
 
 			pack();
-			this.setSize(866, 575);
+			this.setSize(604, 579);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -407,37 +399,8 @@ public class PDI extends javax.swing.JFrame {
 	// return jFileChooser2;
 	// }
 
-	private void thumPanelMousePressed(MouseEvent evt) {
-		dj.set(dt.getImage());
-		Rectangle r = this.getCrop();
-		if (dt.inViewport() == 0)
-			dj.setRectangle(r);
-		else {
-			if (dt.inViewport() == 1) {
-				r.x = upperLeftX + pixelsWidth - dWidth;
-				dj.setRectangle(r);
-			} else {
-				r.y = upperLeftY + pixelsHeight - dHeight;
-				dj.setRectangle(r);
-			}
-		}
-	}
 
-	private void thumPanelMouseDragged(MouseEvent evt) {
-		dj.set(dt.getImage());
-		Rectangle r = this.getCrop();
-		if (dt.inViewport() == 0)
-			dj.setRectangle(r);
-		else {
-			if (dt.inViewport() == 1) {
-				r.x = upperLeftX + pixelsWidth - dWidth;
-				dj.setRectangle(r);
-			} else {
-				r.y = upperLeftY + pixelsHeight - dHeight;
-				dj.setRectangle(r);
-			}
-		}
-	}
+
 
 	private void jMenuItem1MouseReleased(MouseEvent evt) {
 		// JDirectoryChooser dc = new JDirectoryChooser();
@@ -455,12 +418,12 @@ public class PDI extends javax.swing.JFrame {
 
 	private void djMouseDragged(MouseEvent evt) {
 		if (si != null) {
-			onMouseAction(evt, dt.getCroppedImageBounds(), true);
+			onMouseAction(evt, td.dt.getCroppedImageBounds(), true);
 		}
 	}
 
 	private void djMousePressed(MouseEvent evt) {
-		Rectangle crop = dt.getCroppedImageBounds();
+		Rectangle crop = td.dt.getCroppedImageBounds();
 		if (si != null) {
 			if (cm != null) {
 				cm.addPoint(evt.getX() + crop.x + upperLeftX, evt.getY()
@@ -729,11 +692,6 @@ public class PDI extends javax.swing.JFrame {
 		return jLong;
 	}
 
-	public Rectangle getCrop() {
-		Rectangle crop = dt.getCroppedImageBounds();
-		return new Rectangle(upperLeftX + crop.x, upperLeftY + crop.y,
-				crop.width, crop.height);
-	}
 
 	private JPanel getLatLon() {
 		if (latLon == null) {
@@ -750,7 +708,7 @@ public class PDI extends javax.swing.JFrame {
 
 	private void djMouseMoved(MouseEvent evt) {
 		if (si != null)
-			onMouseAction(evt, dt.getCroppedImageBounds(), false);
+			onMouseAction(evt, td.dt.getCroppedImageBounds(), false);
 	}
 
 	private JMenuItem getJMenuItem2() {
@@ -953,6 +911,7 @@ public class PDI extends javax.swing.JFrame {
 			// jMenuView.add(getJMenuItemBandsThumbnails());
 			jMenuView.add(getJCheckBoxMIThumbs());
 			jMenuView.add(getJCheckBoxMISignature());
+			jMenuView.add(getJViewThumnail());
 			jMenuView.setEnabled(false);
 		}
 		return jMenuView;
@@ -1114,6 +1073,35 @@ public class PDI extends javax.swing.JFrame {
 					"Generated with digital signature");
 			// this.setSi(signature_image);
 
+		}
+	}
+	
+	private JCheckBoxMenuItem getJViewThumnail() {
+		if(jViewThumnail == null) {
+			jViewThumnail = new JCheckBoxMenuItem();
+			jViewThumnail.setText("Thumnail");
+			jViewThumnail.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					jViewThumnailActionPerformed(evt);
+				}
+			});
+		}
+		return jViewThumnail;
+	}
+	
+	private void jViewThumnailActionPerformed(ActionEvent evt) {
+		if (jViewThumnail.isSelected())
+			td.setVisible(true);
+		else
+			td.setVisible(false);
+	}
+	
+	private void thisFocusGained(FocusEvent evt) {
+		if(si!=null){
+			td.setDj(dj);
+			td.setSI(si);
+			
+			
 		}
 	}
 

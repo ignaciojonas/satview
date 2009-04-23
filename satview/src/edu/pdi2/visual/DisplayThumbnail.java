@@ -466,7 +466,7 @@ public class DisplayThumbnail extends DisplayJAI implements
 	}
 
 	public void debug(String arg) {
-		System.out.println(arg);
+		//System.out.println(arg);
 
 	}
 
