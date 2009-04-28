@@ -1,18 +1,18 @@
 package edu.pdi2.visual.extradialogs;
-import edu.pdi2.math.indexes.satellite.SatelliteImage;
-import edu.pdi2.visual.DisplayJAIWithAnnotations;
-import edu.pdi2.visual.DisplayThumbnail;
-import edu.pdi2.visual.PDI;
-
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+
+import edu.pdi2.math.indexes.satellite.SatelliteImage;
+import edu.pdi2.visual.DisplayJAIWithAnnotations;
+import edu.pdi2.visual.DisplayThumbnail;
+import edu.pdi2.visual.PDI;
 
 
 /**
@@ -28,13 +28,22 @@ import javax.swing.SwingUtilities;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class ThumnailDialog extends javax.swing.JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 836847350642206291L;
+	
 	private JPanel thumPanel;
 	public DisplayThumbnail dt;
 	private DisplayJAIWithAnnotations dj;
 	private int upperLeftX, pixelsWidth, upperLeftY, pixelsHeight;
 	private int lastX, lastY;
-	public ThumnailDialog(JFrame frame) {
+
+	private PDI pdi;
+	
+	public ThumnailDialog(PDI frame) {
 		super(frame);
+		this.pdi = frame;
 		initGUI();
 		lastX=0;
 		lastY=0;
@@ -66,6 +75,11 @@ public class ThumnailDialog extends javax.swing.JDialog {
 		try {
 			{
 				getContentPane().setLayout(null);
+				this.addWindowListener(new WindowAdapter() {
+					public void windowClosing(WindowEvent evt) {
+						thisWindowClosing(evt);
+					}
+				});
 				this.setResizable(false);
 				{
 					thumPanel = new JPanel();
@@ -149,4 +163,7 @@ public class ThumnailDialog extends javax.swing.JDialog {
 		repaint();
 	}
 
+	private void thisWindowClosing(WindowEvent evt) {
+		pdi.unselectSignatureMenuItem();
+	}
 }

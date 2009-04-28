@@ -13,7 +13,7 @@ public class Encoder {
 		// TODO Auto-generated constructor stub
 	}
 
-	public static boolean encode(Vector<Polygon> pol, String nameFile) {
+	public static boolean encode(Vector pol, String nameFile) {
 		try {
 			String aux = nameFile;
 			FileWriter faux = null;

@@ -117,7 +117,7 @@ public class PDI extends javax.swing.JFrame {
 	private File[] files;
 	private DisplayJAIWithAnnotations dj;
 	private SatelliteImage si = null;
-	private Vector<Polygon> mesh;
+	private Vector mesh;
 	private BandsManager bandsManager;
 	private CreateMesh cm;
 	private int upperLeftX, pixelsWidth, upperLeftY, pixelsHeight;
@@ -196,11 +196,11 @@ public class PDI extends javax.swing.JFrame {
 		repaint();
 	}
 
-	public void setMesh(Vector<Polygon> mesh) {
+	public void setMesh(Vector mesh) {
 		this.mesh = mesh;
 	}
 
-	public Vector<Polygon> getMesh() {
+	public Vector getMesh() {
 		return mesh;
 	}
 
@@ -219,7 +219,7 @@ public class PDI extends javax.swing.JFrame {
 				"Valory", null, PlotOrientation.VERTICAL, true, true, false); //$NON-NLS-1$
 		initGUI();
 		files = new File[7];
-		mesh = new Vector<Polygon>();
+		mesh = new Vector();
 		selectedBands = new ArrayList<String>();
 
 		si = null;
@@ -463,7 +463,7 @@ public class PDI extends javax.swing.JFrame {
 		jLong.setText("Long: " + ToDegrees(lon / 10000));
 
 		for (int i = 0; i < mesh.size(); i++) {
-			Polygon p = mesh.get(i);
+			Polygon p = (Polygon) mesh.get(i);
 			// Vector gPoints = p.getGPoints();
 			if (p.isIn(point)) {
 				p.changeColor();
@@ -990,6 +990,10 @@ public class PDI extends javax.swing.JFrame {
 	public void unselectSignatureMenuItem() {
 		jCheckBoxMISignature.setSelected(false);
 	}
+	
+	public void unselectThumbnailMenuItem() {
+		jViewThumnail.setSelected(false);//FIXME
+	}
 
 	private JSeparator getJSeparator1() {
 		if (jSeparator1 == null) {
@@ -1079,7 +1083,7 @@ public class PDI extends javax.swing.JFrame {
 	private JCheckBoxMenuItem getJViewThumnail() {
 		if(jViewThumnail == null) {
 			jViewThumnail = new JCheckBoxMenuItem();
-			jViewThumnail.setText("Thumnail");
+			jViewThumnail.setText("Thumbnail");
 			jViewThumnail.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					jViewThumnailActionPerformed(evt);
