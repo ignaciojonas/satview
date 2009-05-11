@@ -130,6 +130,7 @@ public class CreateMesh extends javax.swing.JDialog {
 		pdi.setNullCM();
 	}
 
+	@SuppressWarnings("unchecked")
 	private String[] generateList() {
 		Vector<Polygon> mesh = pdi.getMesh();
 		String[] list = new String[mesh.size()];
@@ -227,7 +228,6 @@ public class CreateMesh extends javax.swing.JDialog {
 		return jMenuItem4;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void jMenuItem2ActionPerformed(ActionEvent evt) {
 		JFileChooser jfc = new JFileChooser();
 		jfc.setDialogTitle("Load Mesh");

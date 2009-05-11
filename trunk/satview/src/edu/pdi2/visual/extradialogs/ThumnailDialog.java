@@ -84,7 +84,7 @@ public class ThumnailDialog extends javax.swing.JDialog {
 				{
 					thumPanel = new JPanel();
 					getContentPane().add(thumPanel);
-					thumPanel.setBounds(0, 0, 160, 120);
+					thumPanel.setBounds(0, 0, 150, 100);
 					{
 						dt = new DisplayThumbnail(0.1f);
 						dt.setPreferredSize(new Dimension(150, 100));
@@ -105,7 +105,7 @@ public class ThumnailDialog extends javax.swing.JDialog {
 					}
 				}
 			}
-			this.setSize(180, 140);
+			this.setSize(140, 110);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -164,6 +164,6 @@ public class ThumnailDialog extends javax.swing.JDialog {
 	}
 
 	private void thisWindowClosing(WindowEvent evt) {
-		pdi.unselectSignatureMenuItem();
+		pdi.unselectThumbnailMenuItem();
 	}
 }

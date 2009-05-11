@@ -38,6 +38,7 @@ import edu.pdi2.constants.AppConstants;
 import edu.pdi2.constants.SatelliteNamingUtils;
 import edu.pdi2.decoders.Decoder;
 import edu.pdi2.decoders.DecoderFactory;
+import edu.pdi2.forms.GeographicPoint;
 import edu.pdi2.forms.Point;
 import edu.pdi2.forms.Polygon;
 import edu.pdi2.imaging.ImageFactory;
@@ -117,6 +118,7 @@ public class PDI extends javax.swing.JFrame {
 	private File[] files;
 	private DisplayJAIWithAnnotations dj;
 	private SatelliteImage si = null;
+	@SuppressWarnings("unchecked")
 	private Vector mesh;
 	private BandsManager bandsManager;
 	private CreateMesh cm;
@@ -196,14 +198,17 @@ public class PDI extends javax.swing.JFrame {
 		repaint();
 	}
 
+	@SuppressWarnings("unchecked")
 	public void setMesh(Vector mesh) {
 		this.mesh = mesh;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Vector getMesh() {
 		return mesh;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void addForm(Polygon p) {
 		mesh.add(p);
 		dj.addAnnotation(p);
@@ -213,6 +218,7 @@ public class PDI extends javax.swing.JFrame {
 		repaint();
 	}
 
+	@SuppressWarnings("unchecked")
 	public PDI() {
 		// super();
 		signatureG = ChartFactory.createXYLineChart("Signature ", "Bands", //$NON-NLS-1$ //$NON-NLS-2$
@@ -661,7 +667,7 @@ public class PDI extends javax.swing.JFrame {
 		titles.add("All");
 		allImages.add(si);
 		
-		byte[] data = RawDataUtils.mergeBands(corrected_radiance);
+		byte[] data = RawDataUtils.mergeBands(correctedImgsList);
 		
 		titles.add("All corrected");
 		allImages.add(ImageFactory.makeSatelliteImage(decoder,
@@ -1092,6 +1098,9 @@ public class PDI extends javax.swing.JFrame {
 		}
 		return jViewThumnail;
 	}
+	public void unselectViewThumbnail(){
+		jViewThumnail.setSelected(false);
+	}
 	
 	private void jViewThumnailActionPerformed(ActionEvent evt) {
 		if (jViewThumnail.isSelected())
@@ -1107,6 +1116,14 @@ public class PDI extends javax.swing.JFrame {
 			
 			
 		}
+	}
+
+	/**
+	 * Devuelve la lista de puntos georeferenciados que contiene la imagen satelital.
+	 */
+	public List<GeographicPoint> getPoints() {
+		
+		return si.getPoints();
 	}
 
 }

@@ -10,6 +10,7 @@ import javax.media.jai.TiledImage;
 
 import edu.pdi2.constants.SatelliteNamingUtils;
 import edu.pdi2.decoders.Decoder;
+import edu.pdi2.forms.GeographicPoint;
 import edu.pdi2.imaging.ImageFactory;
 import edu.pdi2.math.indexes.Rayleigh.Rayleigh;
 
@@ -660,5 +661,10 @@ public class SatelliteImage extends TiledImage {
 	/** Devuelve el identificador del satélite del cual proviene esta iamgen */
 	public String getSatelliteId() {
 		return satelliteId;
+	}
+
+	public List<GeographicPoint> getPoints() {
+		
+		return null;
 	}
 }
