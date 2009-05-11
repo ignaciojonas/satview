@@ -1,10 +1,8 @@
 package edu.pdi2.visual;
-import java.awt.Rectangle;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -33,7 +31,7 @@ public class ManyTabsDialog extends javax.swing.JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = -7984971832261741998L;
-	private JPanel thumPanel;
+//	private JPanel thumPanel;
 	
 //	private JPanel jPanel7;
 //	private JPanel jPanel6;
@@ -46,32 +44,32 @@ public class ManyTabsDialog extends javax.swing.JDialog {
 	
 	
 	private JPanel image;
-	private static int dWidth = 590;
-	private static int dHeight = 490;
-	private int lastx=0, lasty=0;
+//	private static int dWidth = 590;
+//	private static int dHeight = 490;
+//	private int lastx=0, lasty=0;
 	private List<String> titles;
 	
 	List<SatelliteImage> si = null;
-	private int x0, y0;
+//	private int x0, y0;
 
 //	private JPanel thumPanel1;
 	
 //	private JPanel image1;
 	
-	private DisplayThumbnail[] dts;
+//	private DisplayThumbnail[] dts;
 	
 	private DisplayJAIWithAnnotations[] djs;
 	
 	public ManyTabsDialog(JFrame frame,int x0, int y0, List<SatelliteImage> si, List<String> titles,String titulo_ventana) {
 		super(frame);
 		djs = new DisplayJAIWithAnnotations[si.size()];
-		dts = new DisplayThumbnail[si.size()];
+//		dts = new DisplayThumbnail[si.size()];
 		tabs = new JPanel[si.size()];
 		
 		this.titles=titles;
 		initGUI();
-		this.x0=x0;
-		this.y0=y0;
+//		this.x0=x0;
+//		this.y0=y0;
 		setSi(si);
 		this.setTitle(titulo_ventana);
 		this.setVisible(true);
