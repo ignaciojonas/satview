@@ -30,7 +30,7 @@ public class Annotation extends DrawableAnnotation {
 
 	public Annotation(Polygon poly){
 		super();
-		this.puntos = poly.getPoints();
+		this.puntos = poly.get_Points();
 		this.poly = poly;
 		new BasicStroke((float) 5);
 	}

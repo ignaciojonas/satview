@@ -320,7 +320,6 @@ public class DisplayThumbnail extends DisplayJAI implements
 	 *            the last Y position where the mouse was dragged to.
 	 */
 	public void updateLocation(int x, int y) {
-		System.out.println("updateLocation(" + x + ", " + y + ")  maxX=" +maxValidX + " maxY=" + maxValidY);
 		debug(" updateLocation(" + x + ", " + y + ")  maxX=" +maxValidX + " maxY=" + maxValidY);
 		if (x < minValidX){
 			x=minValidX+1;

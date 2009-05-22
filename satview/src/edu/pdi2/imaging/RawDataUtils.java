@@ -194,8 +194,6 @@ public class RawDataUtils {
 			//ahora convierto los valores a bytes
 			
 			for (int j=0; j<size; ++j){
-//				if (iArray[j] != 0)
-//					System.out.println();
 				bArray[j] = (byte) iArray[j];
 			}
 			

@@ -64,4 +64,133 @@ public class RectangleTransform implements ElasticTransform{
 	public double getYi_(double xi,double yi){
 		return   c5 + c6 * xi + c7 * yi + c8 * xi * yi;
 	}
+
+	public double getC1() {
+		return c1;
+	}
+
+	public void setC1(double c1) {
+		this.c1 = c1;
+	}
+
+	public double getC2() {
+		return c2;
+	}
+
+	public void setC2(double c2) {
+		this.c2 = c2;
+	}
+
+	public double getC3() {
+		return c3;
+	}
+
+	public void setC3(double c3) {
+		this.c3 = c3;
+	}
+
+	public double getC4() {
+		return c4;
+	}
+
+	public void setC4(double c4) {
+		this.c4 = c4;
+	}
+
+	public double getC5() {
+		return c5;
+	}
+
+	public void setC5(double c5) {
+		this.c5 = c5;
+	}
+
+	public double getC6() {
+		return c6;
+	}
+
+	public void setC6(double c6) {
+		this.c6 = c6;
+	}
+
+	public double getC7() {
+		return c7;
+	}
+
+	public void setC7(double c7) {
+		this.c7 = c7;
+	}
+
+	public double getC8() {
+		return c8;
+	}
+
+	public void setC8(double c8) {
+		this.c8 = c8;
+	}
+
+	public double getW1() {
+		return w1;
+	}
+
+	public void setW1(double w1) {
+		this.w1 = w1;
+	}
+
+	public double getW2() {
+		return w2;
+	}
+
+	public void setW2(double w2) {
+		this.w2 = w2;
+	}
+
+	public double getW3() {
+		return w3;
+	}
+
+	public void setW3(double w3) {
+		this.w3 = w3;
+	}
+
+	public double getW4() {
+		return w4;
+	}
+
+	public void setW4(double w4) {
+		this.w4 = w4;
+	}
+
+	public double getW5() {
+		return w5;
+	}
+
+	public void setW5(double w5) {
+		this.w5 = w5;
+	}
+
+	public double getW6() {
+		return w6;
+	}
+
+	public void setW6(double w6) {
+		this.w6 = w6;
+	}
+
+	public double getW7() {
+		return w7;
+	}
+
+	public void setW7(double w7) {
+		this.w7 = w7;
+	}
+
+	public double getW8() {
+		return w8;
+	}
+
+	public void setW8(double w8) {
+		this.w8 = w8;
+	}
+	public RectangleTransform(){}
 }

@@ -155,8 +155,6 @@ public class ThumnailDialog extends javax.swing.JDialog {
 	public void setSI(SatelliteImage si){
 		dt.set(si, PDI.dWidth, PDI.dHeight);
 		dt.updateLocation(lastX, lastY);
-		System.out.println(lastX);
-		System.out.println(lastY);
 		dj.set(dt.getImage());
 		dj.setRectangle(getCrop());
 		

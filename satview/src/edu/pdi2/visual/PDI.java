@@ -193,6 +193,10 @@ public class PDI extends javax.swing.JFrame {
 		this.si = si;
 		td.setDj(dj);
 		td.setSI(si);
+		td.setUpperLeftX(upperLeftX);
+		td.setUpperLeftY(upperLeftY);
+		td.setPixelsWidth(pixelsWidth);
+		td.setPixelsHeight(pixelsHeight);
 		if (tnDialog.isVisible())
 			updateThumbnails();
 		repaint();
@@ -212,9 +216,6 @@ public class PDI extends javax.swing.JFrame {
 	public void addForm(Polygon p) {
 		mesh.add(p);
 		dj.addAnnotation(p);
-		// System.out.println("X0:"+x0+" - Y0= "+y0);
-		// System.out.println("Agergue una anotacion X:"+p.getPoints().get(0).x+
-		// " - "+p.getPoints().get(0).y);
 		repaint();
 	}
 
@@ -441,11 +442,6 @@ public class PDI extends javax.swing.JFrame {
 	}
 
 	private void onMouseAction(MouseEvent evt, Rectangle crop, boolean chart) {
-		/*
-		 * System.out.println("En la Imagen Completa:");
-		 * System.out.println("El X es:" + (evt.getX() + crop.x + x0) +
-		 * " El Y es:" + (evt.getY() + crop.y + y0));
-		 */
 		if (chart) {
 			signature = bandsManager.getSignature(new Point(evt.getX() + crop.x
 					+ upperLeftX, evt.getY() + crop.y + upperLeftY));

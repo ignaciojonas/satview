@@ -36,7 +36,9 @@ public double getY(){
 public double module(){
 	return Math.sqrt(Math.pow(getX(), 2)+Math.pow(getY(), 2));
 }
+public VectorA() {
 
+}
 
 
 }

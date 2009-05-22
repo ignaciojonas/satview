@@ -1,19 +1,21 @@
 package edu.pdi2.xml;
 
+
+
 import java.io.FileWriter;
 import java.util.Vector;
 
+import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
-
-import edu.pdi2.forms.Polygon;
+import org.exolab.castor.xml.ValidationException;
 
 public class Encoder {
-
+ 
 	public Encoder() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public static boolean encode(Vector pol, String nameFile) {
+	public static boolean encode(Vector pol, String nameFile){
 		try {
 			String aux = nameFile;
 			FileWriter faux = null;
@@ -25,7 +27,9 @@ public class Encoder {
 			} else
 				aux = aux + ".xml";
 			faux = new FileWriter(aux);
+
 			Marshaller.marshal(pol, faux);
+
 			faux.close();
 			return true;
 

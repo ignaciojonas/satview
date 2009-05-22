@@ -37,7 +37,7 @@ public GeographicPoint(Point p, Double lat, Double lon) {
 	this.lat = lat;
 	this.lon = lon;
 }
-
+public GeographicPoint() {}
 
 
 }
