@@ -33,7 +33,7 @@ public class Polygon  {
 		this.gPoints=gPoints;
 	}
 
-
+	public Polygon() {}
 	public boolean isIn(Point p) {
 		Double angle=0.0;
 		VectorA l1,l2;
@@ -48,7 +48,6 @@ public class Polygon  {
 			
 		}
 	}
-//		System.out.println(angle);
 		Double d=Math.abs(Math.toDegrees(angle));
 		return (d.isNaN()||d>180.0);
 	}
@@ -125,7 +124,7 @@ public class Polygon  {
 	 * <i>(x,y)</i> y pertenecen a coordenadas de pantalla (no a coordenadas geográficas, esas
 	 * están en <i>Lat-Lon</i>).
 	 */
-	public List<Point> getPoints(){
+	public List<Point> get_Points(){
 		int size = gPoints.size();
 		
 		List<Point> ret = new ArrayList<Point>(size);

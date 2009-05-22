@@ -213,7 +213,7 @@ public class ManyTabsDialog extends javax.swing.JDialog {
 				PDI.td.setSI(si.get(i));
 			}
 		}
-		//System.out.println("Lalalalalalala");
+
 		
 	}
 

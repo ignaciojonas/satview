@@ -271,7 +271,7 @@ public class CreateMesh extends javax.swing.JDialog {
 
 		};
 		chooser.setFileFilter(filter);
-		int returnVal = chooser.showOpenDialog(this);
+		int returnVal = chooser.showSaveDialog(this);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 

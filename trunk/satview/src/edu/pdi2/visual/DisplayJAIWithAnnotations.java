@@ -91,7 +91,7 @@ public class DisplayJAIWithAnnotations extends DisplayJAI{
 	 * Solamente se van a extraer los primeros.
 	 */
 	public void addAnnotation(Polygon poly){
-		annMan.add(new Annotation(poly));
+		annMan.add(new Annotation(poly)); 
 	}
 
 	
