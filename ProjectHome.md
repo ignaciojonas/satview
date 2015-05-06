@@ -1,0 +1,1 @@
+Visor de imagenes desarrollado para un trabajo final. Capaz de visualizar imagenes de Landsat 5 y Landsat 7.
